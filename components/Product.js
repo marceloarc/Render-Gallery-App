@@ -1,15 +1,16 @@
-import React, {useContext,useEffect,} from 'react';
+import React, {useContext,useEffect,useState} from 'react';
 import {Text, Image, View, StyleSheet, TouchableOpacity, Button} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { CartContext } from '../context/CartContext';
 import { FavContext } from '../context/FavContext';
 import { useToast } from "react-native-toast-notifications";
-
-export function Product({id, nameArtist,price, image, onPress}) {
+import { ConfirmDialog } from 'react-native-simple-dialogs';
+export function Product({id, name,nameArtist,price, image, onPress}) {
   const { addItemToCart } = useContext(CartContext);
   const { addItemToFav} = useContext(FavContext);
   const toast = useToast();
-
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [dialogVisible2, setDialogVisible2] = useState(false);
   function onAddToCart(productId) {
     addItemToCart(productId);
     toast.show("Arte adicionada ao carrinho com sucesso!", {
@@ -19,6 +20,7 @@ export function Product({id, nameArtist,price, image, onPress}) {
       offset: 1000,
       animationType: "slide-in",
     });
+    setDialogVisible(false);
   }
   function onAddToFav(productId) {
     addItemToFav(productId);
@@ -29,11 +31,39 @@ export function Product({id, nameArtist,price, image, onPress}) {
       offset: 1000,
       animationType: "slide-in",
     });
+    setDialogVisible2(false)
   }
   return (
     
     <TouchableOpacity style={styles.card} onPress={onPress}>
-      
+            <ConfirmDialog
+    title="Adicionar ao carrinho"
+    message={"Tem certeza que deseja adicionar "+name+" ao carrinho??"}
+    visible={dialogVisible}
+    onTouchOutside={() => setDialogVisible(false)}
+    positiveButton={{
+        title: "Sim",
+        onPress: () => onAddToCart(id)
+    }}
+    negativeButton={{
+        title: "Não",
+        onPress: () => setDialogVisible(false)
+    }}
+/>
+<ConfirmDialog
+    title="Adicionar ao favoritos"
+    message={"Tem certeza que deseja adicionar "+name+" aos favoritos?"}
+    visible={dialogVisible2}
+    onTouchOutside={() => setDialogVisible2(false)}
+    positiveButton={{
+        title: "Sim",
+        onPress: () => onAddToFav(id)
+    }}
+    negativeButton={{
+        title: "Não",
+        onPress: () => setDialogVisible2(false)
+    }}
+/>
       <Image
         style={styles.thumb}
         source={image}
@@ -43,17 +73,18 @@ export function Product({id, nameArtist,price, image, onPress}) {
       
       <Text style={styles.nameButton}><Icon name="user" size={22} color="#3498DB" /> {nameArtist}</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => onAddToFav(id) }  style={styles.buttonIcon}>
+      <TouchableOpacity onPress={() => setDialogVisible2(true) }  style={styles.buttonIcon}>
       
       <Text style={styles.nameButton}><Icon name="heart" size={22} color="#3498DB" /></Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => onAddToCart(id) } style={styles.buttonIcon}>
+      <TouchableOpacity onPress={() => setDialogVisible(true) } style={styles.buttonIcon}>
       
       <Text style={styles.nameButton}><Icon name="shopping-cart" size={22} color="#3498DB" /></Text>
       </TouchableOpacity>
       </View>
       <Text style={styles.price}>R$ {price}</Text>
     </TouchableOpacity>
+    
   );
 }
 
@@ -115,7 +146,8 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 16,
     fontWeight: '600',
-    marginBottom: 8,
-    color:'white'
+    color:'white',
+    position:'absolute',
+    margin:10
   },
 });
