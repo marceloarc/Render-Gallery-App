@@ -2,7 +2,7 @@ const PRODUCTS = [
     {
         id: 100,
         name: 'Sukuna JJK',
-        nameArtist: 'Marcelo',
+        user: 1,
         price: 350,
         image: require('../assets/products/buxa.jpeg'),
         category:1001,
@@ -11,7 +11,7 @@ const PRODUCTS = [
     {
         id: 101,
         name: 'Personagens',
-        nameArtist: 'Marcelo',
+        user: 2,
         price: 350,
         image: require('../assets/products/Personagens.jpg'),
         category:1001,
@@ -20,7 +20,7 @@ const PRODUCTS = [
     {
         id: 102,
         name: 'Arte Cyberpunk',
-        nameArtist: 'Marcelo',
+        user: 3,
         price: 600,
         image: require('../assets/products/cyber2.png'),
         category:1002,
@@ -29,7 +29,7 @@ const PRODUCTS = [
     {
         id: 103,
         name: 'SweetHome Cupcake',
-        nameArtist: 'Marcelo',
+        user: 4,
         price: 2,
         image: require('../assets/products/cake-102.jpg'),
         category:1003,

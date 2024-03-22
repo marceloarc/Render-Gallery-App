@@ -5,12 +5,18 @@ import { CartContext } from '../context/CartContext';
 import { FavContext } from '../context/FavContext';
 import { useToast } from "react-native-toast-notifications";
 import { ConfirmDialog } from 'react-native-simple-dialogs';
-export function Product({id, name,nameArtist,price, image, onPress}) {
+import {getUsersById} from '../services/UsersService';
+import { useNavigation } from '@react-navigation/native';
+
+export function Product({id, name,user,price, image, onPress}) {
   const { addItemToCart } = useContext(CartContext);
   const { addItemToFav} = useContext(FavContext);
   const toast = useToast();
+  const navigation = useNavigation();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [dialogVisible2, setDialogVisible2] = useState(false);
+  let user2 = getUsersById(user);
+
   function onAddToCart(productId) {
     addItemToCart(productId);
     toast.show("Arte adicionada ao carrinho com sucesso!", {
@@ -69,9 +75,14 @@ export function Product({id, name,nameArtist,price, image, onPress}) {
         source={image}
       />
       <View style={styles.infoContainer}>
-      <TouchableOpacity style={styles.name }>
+      <TouchableOpacity style={styles.name }       
+        onPress={() => {
+        navigation.navigate('User', {
+          userId: user2.id,
+        });
+      }}>
       
-      <Text style={styles.nameButton}><Icon name="user" size={22} color="#3498DB" /> {nameArtist}</Text>
+      <Text style={styles.nameButton}><Icon name="user" size={22} color="#3498DB" /> {user2.name}</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => setDialogVisible2(true) }  style={styles.buttonIcon}>
       

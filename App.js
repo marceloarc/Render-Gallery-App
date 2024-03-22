@@ -6,10 +6,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ProductsList } from './screens/ProductsList.js';
 import { CategoriesList } from './screens/CategoriesList.js';
 import { ProductDetails } from './screens/ProductDetails.js';
+import { UserDetails } from './screens/UsersDetails.js';
 import { Cart } from './screens/Cart.js';
 import { Favorites} from './screens/Favorites.js';
 import { CartIcon } from './components/CartIcon.js';
 import { FavIcon } from './components/FavIcon.js';
+import { Footer } from './components/Footer.js';
 import { CartProvider } from './context/CartContext.js';
 import { FavProvider } from './context/FavContext.js';
 import { ToastProvider } from 'react-native-toast-notifications';
@@ -74,11 +76,26 @@ function App() {
             headerTitleStyle: styles.headerTitle,
             headerRight: () => <SafeAreaView style={styles.icons}><CartIcon navigation={navigation}/><FavIcon navigation={navigation}/></SafeAreaView>
           })} />
+
+          <Stack.Screen name='User' component={UserDetails} 
+          options={({ navigation }) => ({
+            title: 'User',
+            headerStyle: {
+              backgroundColor: 'black',
+            },
+            headerTintColor: '#3498DB',
+            headerTitleStyle: styles.headerTitle,
+            headerRight: () => <SafeAreaView style={styles.icons}><CartIcon navigation={navigation}/><FavIcon navigation={navigation}/></SafeAreaView>
+          })} />
+          
         </Stack.Navigator>
+
         
       </NavigationContainer>
       </FavProvider>
     </CartProvider>
+    <Footer 
+        ></Footer>
     </ToastProvider>
   );
 }
