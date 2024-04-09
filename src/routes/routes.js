@@ -1,15 +1,14 @@
 import React from 'react';
 
+import { Image, View, TouchableOpacity } from 'react-native';
+
 import { createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
 
 import Home from '../screens/Home';
 import Cart from '../screens/Cart';
 import Favorites from '../screens/Favorites';
 import Profile from '../screens/Profile';
-
-import { NavigationContainer } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
@@ -46,6 +45,14 @@ function Routes() {
         <Tab.Screen name="Home" component={Home} options={{
             headerTitle: () => (
                 <Image source={require('../../assets/logo.png')} style={{ width: 120, height: 40 }} />
+            ),
+            headerRight: () => (
+                <TouchableOpacity onPress={() => console.log('Perfil clicado')}>
+                    <Image
+                    source={require('../../assets/users/perfil.png')} 
+                    style={{ width: 40, height: 40, borderRadius: 20, marginRight: 15 }}
+                    />
+                </TouchableOpacity>
             ),
             tabBarIcon: ({ focused }) => (
                 <Image
