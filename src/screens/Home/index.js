@@ -3,15 +3,10 @@ import React from "react";
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image } from "react-native";
 import SearchBar from "../../../components/SearchBar";
 import { Ionicons } from '@expo/vector-icons';
+import { getCategories } from "../../../services/CategoryService";
+import { Posts } from "../../../components/Posts";
 
-    const categories = [
-        { id: '1', name: 'Eletrônicos', icon: 'ios-phone-portrait' },
-        { id: '2', name: 'Roupas', icon: 'ios-shirt' },
-        { id: '3', name: 'Comida', icon: 'ios-pizza' },
-        { id: '4', name: 'Livros', icon: 'ios-book' },
-        { id: '5', name: 'Esportes', icon: 'ios-football'},
-        { id: '6', name: 'Jogos', icon: 'ios-game-controller' },
-    ];
+  const categories = getCategories();
 
 export default function Home() {
 
@@ -26,19 +21,6 @@ export default function Home() {
         </TouchableOpacity>
     );
 
-    const renderProductItem = ({ item }) => (
-        <View style={styles.productItem}>
-            <Image source={{ uri: item.imageUrl }} style={styles.productImage} />
-            <Text style={styles.productName}>{item.name}</Text>
-            <Text style={styles.productDescription}>{item.description}</Text>
-            <Text style={styles.productPrice}>{item.price}</Text>
-            <View style={styles.likesContainer}>
-                <Ionicons name="ios-heart" size={15} color="#ff0000" />
-                <Text style={styles.likesText}>{item.likes}</Text>
-            </View>
-        </View>
-    );
-
     return (
         <View style={styles.container}>
             <SearchBar onFilterPress={handleFilterPress} />
@@ -50,6 +32,7 @@ export default function Home() {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.categoriesList}
             />
+            <Posts />
         </View>
     );
 }

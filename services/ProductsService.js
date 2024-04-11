@@ -4,7 +4,7 @@ const PRODUCTS = [
         name: 'Sukuna JJK',
         user: 1,
         price: 350,
-        image: require('../assets/products/buxa.jpeg'),
+        image: "https://images.pexels.com/photos/5318967/pexels-photo-5318967.jpeg?auto=compress&cs=tinysrgb&w=600",
         category:1001,
         description: 'Arte do buxa'
     },
@@ -13,7 +13,7 @@ const PRODUCTS = [
         name: 'Personagens',
         user: 2,
         price: 350,
-        image: require('../assets/products/Personagens.jpg'),
+        image: 'https://images.pexels.com/photos/799443/pexels-photo-799443.jpeg?auto=compress&cs=tinysrgb&w=600',
         category:1001,
         description: 'Vários personagens de vários animes diferentes'
     },
@@ -22,7 +22,7 @@ const PRODUCTS = [
         name: 'Arte Cyberpunk',
         user: 3,
         price: 600,
-        image: require('../assets/products/cyber2.png'),
+        image: 'https://images.pexels.com/photos/1099680/pexels-photo-1099680.jpeg?auto=compress&cs=tinysrgb&w=600',
         category:1002,
         description: 'Arte cyberpunk'
     },
@@ -31,10 +31,19 @@ const PRODUCTS = [
         name: 'SweetHome Cupcake',
         user: 4,
         price: 2,
-        image: require('../assets/products/cake-102.jpg'),
+        image: 'https://images.pexels.com/photos/5318967/pexels-photo-5318967.jpeg?auto=compress&cs=tinysrgb&w=600',
         category:1003,
         description: 'A cupcake (also British English: fairy cake; Hiberno-English: bun; Australian English: fairy cake or patty cake[1]) is a small cake designed to serve one person.'
-    }
+    },
+    {
+        id: 104,
+        name: 'Sukuna JJK',
+        user: 1,
+        price: 350,
+        image: 'https://images.pexels.com/photos/799443/pexels-photo-799443.jpeg?auto=compress&cs=tinysrgb&w=600',
+        category:1001,
+        description: 'Arte do buxa'
+    },
 ];
 
 export function getProducts() {

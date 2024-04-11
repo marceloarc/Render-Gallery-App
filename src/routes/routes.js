@@ -44,7 +44,7 @@ function Routes() {
       >
         <Tab.Screen name="Home" component={Home} options={{
             headerTitle: () => (
-                <Image source={require('../../assets/logo.png')} style={{ width: 120, height: 40 }} />
+                <Image source={require('../../assets/System/logo.png')} style={{ width: 120, height: 40 }} />
             ),
             headerRight: () => (
                 <TouchableOpacity onPress={() => console.log('Perfil clicado')}>
@@ -56,30 +56,30 @@ function Routes() {
             ),
             tabBarIcon: ({ focused }) => (
                 <Image
-                    source={focused ? require('../../assets/home-active.png') : require('../../assets/home-inactive.png')}
-                    style={{ width: 24, height: 24 }}
+                    source={focused ? require('../../assets/System/home-active.png') : require('../../assets/System/home-inactive.png')}
+                    style={{ width: 40, height: 40 }}
                 />
             )
         }} />
         <Tab.Screen name="Cart" component={Cart} options={{
             tabBarIcon: ({ focused }) => (
                 <Image
-                    source={focused ? require('../../assets/cart-active.png') : require('../../assets/cart-inactive.png')}
-                    style={{ width: 24, height: 24 }}
+                    source={focused ? require('../../assets/System/cart-active.png') : require('../../assets/System/cart-inactive.png')}
+                    style={{ width: 40, height: 40 }}
                 />            )
         }}/>
         <Tab.Screen name="Favorites" component={Favorites} options={{
             tabBarIcon: ({ focused }) => (
                 <Image
-                    source={focused ? require('../../assets/heart-active.png') : require('../../assets/heart-inactive.png')}
-                    style={{ width: 24, height: 24 }}
+                    source={focused ? require('../../assets/System/heart-active.png') : require('../../assets/System/heart-inactive.png')}
+                    style={{ width: 40, height: 40 }}
                 />            )
         }}/>
         <Tab.Screen name="Profile" component={Profile} options={{
             tabBarIcon: ({ focused }) => (
                 <Image
-                    source={focused ? require('../../assets/profile-active.png') : require('../../assets/profile-inactive.png')}
-                    style={{ width: 24, height: 24 }}
+                    source={focused ? require('../../assets/System/profile-active.png') : require('../../assets/System/profile-inactive.png')}
+                    style={{ width: 40, height: 40 }}
                 />            )
         }}/>
       </Tab.Navigator>

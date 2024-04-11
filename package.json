@@ -12,6 +12,7 @@
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.0.6",
+    "@types/react": "~18.2.14",
     "expo": "^49.0.23",
     "expo-status-bar": "~1.6.0",
     "react": "18.2.0",
@@ -26,7 +27,8 @@
     "react-native-simple-dialogs": "^2.0.3",
     "react-native-toast-notifications": "^3.4.0",
     "react-native-vector-icons": "^10.0.3",
-    "react-native-web": "~0.19.6"
+    "react-native-web": "~0.19.6",
+    "typescript": "^5.1.3"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"

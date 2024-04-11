@@ -16,7 +16,7 @@ const SearchBar = ({ onFilterPress }) => {
           />
         </View>
         <TouchableOpacity onPress={onFilterPress} style={styles.filterButton}>
-            <Image source={require('../assets/filter-desactive.png')} style={{width: 48, height: 49}} />
+            <Image source={require('../assets/System/filter-desactive.png')} style={{width: 48, height: 49}} />
         </TouchableOpacity>
       </View>
     );
