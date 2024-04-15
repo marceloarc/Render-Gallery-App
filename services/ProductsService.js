@@ -44,6 +44,15 @@ const PRODUCTS = [
         category:1001,
         description: 'Arte do buxa'
     },
+    {
+        id: 106,
+        name: 'SweetHome Cupcake',
+        user: 4,
+        price: 2,
+        image: 'https://images.pexels.com/photos/799443/pexels-photo-799443.jpeg?auto=compress&cs=tinysrgb&w=600',
+        category:1003,
+        description: 'A cupcake (also British English: fairy cake; Hiberno-English: bun; Australian English: fairy cake or patty cake[1]) is a small cake designed to serve one person.'
+    },
 ];
 
 export function getProducts() {
