@@ -29,7 +29,7 @@ export function FavProvider(props) {
 
   }
 
-  function getItemsCount() {
+  function getFavCount() {
       return items.reduce((sum, item) => (sum + item.qty), 0);
   }
   
@@ -39,7 +39,7 @@ export function FavProvider(props) {
   
   return (
     <FavContext.Provider 
-      value={{items, setItems, getItemsCount, addItemToFav, getTotalPrice}}>
+      value={{items, setItems, getFavCount, addItemToFav, getTotalPrice}}>
       {props.children}
     </FavContext.Provider>
   );

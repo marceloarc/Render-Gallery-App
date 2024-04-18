@@ -47,11 +47,11 @@ export function getUsers() {
 
 export function getUsersByEmail(email){
 
-    console.log(USERS.find((user) => (user.email == email)));
+
     return USERS.find((user) => (user.email == email));
 }
 export function getUsersById(id) {
 
-    console.log(USERS.find((user) => (user.id == id)));
+
     return USERS.find((user) => (user.id == id));
 }

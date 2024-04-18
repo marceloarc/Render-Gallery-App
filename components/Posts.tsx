@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { getProducts } from '../services/ProductsService';
+import { getProducts, getProductsByCategory, getProductsByName } from '../services/ProductsService';
 import { Post } from './Post';
 import MasonryList from '@react-native-seoul/masonry-list'; // Usamos uma biblioteca alternativa que suporta esse tipo de layout
 
-export function Posts() {
+export function Posts(props) {
     const [products, setProducts] = useState([]);
 
+
     useEffect(() => {
-        const products = getProducts();
+        let products;
+        if(props.CategoryId>0){
+            products = getProductsByCategory(props.CategoryId);
+        }else if(props.name != ''){
+            products = getProductsByName(props.name);
+        }else{
+            products = getProducts();
+        }
+
         setProducts(products);
-    }, []);
+    }, [props.CategoryId,props.name]);
     
     return (
         <View style={styles.container}>

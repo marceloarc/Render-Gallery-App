@@ -42,7 +42,7 @@ const PRODUCTS = [
         price: 350,
         image: 'https://images.pexels.com/photos/799443/pexels-photo-799443.jpeg?auto=compress&cs=tinysrgb&w=600',
         category:1001,
-        description: 'Arte do buxa'
+        description: 'teste'
     },
     {
         id: 106,
@@ -56,16 +56,40 @@ const PRODUCTS = [
 ];
 
 export function getProducts() {
+    console.log("ta aqui3");
     return PRODUCTS;
 }
 export function getProductsByCategory(CategoryId){
     let products = [];
-    products = productsFilter(CategoryId);
+
+      
+    products = productsFilterByCategory(CategoryId);
+    
     return  products;
 }
-function productsFilter(CategoryId){
+export function getProductsByName(name){
+    let products = [];
+
+    if(name != ''){
+      
+        products = productsFilterByName(name);
+    }else{
+      
+        products = getProducts();
+    }
+    
+    return  products;
+}
+function productsFilterByCategory(CategoryId){
 
     return PRODUCTS.filter(product => product.category == CategoryId)
+}
+function productsFilterByName(name){
+    name = name.toLowerCase();
+    return PRODUCTS.filter(function (product) { 
+        return product.name.toLowerCase().includes(name) ||
+        product.description.toLowerCase().includes(name); 
+    });
 }
 export function getProduct(id) {
     console.log(PRODUCTS.find((product) => (product.id == id)));

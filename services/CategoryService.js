@@ -1,5 +1,12 @@
 const CATEGORIES = [
     {
+        id: 0,
+        name: 'Todas',
+        image: require('../assets/categories/gojo2.png'),
+        description: 'A headset combines a headphone with microphone. Headsets are made with either a single-earpiece (mono) or a double-earpiece (mono to both ears or stereo).',
+        icon: 'apps-outline'
+    },
+    {
         id: 1001,
         name: 'Animes',
         image: require('../assets/categories/gojo2.png'),

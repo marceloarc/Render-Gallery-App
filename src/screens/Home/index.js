@@ -1,27 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image } from "react-native";
 import SearchBar from "../../../components/SearchBar";
 import { Ionicons } from '@expo/vector-icons';
 import { getCategories } from "../../../services/CategoryService";
 import { Posts } from "../../../components/Posts";
+import { useNavigation } from '@react-navigation/native';
 
-  const categories = getCategories();
 
-  export default function Home() {
-    const handleFilterPress = () => {
-        console.log('Botão de filtros pressionado!');
+  export default function Home({route}) {
+    const categories = getCategories();
+    const navigation = useNavigation();
+    const CategoryId = route.params.CategoryId;
+    const name= route.params.name;
+
+
+    const handleFilterPress = (searchText) => {
+
+        navigation.navigate('Home', {
+            name: searchText,
+            CategoryId:0
+          })
     };
+    
 
     const renderCategoryItem = ({ item }) => (
-        <TouchableOpacity style={styles.categoryItem}>
+        <TouchableOpacity  onPress={() => navigation.navigate('Home', {
+            CategoryId: item.id, name:'',
+          })} style={styles.categoryItem}>
             <Ionicons name={item.icon} size={15} color="#fff" />
             <Text style={styles.categoryText}>{item.name}</Text>
         </TouchableOpacity>
     );
 
     return (
-        <View style={styles.container}>
+        <View style={styles.container}> 
             <SearchBar onFilterPress={handleFilterPress} />
             <View style={styles.flatListContainer}>
                 <FlatList
@@ -32,7 +45,7 @@ import { Posts } from "../../../components/Posts";
                     showsHorizontalScrollIndicator={false}
                 />
             </View>
-            <Posts />
+            <Posts  CategoryId={CategoryId} name={name}/>
         </View>
     );
 }
@@ -44,7 +57,7 @@ const styles = StyleSheet.create({
     },
     flatListContainer: {
         height: 'auto', // Pode remover se ainda criar espaço extra
-        marginBottom: 20,
+        marginBottom: 10,
         paddingLeft: 20, // Anteriormente era 'left', que não é apropriado para esse caso
     },
     categoryItem: {

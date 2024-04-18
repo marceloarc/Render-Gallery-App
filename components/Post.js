@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-import { View, Image, Text, StyleSheet } from "react-native";
+import { View, Image, Text, StyleSheet,TouchableOpacity, } from "react-native";
 import { Feather } from '@expo/vector-icons';
-
-
+import { getUsersById } from "../services/UsersService";
+import { useNavigation } from '@react-navigation/native';
 export function Post({id, name, user, price, image, description}) {
-
+    let user2 = getUsersById(user);
     const [aspectRatio, setAspectRatio] = useState(1);
-
+    const navigation = useNavigation();
     useEffect(() => {
         Image.getSize(image, (width, height) => {
             setAspectRatio(width / height);
@@ -15,7 +15,9 @@ export function Post({id, name, user, price, image, description}) {
     }, []);
 
     return (
-        <View style={styles.container}>
+        <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('Product', {
+            ProductId: id,
+          })}>
             <Image source={{ uri: image }} style={[styles.image, {aspectRatio}] } />
 
             <View style={styles.footer} >
@@ -24,10 +26,10 @@ export function Post({id, name, user, price, image, description}) {
             </View>
 
             <View>
-                <Text style={styles.title}>{user.name}</Text>
+                <Text style={styles.title}>{user2.name}</Text>
                 <Text style={styles.title}>${price}</Text>
             </View>
-        </View>
+        </TouchableOpacity >
     );
 }
 

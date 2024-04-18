@@ -1,10 +1,17 @@
-import React from 'react';
-
+import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 
 const SearchBar = ({ onFilterPress }) => {
+  const [searchText, setSearchText] = useState('');
+  const handleSearchChange = (text) => {
+    setSearchText(text);
+  };
+  const handleSearchSubmit = () => {
+    // Envia o texto de pesquisa para o componente pai
+    onFilterPress(searchText);
+  };
     return (
       <View style={styles.container}>
         <View style={styles.inputSection}>
@@ -13,9 +20,10 @@ const SearchBar = ({ onFilterPress }) => {
             placeholder="Search..."
             placeholderTextColor="#878787"
             style={styles.input}
+            onChangeText={handleSearchChange}
           />
         </View>
-        <TouchableOpacity onPress={onFilterPress} style={styles.filterButton}>
+        <TouchableOpacity onPress={handleSearchSubmit} style={styles.filterButton}>
             <Image source={require('../assets/System/filter-desactive.png')} style={{width: 48, height: 49}} />
         </TouchableOpacity>
       </View>
