@@ -1,138 +1,140 @@
-import React, {useEffect, useState, useContext} from 'react';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import {
-  Text, 
-  Image, 
-  View, 
-  ScrollView, 
-  SafeAreaView, 
-  Button, 
-  StyleSheet,
-  TouchableOpacity,
-  } from 'react-native';
+import React, { useEffect, useState, useContext } from 'react';
+import { Text, Image, View, ScrollView, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import { useToast } from "react-native-toast-notifications";
 import { getProduct } from "../../../services/ProductsService";
 import { CartContext } from '../../../context/CartContext';
 import { FavContext } from '../../../context/FavContext';
 import { ConfirmDialog } from 'react-native-simple-dialogs';
-export default function Product({route}) {
-  const productId  = route.params.ProductId;
+
+export default function Product({ route }) {
+  const { ProductId } = route.params;
   const [product, setProduct] = useState({});
+  const [aspectRatio, setAspectRatio] = useState(1);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [dialogVisible2, setDialogVisible2] = useState(false);
   const toast = useToast();
   const { addItemToCart } = useContext(CartContext);
-  const { addItemToFav} = useContext(FavContext);
+  const { addItemToFav } = useContext(FavContext);
+  const navigation = useNavigation();
+
   useEffect(() => {
-    setProduct(getProduct(productId));
-  
-  });
+    async function fetchProduct() {
+      const fetchedProduct = await getProduct(ProductId);
+      setProduct(fetchedProduct);
+      Image.getSize(fetchedProduct.image, (width, height) => { 
+        setAspectRatio(width / height);
+      });
+    }
+    fetchProduct();
+  }, [ProductId]);
   
   function onAddToCart() {
     addItemToCart(product.id);
     toast.show("Arte adicionada ao carrinho com sucesso!", {
       type: "success",
       placement: "bottom",
-      duration: 4000,
-      offset: 1000,
-      animationType: "slide-in",
+      duration: 3000,
+      offset: 30,
+      animationType: "fade",
+      textStyle: { color: 'white' },
+      backgroundColor: "#388E3C", 
+      icon: <Ionicons name="cart-outline" size={24} color="white" />, 
     });
     setDialogVisible(false);
   }
+  
   function onAddToFav() {
     addItemToFav(product.id);
     toast.show("Arte Favoritada com sucesso!", {
       type: "success",
       placement: "bottom",
-      duration: 4000,
-      offset: 1000,
-      animationType: "slide-in",
+      duration: 3000,
+      offset: 30,
+      animationType: "fade",
+      textStyle: { color: 'white' }, 
+      backgroundColor: "#FF5722", 
+      icon: <Ionicons name="heart-outline" size={24} color="white" />, 
     });
     setDialogVisible2(false);
   }
+  
   return (
     <SafeAreaView style={styles.background}> 
       <ScrollView>
-        <Image
-          style={styles.image}
-          source={{ uri: product.image }}
-        />
+        <View style={styles.fundo}>
+          <Image
+            style={[styles.image, {aspectRatio}]} 
+            source={{ uri: product.image }}
+          />
+          <TouchableOpacity onPress={() => onAddToFav() }  style={styles.buttonIconFav}>
+                <Ionicons name="heart-outline" size={24} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.goBack()}  style={styles.buttonIconBack}>
+                <Ionicons name="chevron-back" size={24} color="black" />
+          </TouchableOpacity>
+        </View>
         <View style={styles.infoContainer}>
-          <Text style={styles.name}>{product.name}</Text>
-          <Text style={styles.price}>R$ {product.price}</Text>
-          <Text style={styles.description}>{product.description}</Text>
-          <View style={styles.infoContainer2}>
-
-          <TouchableOpacity onPress={() => setDialogVisible(true)}style={styles.buttonIcon}>
-      
-      <Text style={styles.nameButton}>Adicionar ao carrinho <Icon name="shopping-cart" size={16} color="white" /></Text>
-      <ConfirmDialog
-    title="Adicionar ao carrinho"
-    message={"Tem certeza que deseja adicionar "+product.name+" ao carrinho??"}
-    visible={dialogVisible}
-    onTouchOutside={() => setDialogVisible(false)}
-    positiveButton={{
-        title: "Sim",
-        onPress: () => onAddToCart()
-    }}
-    negativeButton={{
-        title: "Não",
-        onPress: () => setDialogVisible(false)
-    }}
-/>
-<ConfirmDialog
-    title="Adicionar ao favoritos"
-    message={"Tem certeza que deseja adicionar "+product.name+" aos favoritos?"}
-    visible={dialogVisible2}
-    onTouchOutside={() => setDialogVisible2(false)}
-    positiveButton={{
-        title: "Sim",
-        onPress: () => onAddToFav()
-    }}
-    negativeButton={{
-        title: "Não",
-        onPress: () => setDialogVisible2(false)
-    }}
-/>
-      </TouchableOpacity>
-        <TouchableOpacity onPress={() => setDialogVisible2(true) }  style={styles.buttonIcon}>
-      
-    <Text style={styles.nameButton}>Favoritar <Icon name="heart" size={16} color="white" /></Text>
-      </TouchableOpacity>
-
-
-          </View>
-
+            <View style={styles.nameContainer} >
+              <View style={styles.containerTitle}>
+                <Text style={styles.name}>{product.name}</Text>
+              </View>
+              <View style={styles.containerIconPlus}>
+                <TouchableOpacity onPress={() => onAddToFav() }  style={styles.buttonIconPlus}>
+                  <Ionicons name="remove-outline" size={24} color="white" />
+                </TouchableOpacity>
+                <Text style={styles.quantidade}>1</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Home') }  style={styles.buttonIconPlus}>
+                      <Ionicons name="add-outline" size={24} color="white" />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <Text style={styles.description}>{product.description}</Text>
+            <View style={styles.infoContainer2}>
+              <ConfirmDialog
+                      title="Adicionar ao carrinho"
+                      message={"Tem certeza que deseja adicionar "+product.name+" ao carrinho??"}
+                      visible={dialogVisible}
+                      onTouchOutside={() => setDialogVisible(false)}
+                      positiveButton={{
+                          title: "Sim",
+                          onPress: () => onAddToCart()
+                      }}
+                      negativeButton={{
+                          title: "Não",
+                          onPress: () => setDialogVisible(false)
+                      }}
+              />
+                
+            </View>
         </View>
       </ScrollView>
+      <TouchableOpacity onPress={() => setDialogVisible(true)}style={styles.buttonIcon}>
+        <Ionicons name="cart-outline" size={24} color="black" />
+        <Text style={styles.nameButton}>Adicionar ao carrinho | R$ {product.price} </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  background:{
-    
+  background:{ 
     backgroundColor:'black',
-    height:'100%'
-  },
-  card: {
-    backgroundColor: 'black',
-    
-    borderRadius: 16,
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    shadowColor: 'black',
-    shadowOffset: {
-      height: 0,
-      width: 0,
-    },
-    elevation: 1,
-    marginVertical: 20,
+    height:'100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
-    marginTop:50,
-    height: 300,
-    width: '100%'
+    marginTop:20,
+    width: '100%', 
+    borderRadius: 24,
+    maxHeight: 550,
+  },
+  fundo:{
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 40,
   },
   infoContainer: {
     
@@ -141,40 +143,96 @@ const styles = StyleSheet.create({
   infoContainer2: {
     width:'100%',
     textAlign:'center',
- 
+    alignItems: 'center',
+  },
+  nameContainer:{
+    width:'100%',
+    marginTop: 5,
+    flexDirection: 'row',
+    backgroundColor:'#000',
+    alignItems: 'center',
+  },
+  containerTitle:{
+    flexDirection: 'row',
+    justifyContent: 'left',
+    alignItems: 'left',
+    width: "50%",
+  },
+  containerIconPlus:{
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    width: "50%",
   },
   name: {
-    color:'#3498DB',
-    fontSize: 22,
+    color:'#ededed',
+    fontSize: 24,
     fontWeight: 'bold',
   },
-  price: {
-    color:'#3498DB',
+  quantidade:{
+    color:'#ededed',
     fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 8,
+    fontWeight: 'bold',
+    margin: 15,
   },
   description: {
     
     fontSize: 16,
     fontWeight: '400',
-    color:'#3498DB',
+    color:'#D0D0D0',
     marginBottom: 16,
   },
   nameButton:{
     fontSize: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    color:'white',
+    color:'#292526',
     textAlign:'center',
+    fontWeight: 'bold',
   },
   buttonIcon:{
     alignItems: 'center',
     justifyContent: 'center',
-    width:'100%',
+    width:327,
     textAlign:'center',
-    backgroundColor:'#3498DB',
+    backgroundColor:'#FFFFFF',
     margin:10,
-    height:40
-}
+    height:60,
+    borderRadius: 40,
+    flexDirection: 'row',
+    position:'absolute',
+    bottom: 10,
+  },
+  buttonIconFav:{
+    width: 40,
+    height: 40,
+    borderRadius: 100,
+    backgroundColor:'#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position:'absolute',
+    top: 35,
+    right: 20,
+  },
+  buttonIconBack:{
+    width: 40,
+    height: 40,
+    borderRadius: 100,
+    backgroundColor:'#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position:'absolute',
+    top: 35,
+    left: 20,
+  },
+  buttonIconPlus:{
+    width: 40,
+    height: 40,
+    borderRadius: 100,
+    backgroundColor:'#000',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#fff',
+  }
 });

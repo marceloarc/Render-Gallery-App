@@ -1,7 +1,7 @@
 import React,{useContext} from 'react';
 import { Image, TouchableOpacity,Text,View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer,useNavigation, } from '@react-navigation/native';
+import { NavigationContainer ,useNavigation, } from '@react-navigation/native';
 import { CartContext} from '../../context/CartContext';
 import { FavContext} from '../../context/FavContext';
 import { ToastProvider } from 'react-native-toast-notifications';
@@ -22,8 +22,6 @@ function Routes() {
     const {goBack} = useNavigation()
   return (
     <ToastProvider>
-
-            
             <Tab.Navigator
               screenOptions={({ route }) => ({
                 headerTintColor: '#fff',
@@ -147,9 +145,7 @@ function Routes() {
                       </Text>
                       </View>
                     ),
-                    tabBarVisible: false,
-                    tabBarStyle: { display: 'none' },
-                    headerLeft: () => (< BackButton onPress={goBack}/>)
+                    header: () => null
               }} />
               <Tab.Screen name="Profile" component={Profile} options={{
                 tabBarIcon: ({ focused }) => (
@@ -165,7 +161,8 @@ function Routes() {
                 tabBarButton: () => null,
                 tabBarVisible: false,
                 tabBarStyle: { display: 'none' },
-                headerLeft: () => (< BackButton onPress={goBack}/>)
+                headerLeft: () => (< BackButton onPress={goBack}/>),
+                header: () => null
   }} />
             </Tab.Navigator>
 
