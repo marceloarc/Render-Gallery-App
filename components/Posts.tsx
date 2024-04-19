@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { getProducts, getProductsByCategory, getProductsByName } from '../services/ProductsService';
+import { getProducts, getProductsByCategory, getProductsByName, filterProducts} from '../services/ProductsService';
 import { Post } from './Post';
 import MasonryList from '@react-native-seoul/masonry-list'; // Usamos uma biblioteca alternativa que suporta esse tipo de layout
 
@@ -9,14 +9,7 @@ export function Posts(props) {
 
 
     useEffect(() => {
-        let products;
-        if(props.CategoryId>0){
-            products = getProductsByCategory(props.CategoryId);
-        }else if(props.name != ''){
-            products = getProductsByName(props.name);
-        }else{
-            products = getProducts();
-        }
+        let products = filterProducts(props.CategoryId,props.name)
 
         setProducts(products);
     }, [props.CategoryId,props.name]);

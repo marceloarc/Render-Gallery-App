@@ -23,6 +23,7 @@ function Routes() {
   return (
     <ToastProvider>
             <Tab.Navigator
+            
               screenOptions={({ route }) => ({
                 headerTintColor: '#fff',
                 headerStatusBarHeight: 60,
@@ -32,8 +33,12 @@ function Routes() {
                   elevation: 0,
                   shadowOpacity: 0,
                 },
+                animationEnabled: true, // Ativa animações
+                animationTypeForReplace: 'fade', // Define o tipo de animação (por exemplo, 'push', 'pop', 'fade', etc.)
+                animationIn: 'slideInDown', // Define a animação de entrada
+                animationOut: 'slideOutUp', // Define a animação de saída
                 tabBarVisible: route.name !== 'Product',
-                
+              
                 tabBarShowLabel: true,
                 tabBarStyle: {
                   position: 'absolute',
@@ -144,8 +149,7 @@ function Routes() {
                         {getFavCount()}
                       </Text>
                       </View>
-                    ),
-                    header: () => null
+                    )
               }} />
               <Tab.Screen name="Profile" component={Profile} options={{
                 tabBarIcon: ({ focused }) => (

@@ -15,7 +15,7 @@ export default function Cart () {
     return (
        <View style={styles.cartLineTotal}>
           <Text style={[styles.lineLeft, styles.lineTotal]}>Total</Text>
-          <Text style={styles.lineRight}>R$ {total}</Text>
+          <Text style={styles.lineRight}>{total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Text>
  
        </View>
     );
@@ -33,7 +33,7 @@ export default function Cart () {
           source={{ uri: item.product.image }}
         />
           <Text style={styles.lineLeft}>{item.product.name} x {item.qty}</Text>
-          <Text style={styles.lineRight}>R$ {item.totalPrice}</Text>
+          <Text style={styles.lineRight}>{item.totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Text>
        </TouchableOpacity >
     );
   }

@@ -20,10 +20,7 @@ export function FavProvider(props) {
           }];
       }
       else { 
-          return prevItems.map((item) => {
-
-            return item;
-          });
+        return prevItems.filter((item) => item.id !== id);
       }
     });
 
@@ -33,13 +30,21 @@ export function FavProvider(props) {
       return items.reduce((sum, item) => (sum + item.qty), 0);
   }
   
+  function getFavItem(id){
+    const item = items.find((item) => (item.id == id));
+    if(item){
+      return true;
+    }
+    return false;
+  }
+
   function getTotalPrice() {
       return items.reduce((sum, item) => (sum + item.totalPrice), 0);
   }  
   
   return (
     <FavContext.Provider 
-      value={{items, setItems, getFavCount, addItemToFav, getTotalPrice}}>
+      value={{items, setItems, getFavCount, addItemToFav, getTotalPrice, getFavItem}}>
       {props.children}
     </FavContext.Provider>
   );

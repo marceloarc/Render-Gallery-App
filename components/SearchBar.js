@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import filterImageDeac from '../assets/System/filter-desactive.png';
+import filterImageAct from '../assets/System/filter-active.png';
 
+const SearchBar = ({onFilterPress, onTextChange}) => {
 
-const SearchBar = ({ onFilterPress }) => {
   const [searchText, setSearchText] = useState('');
+  const [visibilityC, setVisibility] = useState(false);
   const handleSearchChange = (text) => {
+    console.log(visibilityC);
     setSearchText(text);
+    onTextChange(text);
   };
-  const handleSearchSubmit = () => {
-    // Envia o texto de pesquisa para o componente pai
-    onFilterPress(searchText);
-  };
+  const handleVisibility = (visibility) =>{
+    const updatedVisibility = !visibilityC; // Novo valor de visibilidade
+    setVisibility(updatedVisibility); // Atualiza o estado com o novo valor
+    onFilterPress(updatedVisibility); // Chama onFilterPress com o novo valor de visibilidade
+  }
+  const imageSource = visibilityC ? require('../assets/System/filter-active.png') : require('../assets/System/filter-desactive.png');
     return (
       <View style={styles.container}>
         <View style={styles.inputSection}>
@@ -23,8 +30,8 @@ const SearchBar = ({ onFilterPress }) => {
             onChangeText={handleSearchChange}
           />
         </View>
-        <TouchableOpacity onPress={handleSearchSubmit} style={styles.filterButton}>
-            <Image source={require('../assets/System/filter-desactive.png')} style={{width: 48, height: 49}} />
+        <TouchableOpacity style={styles.filterButton} onPress={handleVisibility}>
+            <Image source={imageSource} style={{width: 48, height: 49}} />
         </TouchableOpacity>
       </View>
     );
@@ -41,7 +48,7 @@ const SearchBar = ({ onFilterPress }) => {
       flex: 1,
       flexDirection: 'row',
       backgroundColor: '#fff',
-      borderColor: '#ededed',
+      borderColor: '#878787',
       borderWidth: 1,
       borderRadius: 12,
       alignItems: 'center',

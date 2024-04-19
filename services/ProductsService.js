@@ -6,7 +6,8 @@ const PRODUCTS = [
         price: 350,
         image: "https://images.pexels.com/photos/5318967/pexels-photo-5318967.jpeg?auto=compress&cs=tinysrgb&w=600",
         category:1001,
-        description: 'Arte do buxa'
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis ullamcorper viverra. Suspendisse quis elit vel justo ultrices cursus. Donec ipsum odio, tincidunt fringilla semper non, vestibulum eu arcu. Phasellus efficitur ante sit amet nulla lacinia ultrices. Proin leo quam, convallis eget congue ac, efficitur a eros. Quisque a sagittis est. Nulla fringilla libero placerat, mattis velit vitae, elementum nisl. Etiam ut scelerisque ligula, eget tristique nulla. Donec eu imperdiet magna. Duis sollicitudin varius eleifend. Nam urna nibh, posuere quis ultrices sed, dignissim in orci. Nullam porta velit justo, vel ullamcorper nisi pulvinar vel. Etiam dapibus efficitur odio, nec bibendum metus laoreet quis.',
+        quantity:2
     },
     {
         id: 101,
@@ -15,7 +16,8 @@ const PRODUCTS = [
         price: 350,
         image: 'https://images.pexels.com/photos/799443/pexels-photo-799443.jpeg?auto=compress&cs=tinysrgb&w=600',
         category:1001,
-        description: 'Vários personagens de vários animes diferentes'
+        description: 'Vários personagens de vários animes diferentes',
+        quantity:10
     },
     {
         id: 102,
@@ -24,7 +26,8 @@ const PRODUCTS = [
         price: 600,
         image: 'https://images.pexels.com/photos/1099680/pexels-photo-1099680.jpeg?auto=compress&cs=tinysrgb&w=600',
         category:1002,
-        description: 'Arte cyberpunk'
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis ullamcorper viverra. Suspendisse quis elit vel justo ultrices cursus. Donec ipsum odio, tincidunt fringilla semper non, vestibulum eu arcu. Phasellus efficitur ante sit amet nulla lacinia ultrices. Proin leo quam, convallis eget congue ac, efficitur a eros. Quisque a sagittis est. Nulla fringilla libero placerat, mattis velit vitae, elementum nisl. Etiam ut scelerisque ligula, eget tristique nulla. Donec eu imperdiet magna. Duis sollicitudin varius eleifend. Nam urna nibh, posuere quis ultrices sed, dignissim in orci. Nullam porta velit justo, vel ullamcorper nisi pulvinar vel. Etiam dapibus efficitur odio, nec bibendum metus laoreet quis.',
+        quantity:4
     },
     {
         id: 103,
@@ -33,7 +36,8 @@ const PRODUCTS = [
         price: 2,
         image: 'https://images.pexels.com/photos/5318967/pexels-photo-5318967.jpeg?auto=compress&cs=tinysrgb&w=600',
         category:1003,
-        description: 'A cupcake (also British English: fairy cake; Hiberno-English: bun; Australian English: fairy cake or patty cake[1]) is a small cake designed to serve one person.'
+        description: 'A cupcake (also British English: fairy cake; Hiberno-English: bun; Australian English: fairy cake or patty cake[1]) is a small cake designed to serve one person.',
+        quantity:2
     },
     {
         id: 104,
@@ -42,7 +46,8 @@ const PRODUCTS = [
         price: 350,
         image: 'https://images.pexels.com/photos/799443/pexels-photo-799443.jpeg?auto=compress&cs=tinysrgb&w=600',
         category:1001,
-        description: 'teste'
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis ullamcorper viverra. Suspendisse quis elit vel justo ultrices cursus. Donec ipsum odio, tincidunt fringilla semper non, vestibulum eu arcu. Phasellus efficitur ante sit amet nulla lacinia ultrices. Proin leo quam, convallis eget congue ac, efficitur a eros. Quisque a sagittis est. Nulla fringilla libero placerat, mattis velit vitae, elementum nisl. Etiam ut scelerisque ligula, eget tristique nulla. Donec eu imperdiet magna. Duis sollicitudin varius eleifend. Nam urna nibh, posuere quis ultrices sed, dignissim in orci. Nullam porta velit justo, vel ullamcorper nisi pulvinar vel. Etiam dapibus efficitur odio, nec bibendum metus laoreet quis.',
+        quantity:1
     },
     {
         id: 106,
@@ -51,7 +56,8 @@ const PRODUCTS = [
         price: 2,
         image: 'https://images.pexels.com/photos/799443/pexels-photo-799443.jpeg?auto=compress&cs=tinysrgb&w=600',
         category:1003,
-        description: 'A cupcake (also British English: fairy cake; Hiberno-English: bun; Australian English: fairy cake or patty cake[1]) is a small cake designed to serve one person.'
+        description: 'A cupcake (also British English: fairy cake; Hiberno-English: bun; Australian English: fairy cake or patty cake[1]) is a small cake designed to serve one person.',
+        quantity:5
     },
 ];
 
@@ -91,8 +97,18 @@ function productsFilterByName(name){
         product.description.toLowerCase().includes(name); 
     });
 }
+export function filterProducts(CategoryId, name) {
+    return PRODUCTS.filter(product => {
+        const matchesCategory = CategoryId ? product.category === CategoryId : true;
+        const matchesName = name ? 
+            product.name.toLowerCase().includes(name.toLowerCase().trim()) || 
+            product.description.toLowerCase().includes(name.toLowerCase().trim()) : 
+            true;
+        return matchesCategory && matchesName;
+    });
+}
 export function getProduct(id) {
-    console.log(PRODUCTS.find((product) => (product.id == id)));
+
     return PRODUCTS.find((product) => (product.id == id));
 }
 

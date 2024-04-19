@@ -1,7 +1,7 @@
 const USERS = [
     {
         id: 1,
-        name: 'Jao',
+        name: 'Jao miguel',
         email: 'jao@gmail.com',
         pic: require('../assets/users/perfil.jpg'),
         telefone:'12997011131',
@@ -11,7 +11,7 @@ const USERS = [
     },
     {
         id: 2,
-        name: 'Maria',
+        name: 'Maria antonieta da silva',
         email: 'maria@gmail.com',
         pic: require('../assets/users/perfil.jpg'),
         telefone:'12997011130',

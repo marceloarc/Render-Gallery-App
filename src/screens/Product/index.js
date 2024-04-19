@@ -7,31 +7,48 @@ import { getProduct } from "../../../services/ProductsService";
 import { CartContext } from '../../../context/CartContext';
 import { FavContext } from '../../../context/FavContext';
 import { ConfirmDialog } from 'react-native-simple-dialogs';
+import { getUsersById } from "../../../services/UsersService";
 
 export default function Product({ route }) {
-  const { ProductId } = route.params;
+  const ProductId = route.params.ProductId ;
   const [product, setProduct] = useState({});
-  const [aspectRatio, setAspectRatio] = useState(1);
+  const [user, setUser] = useState({});
   const [dialogVisible, setDialogVisible] = useState(false);
-  const [dialogVisible2, setDialogVisible2] = useState(false);
   const toast = useToast();
+  
   const { addItemToCart } = useContext(CartContext);
   const { addItemToFav } = useContext(FavContext);
+  const { getFavItem } = useContext(FavContext);
   const navigation = useNavigation();
-
+  const [quantity, setQuantity] = useState(1);
+  const [icon, setIcon] = useState('heart-outline');
+  
   useEffect(() => {
+    console.log(ProductId);
+    setQuantity(1); // Inicializa a quantidade
+
     async function fetchProduct() {
       const fetchedProduct = await getProduct(ProductId);
       setProduct(fetchedProduct);
-      Image.getSize(fetchedProduct.image, (width, height) => { 
-        setAspectRatio(width / height);
-      });
+      
+      if(getFavItem(fetchedProduct.id)){
+        setIcon('heart');
+      }else{
+        setIcon('heart-outline');
+      }
+      const fetchedUser = await getUsersById(fetchedProduct.user);
+      console.log(fetchedUser );
+      setUser(fetchedUser);
     }
+
     fetchProduct();
-  }, [ProductId]);
+  
+    
+   
+  }, [ProductId,product]);
   
   function onAddToCart() {
-    addItemToCart(product.id);
+    addItemToCart(product.id,quantity);
     toast.show("Arte adicionada ao carrinho com sucesso!", {
       type: "success",
       placement: "bottom",
@@ -47,17 +64,41 @@ export default function Product({ route }) {
   
   function onAddToFav() {
     addItemToFav(product.id);
-    toast.show("Arte Favoritada com sucesso!", {
-      type: "success",
-      placement: "bottom",
-      duration: 3000,
-      offset: 30,
-      animationType: "fade",
-      textStyle: { color: 'white' }, 
-      backgroundColor: "#FF5722", 
-      icon: <Ionicons name="heart-outline" size={24} color="white" />, 
-    });
-    setDialogVisible2(false);
+    if(!getFavItem(ProductId)){
+      toast.show("Arte Favoritada com sucesso!", {
+        type: "success",
+        placement: "bottom",
+        duration: 3000,
+        offset: 30,
+        animationType: "fade",
+        textStyle: { color: 'white' }, 
+        backgroundColor: "#FF5722", 
+        icon: <Ionicons name="heart-outline" size={24} color="white" />, 
+      });
+      setIcon('heart');
+    }else{
+      toast.show("Arte removida com sucesso!", {
+        type: "success",
+        placement: "bottom",
+        duration: 3000,
+        offset: 30,
+        animationType: "fade",
+        textStyle: { color: 'white' }, 
+        backgroundColor: "#FF5722", 
+        icon: <Ionicons name="heart-outline" size={24} color="white" />, 
+      });
+      setIcon('heart-outline');
+    }
+  }
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  }
+  const IncreaseQuantity = () => {
+    if (quantity < product.quantity) {
+      setQuantity(quantity + 1);
+    }
   }
   
   return (
@@ -65,11 +106,11 @@ export default function Product({ route }) {
       <ScrollView>
         <View style={styles.fundo}>
           <Image
-            style={[styles.image, {aspectRatio}]} 
+            style={[styles.image]} 
             source={{ uri: product.image }}
           />
           <TouchableOpacity onPress={() => onAddToFav() }  style={styles.buttonIconFav}>
-                <Ionicons name="heart-outline" size={24} color="black" />
+                <Ionicons name={icon} size={24} color="black" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.goBack()}  style={styles.buttonIconBack}>
                 <Ionicons name="chevron-back" size={24} color="black" />
@@ -81,20 +122,23 @@ export default function Product({ route }) {
                 <Text style={styles.name}>{product.name}</Text>
               </View>
               <View style={styles.containerIconPlus}>
-                <TouchableOpacity onPress={() => onAddToFav() }  style={styles.buttonIconPlus}>
+                <TouchableOpacity onPress={() => {decreaseQuantity()} }  style={styles.buttonIconPlus}>
                   <Ionicons name="remove-outline" size={24} color="white" />
                 </TouchableOpacity>
-                <Text style={styles.quantidade}>1</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Home') }  style={styles.buttonIconPlus}>
+                <Text style={styles.quantidade}>{quantity}</Text>
+                <TouchableOpacity onPress={() => {IncreaseQuantity()} }  style={styles.buttonIconPlus}>
                       <Ionicons name="add-outline" size={24} color="white" />
                 </TouchableOpacity>
               </View>
             </View>
-            <Text style={styles.description}>{product.description}</Text>
+            <Text style={styles.user}><Ionicons style={styles.user} name="person-outline" color="white" /> {user.name}</Text>
+            <ScrollView style={styles.scrollDesc}>
+              <Text style={styles.description}>{product.description}</Text>
+            </ScrollView>             
             <View style={styles.infoContainer2}>
               <ConfirmDialog
                       title="Adicionar ao carrinho"
-                      message={"Tem certeza que deseja adicionar "+product.name+" ao carrinho??"}
+                      message={"Tem certeza que deseja adicionar "+quantity+" "+product.name+"(s) ao carrinho??"}
                       visible={dialogVisible}
                       onTouchOutside={() => setDialogVisible(false)}
                       positiveButton={{
@@ -111,8 +155,10 @@ export default function Product({ route }) {
         </View>
       </ScrollView>
       <TouchableOpacity onPress={() => setDialogVisible(true)}style={styles.buttonIcon}>
-        <Ionicons name="cart-outline" size={24} color="black" />
-        <Text style={styles.nameButton}>Adicionar ao carrinho | R$ {product.price} </Text>
+        <Ionicons name="cart-outline"  size={24} color="white" />
+        <Text style={styles.nameButton}>
+          Adicionar ao carrinho | {product.price ? product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'Preço não disponível'}
+        </Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -122,6 +168,7 @@ const styles = StyleSheet.create({
   background:{ 
     backgroundColor:'black',
     height:'100%',
+    width:'100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -129,7 +176,10 @@ const styles = StyleSheet.create({
     marginTop:20,
     width: '100%', 
     borderRadius: 24,
-    maxHeight: 550,
+    height: 400,
+  },
+  scrollDesc: {
+    height: 100, // Define a altura fixa do ScrollView
   },
   fundo:{
     alignItems: 'center',
@@ -156,13 +206,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'left',
     alignItems: 'left',
-    width: "50%",
+    width: "60%",
+
   },
   containerIconPlus:{
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    width: "50%",
+    width: "40%",
   },
   name: {
     color:'#ededed',
@@ -179,14 +230,20 @@ const styles = StyleSheet.create({
     
     fontSize: 16,
     fontWeight: '400',
-    color:'#D0D0D0',
-    marginBottom: 16,
+    color:'#A4AAAD',
+    marginBottom: 5,
+  },
+  user: {   
+    fontSize: 14,
+    fontWeight: '400',
+    color:'#A4AAAD',
+    marginBottom: 5,
   },
   nameButton:{
     fontSize: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    color:'#292526',
+    color:'white',
     textAlign:'center',
     fontWeight: 'bold',
   },
@@ -195,13 +252,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width:327,
     textAlign:'center',
-    backgroundColor:'#FFFFFF',
+    backgroundColor:'#0057A8',
     margin:10,
     height:60,
     borderRadius: 40,
     flexDirection: 'row',
     position:'absolute',
-    bottom: 10,
+    bottom: 5,
   },
   buttonIconFav:{
     width: 40,
