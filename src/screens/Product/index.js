@@ -1,105 +1,111 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Text, Image, View, ScrollView, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  Text, Image, View, ScrollView, SafeAreaView,
+  TouchableOpacity, StyleSheet, ActivityIndicator
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useToast } from "react-native-toast-notifications";
-import { getProduct } from "../../../services/ProductsService";
+import { getProduct, getProductsByUser } from "../../../services/ProductsService";
 import { CartContext } from '../../../context/CartContext';
 import { FavContext } from '../../../context/FavContext';
 import { ConfirmDialog } from 'react-native-simple-dialogs';
 import { getUsersById } from "../../../services/UsersService";
+import { Post } from '../../../components/Post/Post';
+import { getProductsByCategory } from '../../../services/ProductsService';
 
 export default function Product({ route }) {
-  const ProductId = route.params.ProductId ;
+  const ProductId = route.params.ProductId;
   const [product, setProduct] = useState({});
   const [user, setUser] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
   const [dialogVisible, setDialogVisible] = useState(false);
   const toast = useToast();
-  
   const { addItemToCart } = useContext(CartContext);
-  const { addItemToFav } = useContext(FavContext);
-  const { getFavItem } = useContext(FavContext);
+  const { addItemToFav, getFavItem } = useContext(FavContext);
   const navigation = useNavigation();
   const [quantity, setQuantity] = useState(1);
   const [icon, setIcon] = useState('heart-outline');
-  
-  useEffect(() => {
-    console.log(ProductId);
-    setQuantity(1); // Inicializa a quantidade
 
+  useEffect(() => {
     async function fetchProduct() {
-      const fetchedProduct = await getProduct(ProductId);
-      setProduct(fetchedProduct);
-      
-      if(getFavItem(fetchedProduct.id)){
+      try {
+        const fetchedProduct = await getProduct(ProductId);
+        setProduct(fetchedProduct);
+        const isFavorite = getFavItem(fetchedProduct.id);
+        setIcon(isFavorite ? 'heart' : 'heart-outline');
+        const fetchedUser = await getUsersById(fetchedProduct.user);
+        setUser(fetchedUser);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+        toast.show("Erro ao carregar dados.", {
+          type: "error",
+          placement: "bottom",
+          duration: 3000,
+          offset: 30,
+          animationType: "fade",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    setQuantity(1); // Inicializa a quantidade
+    setIsLoading(true); // Reinicia o carregamento
+    fetchProduct();
+  }, [ProductId]);
+
+  if (isLoading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#000000" />
+      </View>
+    );
+  }
+    
+    function onAddToCart() {
+      addItemToCart(product.id,quantity);
+      toast.show("Arte adicionada ao carrinho com sucesso!", {
+        type: "success",
+        placement: "bottom",
+        duration: 3000,
+        offset: 30,
+        animationType: "fade",
+        textStyle: { color: 'white' },
+        backgroundColor: "#388E3C", 
+        icon: <Ionicons name="cart-outline" size={24} color="white" />, 
+      });
+      setDialogVisible(false);
+    }
+    
+    function onAddToFav() {
+      addItemToFav(product.id);
+      if(!getFavItem(ProductId)){
+        toast.show("Arte Favoritada com sucesso!", {
+          type: "success",
+          successColor: "#FF5722",
+          placement: "bottom",
+          duration: 2000,
+          offset: 30,
+          animationType: "fade",
+          textStyle: { color: 'white' }, 
+          icon: <Ionicons name="heart-outline" size={24} color="white" />, 
+        });
         setIcon('heart');
       }else{
         setIcon('heart-outline');
       }
-      const fetchedUser = await getUsersById(fetchedProduct.user);
-      console.log(fetchedUser );
-      setUser(fetchedUser);
     }
-
-    fetchProduct();
-  
-    
-   
-  }, [ProductId,product]);
-  
-  function onAddToCart() {
-    addItemToCart(product.id,quantity);
-    toast.show("Arte adicionada ao carrinho com sucesso!", {
-      type: "success",
-      placement: "bottom",
-      duration: 3000,
-      offset: 30,
-      animationType: "fade",
-      textStyle: { color: 'white' },
-      backgroundColor: "#388E3C", 
-      icon: <Ionicons name="cart-outline" size={24} color="white" />, 
-    });
-    setDialogVisible(false);
-  }
-  
-  function onAddToFav() {
-    addItemToFav(product.id);
-    if(!getFavItem(ProductId)){
-      toast.show("Arte Favoritada com sucesso!", {
-        type: "success",
-        placement: "bottom",
-        duration: 3000,
-        offset: 30,
-        animationType: "fade",
-        textStyle: { color: 'white' }, 
-        backgroundColor: "#FF5722", 
-        icon: <Ionicons name="heart-outline" size={24} color="white" />, 
-      });
-      setIcon('heart');
-    }else{
-      toast.show("Arte removida com sucesso!", {
-        type: "success",
-        placement: "bottom",
-        duration: 3000,
-        offset: 30,
-        animationType: "fade",
-        textStyle: { color: 'white' }, 
-        backgroundColor: "#FF5722", 
-        icon: <Ionicons name="heart-outline" size={24} color="white" />, 
-      });
-      setIcon('heart-outline');
+    const decreaseQuantity = () => {
+      if (quantity > 1) {
+        setQuantity(quantity - 1);
+      }
     }
-  }
-  const decreaseQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
+    const IncreaseQuantity = () => {
+      if (quantity < product.quantity) {
+        setQuantity(quantity + 1);
+      }
     }
-  }
-  const IncreaseQuantity = () => {
-    if (quantity < product.quantity) {
-      setQuantity(quantity + 1);
-    }
-  }
   
   return (
     <SafeAreaView style={styles.background}> 
@@ -110,7 +116,7 @@ export default function Product({ route }) {
             source={{ uri: product.image }}
           />
           <TouchableOpacity onPress={() => onAddToFav() }  style={styles.buttonIconFav}>
-                <Ionicons name={icon} size={24} color="black" />
+                <Ionicons name={icon} size={24} color="#F13658" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.goBack()}  style={styles.buttonIconBack}>
                 <Ionicons name="chevron-back" size={24} color="black" />
@@ -131,6 +137,7 @@ export default function Product({ route }) {
                 </TouchableOpacity>
               </View>
             </View>
+
             <Text style={styles.user}><Ionicons style={styles.user} name="person-outline" color="white" /> {user.name}</Text>
             <ScrollView style={styles.scrollDesc}>
               <Text style={styles.description}>{product.description}</Text>
@@ -152,7 +159,18 @@ export default function Product({ route }) {
               />
                 
             </View>
+            <View style={styles.line}></View>
+            <Text style={styles.tilte2}>Artes Relacionadas</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+              {product.category ? getProductsByCategory(product.category, product.id)
+                .slice(1, 3) 
+                .map((relatedProduct, index) => (
+                  <Post key={relatedProduct.id} id={relatedProduct.id} name={relatedProduct.name} image={relatedProduct.image} price={relatedProduct.price} user={relatedProduct.user} style={styles.relatedItem} />
+                )) : null }
+            </View>
+            <View style={styles.space}></View>
         </View>
+
       </ScrollView>
       <TouchableOpacity onPress={() => setDialogVisible(true)}style={styles.buttonIcon}>
         <Ionicons name="cart-outline"  size={24} color="white" />
@@ -291,5 +309,32 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: '#fff',
-  }
+  },
+  line:{
+    width:'100%',
+    height:1,
+    backgroundColor:'#ededed',
+    marginTop: 30,
+  },
+  space:{
+    height: 70,
+  },
+  tilte2:{
+    color:'#ededed',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#000',
+  },
+  relatedItem: {
+    width: '48%', // Subtrai um pouco para contar o espaçamento
+    marginVertical: 4,
+    marginHorizontal: '1%', // Espaço entre os itens
+  },
 });

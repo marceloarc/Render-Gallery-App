@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image } from "react-native";
-import SearchBar from "../../../components/SearchBar";
+import SearchBar from "../../../components/SearchBar/SearchBar";
 import { Ionicons } from '@expo/vector-icons';
 import { getCategories } from "../../../services/CategoryService";
 import { Posts } from "../../../components/Posts";
 import { useNavigation } from '@react-navigation/native';
-
+import { useThemedStyles } from "./useThemedStyles";
 
   export default function Home({route}) {
+    const styles = useThemedStyles(); 
+
     const categories = getCategories();
     const navigation = useNavigation();
     const CategoryId = route.params.CategoryId;
@@ -60,37 +62,37 @@ import { useNavigation } from '@react-navigation/native';
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#000",
-    },
-    flatListContainer: {
-        height: 'auto', // Pode remover se ainda criar espaço extra
-        marginBottom: 10,
-        paddingLeft: 20, // Anteriormente era 'left', que não é apropriado para esse caso
-    },
-    categoryItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#0057A8',
+// const styles = StyleSheet.create({
+//     container: {
+//         flex: 1,
+//         backgroundColor: .background,
+//     },
+//     flatListContainer: {
+//         height: 'auto', // Pode remover se ainda criar espaço extra
+//         marginBottom: 10,
+//         paddingLeft: 20, // Anteriormente era 'left', que não é apropriado para esse caso
+//     },
+//     categoryItem: {
+//         flexDirection: 'row',
+//         alignItems: 'center',
+//         backgroundColor: '#0057A8',
     
-        borderColor: '#ededed',
-        borderRadius: 8,
-        padding: 10,
-        marginRight: 10,
-    },
-    CSelected: {
-        backgroundColor: '#ffffff',
-        color:'#0057A8'
-    },
-    categoryText: {
-        color: '#ededed',
-        marginLeft: 5,
-        fontSize: 12,
-    },
-    CtSelected: {
-        backgroundColor: '#ffffff',
-        color:'#0057A8'
-    },
-});
+//         borderColor: '#ededed',
+//         borderRadius: 8,
+//         padding: 10,
+//         marginRight: 10,
+//     },
+//     CSelected: {
+//         backgroundColor: '#ffffff',
+//         color:'#0057A8'
+//     },
+//     categoryText: {
+//         color: '#ededed',
+//         marginLeft: 5,
+//         fontSize: 12,
+//     },
+//     CtSelected: {
+//         backgroundColor: '#ffffff',
+//         color:'#0057A8'
+//     },
+// });
