@@ -1,11 +1,11 @@
 const PRODUCTS = [
     {
         id: 100,
-        name: 'Sukuna JJK',
+        name: 'Go / jo JJK',
         user: 1,
         price: 350,
-        image: "https://lh3.googleusercontent.com/a/ACg8ocLLv5jsEG6nhTN0cUCpFrvcqdT0gCGMts706ezWvAigaQv0qyq2LmLPeurtiizeALqR5lbMfENnNOeCLOm6mG1FCojXuBGweA=s83",
-        category:1001,
+        image: "https://r2.easyimg.io/2s1pjmrx4/gojo.jpg",
+        category:[1001,1006],
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis ullamcorper viverra. Suspendisse quis elit vel justo ultrices cursus. Donec ipsum odio, tincidunt fringilla semper non, vestibulum eu arcu. Phasellus efficitur ante sit amet nulla lacinia ultrices. Proin leo quam, convallis eget congue ac, efficitur a eros. Quisque a sagittis est. Nulla fringilla libero placerat, mattis velit vitae, elementum nisl. Etiam ut scelerisque ligula, eget tristique nulla. Donec eu imperdiet magna. Duis sollicitudin varius eleifend. Nam urna nibh, posuere quis ultrices sed, dignissim in orci. Nullam porta velit justo, vel ullamcorper nisi pulvinar vel. Etiam dapibus efficitur odio, nec bibendum metus laoreet quis.',
         quantity:2
     },
@@ -14,8 +14,8 @@ const PRODUCTS = [
         name: 'Personagens',
         user: 2,
         price: 350,
-        image: 'https://images.pexels.com/photos/799443/pexels-photo-799443.jpeg?auto=compress&cs=tinysrgb&w=600',
-        category:1001,
+        image: 'https://r2.easyimg.io/dghna6854/personagens.jpg',
+        category:[1001,1006],
         description: 'Vários personagens de vários animes diferentes',
         quantity:10
     },
@@ -24,28 +24,18 @@ const PRODUCTS = [
         name: 'Arte Cyberpunk',
         user: 3,
         price: 600,
-        image: 'https://images.pexels.com/photos/1099680/pexels-photo-1099680.jpeg?auto=compress&cs=tinysrgb&w=600',
-        category:1002,
+        image: 'https://r2.easyimg.io/dghna6854/cyber2.png',
+        category:[1002],
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis ullamcorper viverra. Suspendisse quis elit vel justo ultrices cursus. Donec ipsum odio, tincidunt fringilla semper non, vestibulum eu arcu. Phasellus efficitur ante sit amet nulla lacinia ultrices. Proin leo quam, convallis eget congue ac, efficitur a eros. Quisque a sagittis est. Nulla fringilla libero placerat, mattis velit vitae, elementum nisl. Etiam ut scelerisque ligula, eget tristique nulla. Donec eu imperdiet magna. Duis sollicitudin varius eleifend. Nam urna nibh, posuere quis ultrices sed, dignissim in orci. Nullam porta velit justo, vel ullamcorper nisi pulvinar vel. Etiam dapibus efficitur odio, nec bibendum metus laoreet quis.',
         quantity:4
     },
     {
-        id: 103,
-        name: 'SweetHome Cupcake',
-        user: 4,
-        price: 2,
-        image: 'https://images.pexels.com/photos/5318967/pexels-photo-5318967.jpeg?auto=compress&cs=tinysrgb&w=600',
-        category:1003,
-        description: 'A cupcake (also British English: fairy cake; Hiberno-English: bun; Australian English: fairy cake or patty cake[1]) is a small cake designed to serve one person.',
-        quantity:2
-    },
-    {
         id: 104,
-        name: 'Sukuna JJK',
+        name: 'Itadori JJK',
         user: 1,
         price: 350,
-        image: 'https://images.pexels.com/photos/799443/pexels-photo-799443.jpeg?auto=compress&cs=tinysrgb&w=600',
-        category:1001,
+        image: 'https://r2.easyimg.io/xtkgzoewa/itadori.jpg',
+        category:[1001,1006],
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis ullamcorper viverra. Suspendisse quis elit vel justo ultrices cursus. Donec ipsum odio, tincidunt fringilla semper non, vestibulum eu arcu. Phasellus efficitur ante sit amet nulla lacinia ultrices. Proin leo quam, convallis eget congue ac, efficitur a eros. Quisque a sagittis est. Nulla fringilla libero placerat, mattis velit vitae, elementum nisl. Etiam ut scelerisque ligula, eget tristique nulla. Donec eu imperdiet magna. Duis sollicitudin varius eleifend. Nam urna nibh, posuere quis ultrices sed, dignissim in orci. Nullam porta velit justo, vel ullamcorper nisi pulvinar vel. Etiam dapibus efficitur odio, nec bibendum metus laoreet quis.',
         quantity:1
     },
@@ -54,18 +44,18 @@ const PRODUCTS = [
         name: 'SweetHome Cupcake',
         user: 4,
         price: 2,
-        image: 'https://images.pexels.com/photos/799443/pexels-photo-799443.jpeg?auto=compress&cs=tinysrgb&w=600',
-        category:1003,
+        image: 'https://r2.easyimg.io/dghna6854/cake-102.jpg',
+        category:[1003],
         description: 'A cupcake (also British English: fairy cake; Hiberno-English: bun; Australian English: fairy cake or patty cake[1]) is a small cake designed to serve one person.',
         quantity:5
     },
     {
         id: 107,
-        name: 'Arte Cyberpunk3',
+        name: 'Fusca Realista',
         user: 1,
         price: 600,
-        image: 'https://images.pexels.com/photos/1099680/pexels-photo-1099680.jpeg?auto=compress&cs=tinysrgb&w=600',
-        category:1002,
+        image: 'https://r2.easyimg.io/dghna6854/car-101.jpg',
+        category:[1003],
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis ullamcorper viverra. Suspendisse quis elit vel justo ultrices cursus. Donec ipsum odio, tincidunt fringilla semper non, vestibulum eu arcu. Phasellus efficitur ante sit amet nulla lacinia ultrices. Proin leo quam, convallis eget congue ac, efficitur a eros. Quisque a sagittis est. Nulla fringilla libero placerat, mattis velit vitae, elementum nisl. Etiam ut scelerisque ligula, eget tristique nulla. Donec eu imperdiet magna. Duis sollicitudin varius eleifend. Nam urna nibh, posuere quis ultrices sed, dignissim in orci. Nullam porta velit justo, vel ullamcorper nisi pulvinar vel. Etiam dapibus efficitur odio, nec bibendum metus laoreet quis.',
         quantity:3
     },
@@ -74,18 +64,28 @@ const PRODUCTS = [
         name: 'Sukuna JJK',
         user: 1,
         price: 350,
-        image: 'https://images.pexels.com/photos/5318967/pexels-photo-5318967.jpeg?auto=compress&cs=tinysrgb&w=600',
-        category:1001,
+        image: 'https://r2.easyimg.io/5u66q75r7/sukuna.jpg',
+        category:[1001,1006],
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis ullamcorper viverra. Suspendisse quis elit vel justo ultrices cursus. Donec ipsum odio, tincidunt fringilla semper non, vestibulum eu arcu. Phasellus efficitur ante sit amet nulla lacinia ultrices. Proin leo quam, convallis eget congue ac, efficitur a eros. Quisque a sagittis est. Nulla fringilla libero placerat, mattis velit vitae, elementum nisl. Etiam ut scelerisque ligula, eget tristique nulla. Donec eu imperdiet magna. Duis sollicitudin varius eleifend. Nam urna nibh, posuere quis ultrices sed, dignissim in orci. Nullam porta velit justo, vel ullamcorper nisi pulvinar vel. Etiam dapibus efficitur odio, nec bibendum metus laoreet quis.',
         quantity:2
     },
     {
         id: 109,
-        name: 'Sukuna JJK',
+        name: 'Arte NFT Rarissima (1 Unidade Apenas)',
         user: 1,
         price: 350,
-        image: 'https://images.pexels.com/photos/1099680/pexels-photo-1099680.jpeg?auto=compress&cs=tinysrgb&w=600',
-        category:1001,
+        image: 'https://r2.easyimg.io/dghna6854/fael.png',
+        category:[1003,1005],
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis ullamcorper viverra. Suspendisse quis elit vel justo ultrices cursus. Donec ipsum odio, tincidunt fringilla semper non, vestibulum eu arcu. Phasellus efficitur ante sit amet nulla lacinia ultrices. Proin leo quam, convallis eget congue ac, efficitur a eros. Quisque a sagittis est. Nulla fringilla libero placerat, mattis velit vitae, elementum nisl. Etiam ut scelerisque ligula, eget tristique nulla. Donec eu imperdiet magna. Duis sollicitudin varius eleifend. Nam urna nibh, posuere quis ultrices sed, dignissim in orci. Nullam porta velit justo, vel ullamcorper nisi pulvinar vel. Etiam dapibus efficitur odio, nec bibendum metus laoreet quis.',
+        quantity:2
+    },
+    {
+        id: 110,
+        name: 'Arte Realista Headset',
+        user: 1,
+        price: 150,
+        image: 'https://r2.easyimg.io/dghna6854/headset-100.jpg',
+        category:[1003],
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis ullamcorper viverra. Suspendisse quis elit vel justo ultrices cursus. Donec ipsum odio, tincidunt fringilla semper non, vestibulum eu arcu. Phasellus efficitur ante sit amet nulla lacinia ultrices. Proin leo quam, convallis eget congue ac, efficitur a eros. Quisque a sagittis est. Nulla fringilla libero placerat, mattis velit vitae, elementum nisl. Etiam ut scelerisque ligula, eget tristique nulla. Donec eu imperdiet magna. Duis sollicitudin varius eleifend. Nam urna nibh, posuere quis ultrices sed, dignissim in orci. Nullam porta velit justo, vel ullamcorper nisi pulvinar vel. Etiam dapibus efficitur odio, nec bibendum metus laoreet quis.',
         quantity:2
     },
@@ -112,8 +112,12 @@ export function getProductsByCategory(CategoryId, producId = null){
     
 //     return  products;
 // }
-function productsFilterByCategory(CategoryId, producId = null){
-    return PRODUCTS.filter(product => product.category === CategoryId && product.id !== producId);
+function productsFilterByCategory(CategoryIds, producId = null) {
+    console.log("entrou aqui");
+    return PRODUCTS.filter(product => 
+        product.category.some(catId => CategoryIds.includes(catId)) && 
+        product.id !== producId
+    );
 }
 
 function productsFilterByName(name){
@@ -125,7 +129,7 @@ function productsFilterByName(name){
 }
 export function filterProducts(CategoryId, name) {
     return PRODUCTS.filter(product => {
-        const matchesCategory = CategoryId ? product.category === CategoryId : true;
+        const matchesCategory = CategoryId ? product.category.includes(CategoryId) : true;
         const matchesName = name ? 
             product.name.toLowerCase().includes(name.toLowerCase().trim()) || 
             product.description.toLowerCase().includes(name.toLowerCase().trim()) : 

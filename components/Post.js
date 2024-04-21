@@ -5,6 +5,8 @@ import { getUsersById } from "../services/UsersService";
 import { useNavigation } from '@react-navigation/native';
 import { FavContext } from '../context/FavContext';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../../ThemeContext';
+const { theme, toggleTheme, themeStyles } = useTheme();
 export function Post({id, name, user, price, image, description}) {
     const toast = useToast();
     const { getFavItem } = useContext(FavContext);
@@ -56,6 +58,7 @@ export function Post({id, name, user, price, image, description}) {
         }
       }
     return (
+        
         <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('Product', {
             ProductId: id,
           })}>
@@ -72,6 +75,7 @@ export function Post({id, name, user, price, image, description}) {
                 <Text style={styles.user}><Ionicons style={styles.user} name="person-outline" /> {user2.name}</Text>
                 <Text style={styles.title}>{price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Text>
             </View>
+            
         </TouchableOpacity >
     );
 }
@@ -91,11 +95,11 @@ container: {
         marginTop: 7,
     },
     price: {
-        color: 'white',
+  
         fontSize: 14,
     },
     title: {
-        color: 'white',
+ 
         fontSize: 14,
     },
     user: {
@@ -106,7 +110,7 @@ container: {
         width: 30,
         height: 30,
         borderRadius: 100,
-        backgroundColor:'#FFFFFF',
+
         alignItems: 'center',
         justifyContent: 'center',
         position:'absolute',

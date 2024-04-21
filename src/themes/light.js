@@ -13,9 +13,9 @@ export default {
         textCategory: "#00406A",
         textCategorySelected: "#FFFFFF",
         borderCategory: "#00406A",
-
+        button:"#00406A",
         borderSearch: "#00406A",
-
+        tabBar:"#292526",
         preto: "#141414",
         vermelho: "#F13658",
 

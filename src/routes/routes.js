@@ -12,15 +12,25 @@ import Favorites from '../screens/Favorites';
 import Profile from '../screens/Profile';
 import Product from '../screens/Product';
 import { useTheme } from '../../ThemeContext';
+import darkMode from '../../assets/System/dark-mode.png';
+import lightMode from '../../assets/System/light-mode.png';
 
 const Tab = createBottomTabNavigator();
+const BackButton = ({onPress})=> <TouchableOpacity onPress={onPress} style={{alignItems:"center",flexDirection:"row",justifyContent:"center"}}>
+<Ionicons name="chevron-back" size={24} color="white" />
 
+ </TouchableOpacity>
 function Routes() {
     const {getItemsCount} = useContext(CartContext);
     const {getFavCount} = useContext(FavContext);
     const {goBack} = useNavigation();
     const { theme, toggleTheme, themeStyles } = useTheme();
-
+    let imageSource = '';
+    if(theme == 'dark'){
+       imageSource = darkMode;
+    }else{
+      imageSource = lightMode;
+    }
   return (
     <ToastProvider>
             <Tab.Navigator
@@ -62,11 +72,7 @@ function Routes() {
                 headerRight: () => {
                   return (
                     <TouchableOpacity onPress={toggleTheme} style={{ marginRight: 15 }}>
-                      <Ionicons 
-                        name={theme === 'dark' ? 'sunny' : 'moon'} // Ícones alternativos dependendo do tema
-                        size={30} 
-                        color={theme === 'dark' ? 'yellow' : 'midnightblue'} 
-                      />
+                      <Image source={imageSource} style={{width: 60, height: 35}} />
                     </TouchableOpacity>
                   );
                 },

@@ -100,7 +100,13 @@ export function ProductDetails({route}) {
     <Text style={styles.nameButton}>Favoritar <Icon name="heart" size={16} color="white" /></Text>
       </TouchableOpacity>
 
-
+      <TouchableOpacity onPress={toggleTheme} style={{ marginRight: 15 }}>
+                      <Ionicons 
+                        name={theme === 'dark' ? 'sunny' : 'moon'} // Ícones alternativos dependendo do tema
+                        size={30} 
+                        color={theme === 'dark' ? 'yellow' : 'midnightblue'} 
+                      />
+                    </TouchableOpacity>
           </View>
 
         </View>

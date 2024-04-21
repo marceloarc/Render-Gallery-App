@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useThemedStyles } from "./useThemedStyles";
 
   export default function Home({route}) {
-    const styles = useThemedStyles(); 
+    const styles = useThemedStyles();
 
     const categories = getCategories();
     const navigation = useNavigation();
@@ -28,9 +28,7 @@ import { useThemedStyles } from "./useThemedStyles";
 
 
     const handleFilterPress = (visibility) => {
-        console.log("Visibility received:", visibility);
         setVisibility(visibility);
-        console.log("VisibilityC after update:", visibilityC);
     };
     const renderCategoryItem = ({ item }) => {
         

@@ -10,10 +10,10 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 
-import { useThemedStyles } from "./userThemedStyles";
+import { useThemedStyles } from "./PostRelatedStyles";
 
 
-export function Post({ id, name, user, price, image, description, height, width }) {
+export function PostRelated({ id, name, user, price, image, description, height, width }) {
     const styles = useThemedStyles(); 
 
     const toast = useToast();
@@ -65,7 +65,7 @@ export function Post({ id, name, user, price, image, description, height, width 
 
     return (
         <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('Product', { ProductId: id })}>
-            <Image source={{ uri: image }} style={[styles.image, { height: height, width: width, aspectRatio: height && width ? undefined : aspectRatio }]} />
+            <Image source={{ uri: image }} style={styles.image } />
             
             <TouchableOpacity onPress={onAddToFav} style={styles.buttonIconFav}>
                 <Ionicons name={icon} style={styles.fav} />

@@ -3,15 +3,16 @@ import { View, TextInput, StyleSheet, TouchableOpacity, Image} from 'react-nativ
 import { Ionicons } from '@expo/vector-icons';
 import filterImageDeac from '../assets/System/filter-desactive.png';
 import filterImageAct from '../assets/System/filter-active.png';
-
+import filterImageDeacLight from '../assets/System/filter-desactive-light.png';
+import filterImageActLight from '../assets/System/filter-active-light.png';
 const SearchBar = ({onFilterPress, onTextChange}) => {
 
   const [searchText, setSearchText] = useState('');
   const [visibilityC, setVisibility] = useState(false);
   const handleSearchChange = (text) => {
-    console.log(visibilityC);
+
     setSearchText(text);
-    onTextChange(text);
+    onTextChange(text); 
   };
   const handleVisibility = (visibility) =>{
     const updatedVisibility = !visibilityC; // Novo valor de visibilidade

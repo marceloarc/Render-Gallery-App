@@ -6,7 +6,7 @@ import { useTheme } from '../../ThemeContext';
 
 const SearchBar = ({onFilterPress, onTextChange}) => {
 
-  const { themeStyles } = useTheme();
+  const { themeStyles,theme } = useTheme();
   const styles = useThemedStyles();
   const [searchText, setSearchText] = useState('');
   const [visibilityC, setVisibility] = useState(false);
@@ -15,12 +15,18 @@ const SearchBar = ({onFilterPress, onTextChange}) => {
     setSearchText(text);
     onTextChange(text);
   };
+
   const handleVisibility = (visibility) =>{
     const updatedVisibility = !visibilityC; // Novo valor de visibilidade
     setVisibility(updatedVisibility); // Atualiza o estado com o novo valor
     onFilterPress(updatedVisibility); // Chama onFilterPress com o novo valor de visibilidade
   }
-  const imageSource = visibilityC ? require('../../assets/System/filter-active.png') : require('../../assets/System/filter-desactive.png');
+  let imageSource = '';
+  if(theme != 'dark'){
+     imageSource = visibilityC ? require('../../assets/System/filter-active-light.png') : require('../../assets/System/filter-desactive-light.png');
+  }else{
+    imageSource = visibilityC ? require('../../assets/System/filter-active.png') : require('../../assets/System/filter-desactive.png');
+  }
     return (
       <View style={styles.container}>
         <View style={styles.inputSection}>

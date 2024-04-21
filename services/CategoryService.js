@@ -11,7 +11,7 @@ const CATEGORIES = [
         name: 'Animes',
         image: require('../assets/categories/gojo2.png'),
         description: 'A headset combines a headphone with microphone. Headsets are made with either a single-earpiece (mono) or a double-earpiece (mono to both ears or stereo).',
-        icon: 'ios-book'
+        icon: 'ios-book',
     },
     {
         id: 1002,
@@ -29,20 +29,20 @@ const CATEGORIES = [
     },
     {
         id: 1004,
-        name: 'Realista',
+        name: 'Pixel Art',
         image: require('../assets/categories/real.jpg'),
         description: 'A cupcake (also British English: fairy cake; Hiberno-English: bun; Australian English: fairy cake or patty cake[1]) is a small cake designed to serve one person.',
         icon:'ios-people'
     },
     {
         id: 1005,
-        name: 'Realista',
+        name: 'Retrô',
         image: require('../assets/categories/real.jpg'),
         description: 'A cupcake (also British English: fairy cake; Hiberno-English: bun; Australian English: fairy cake or patty cake[1]) is a small cake designed to serve one person.',
         icon:'ios-apps'
     },    {
         id: 1006,
-        name: 'Realista',
+        name: 'Personagens',
         image: require('../assets/categories/real.jpg'),
         description: 'A cupcake (also British English: fairy cake; Hiberno-English: bun; Australian English: fairy cake or patty cake[1]) is a small cake designed to serve one person.',
         icon:'ios-game-controller'

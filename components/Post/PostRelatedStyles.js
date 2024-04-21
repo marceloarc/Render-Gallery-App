@@ -9,9 +9,13 @@ export const useThemedStyles = () => {
             flex: 1,
             padding: 5,
             marginBottom: 5,
+            width:150,
+            height:220
         },
         image: {
             borderRadius: 22,
+            width:130,
+            height:130
         },
         footer: {
             flexDirection: "row",
@@ -77,7 +81,7 @@ export const useThemedStyles = () => {
             justifyContent: 'center',
             position: 'absolute',
             top: 15,
-            right: 15,
+            right: 20,
         },
     });
 
