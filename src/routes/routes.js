@@ -37,7 +37,7 @@ function Routes() {
             
               screenOptions={({ route }) => ({
                 headerTintColor: themeStyles.colors.textPrimary,
-                headerStatusBarHeight: 60,
+                headerStatusBarHeight: 30,
                 headerStyle: {
                   backgroundColor: themeStyles.colors.background,
                   borderWidth: 0,
