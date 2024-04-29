@@ -164,6 +164,82 @@ export const useThemedStyles = () => {
             marginVertical: 4,
             marginHorizontal: '1%', // Espaço entre os itens
           },
+          infoArt: {
+            flexDirection: 'row',
+            flex: 1,
+          },
+          
+          infoArt2: {
+            flex: 1, // Faz com que cada infoArt2 ocupe igualmente o espaço disponível
+            marginTop: 15,
+            alignItems: 'center',
+            alignContent: 'center',
+            textAlign: 'center',
+            justifyContent: 'center'
+          },
+
+          infoArt3: {
+            flex: 1, // Faz com que cada infoArt2 ocupe igualmente o espaço disponível
+            marginTop: 5,
+            alignItems: 'center',
+            alignContent: 'center',
+            textAlign: 'center',
+            justifyContent: 'center'
+          },
+          
+          titleInfo: {
+            color:themeStyles.colors.textPrimary,
+            alignItems: 'center',
+            textAlign: 'center',
+            justifyContent: 'center',
+            fontWeight: 'bold',
+
+          },
+          conteudoInfo: {
+            color: themeStyles.colors.textPrimary,
+            alignItems: 'center',
+            textAlign: 'center',
+            justifyContent: 'center',
+            marginTop: 8
+          },
+          like: {
+            color: themeStyles.colors.textPrimary,
+            fontSize: 16,
+            fontWeight: 'bold',
+            marginTop: 8
+          },
+          rating: {
+            color: themeStyles.colors.textPrimary,
+            fontSize: 16,
+            marginLeft: 5,
+            marginTop: 8
+          },
+          ratingContainer: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center'
+         },
+         category: {
+          backgroundColor: themeStyles.colors.backgroundCategorySelected,
+          color: themeStyles.colors.textCategorySelected,
+          borderColor: themeStyles.colors.textCategory,
+          borderRadius: 8,
+          marginTop: 3,
+          padding: 5,
+          marginRight: 10,
+          borderWidth: 1,
+          flexDirection: 'row',
+          alignItems: 'center',
+          alignContent:  'center',
+          textAlign: 'center',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%'
+      },
+      CSelected: {
+        textAlign: 'center',
+        color: themeStyles.colors.textCategorySelected
+      }
     });
 
     return styles;

@@ -4,7 +4,7 @@ const PRODUCTS = [
         name: 'Go / jo JJK',
         user: 1,
         price: 350,
-        image: "https://r2.easyimg.io/2s1pjmrx4/gojo.jpg",
+        image: "http://192.168.0.13:5000/images/2/fb70e7cbd7b766a9e00a7b1299adf1ad.jpg",
         category:[1001,1006],
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis ullamcorper viverra. Suspendisse quis elit vel justo ultrices cursus. Donec ipsum odio, tincidunt fringilla semper non, vestibulum eu arcu. Phasellus efficitur ante sit amet nulla lacinia ultrices. Proin leo quam, convallis eget congue ac, efficitur a eros. Quisque a sagittis est. Nulla fringilla libero placerat, mattis velit vitae, elementum nisl. Etiam ut scelerisque ligula, eget tristique nulla. Donec eu imperdiet magna. Duis sollicitudin varius eleifend. Nam urna nibh, posuere quis ultrices sed, dignissim in orci. Nullam porta velit justo, vel ullamcorper nisi pulvinar vel. Etiam dapibus efficitur odio, nec bibendum metus laoreet quis.',
         quantity:2
@@ -14,7 +14,7 @@ const PRODUCTS = [
         name: 'Personagens',
         user: 2,
         price: 350,
-        image: 'https://r2.easyimg.io/dghna6854/personagens.jpg',
+        image: 'http://192.168.0.13:5000/images/3/79fe1829b91df6403564e8a18cd26d9f.jpg',
         category:[1001,1006],
         description: 'Vários personagens de vários animes diferentes',
         quantity:10

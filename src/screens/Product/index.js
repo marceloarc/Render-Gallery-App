@@ -3,6 +3,7 @@ import {
   Text, Image, View, ScrollView, SafeAreaView,
   TouchableOpacity, StyleSheet, ActivityIndicator
 } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useToast } from "react-native-toast-notifications";
@@ -60,7 +61,7 @@ export default function Product({ route }) {
   if (isLoading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#000000" />
+        <ActivityIndicator size="large" color={themeStyles.colors.background} />
       </View>
     );
   }
@@ -141,10 +142,38 @@ export default function Product({ route }) {
               </View>
             </View>
 
-            <Text style={styles.user}><Ionicons style={styles.user} name="person-outline" /> {user.name}</Text>
-            <ScrollView style={styles.scrollDesc} endFillColor="#000" nestedScrollEnabled = {true}>
-              <Text style={styles.description}>{product.description}</Text>
-            </ScrollView>             
+            <View style={styles.infoArt}>
+              <View style={styles.infoArt2}>
+                <Text style={styles.titleInfo}>Artista</Text>
+              </View>
+              <View style={styles.infoArt2}>
+                <Text style={styles.titleInfo}>Likes</Text>
+              </View>
+              <View style={styles.infoArt2}>
+                <Text style={styles.titleInfo}>Categorias</Text>
+              </View>
+            </View>
+
+            <View style={styles.infoArt}>
+              <View style={styles.infoArt3}>
+                <Text style={styles.conteudoInfo}>{user.name}</Text>
+              </View>
+              <View style={styles.infoArt3}>
+                <View style={styles.ratingContainer}>
+                        <MaterialIcons name="thumb-up" style={styles.like} />
+                        {/* <AntDesign name="like1" style={styles.like} />
+                        <FontAwesomeIcon icon={faThumbsUp} style={styles.like} /> */}
+                        <Text style={styles.rating}>5</Text>
+                  </View>
+              </View>
+              <View style={styles.infoArt3}>
+                <View style={styles.category}>
+                  <Text style={styles.CSelected}>Animes</Text>
+                </View>
+              </View>
+            </View>
+
+
             <View style={styles.infoContainer2}>
               <ConfirmDialog
                       title="Adicionar ao carrinho"
