@@ -162,6 +162,7 @@ function Routes() {
                     )
               }} />
               <Tab.Screen name="Profile" component={Profile} options={{
+                header: () => null,
                 tabBarIcon: ({ focused }) => (
                   <Image
                     source={focused ? require('../../assets/System/profile-active.png') : require('../../assets/System/profile-inactive.png')}

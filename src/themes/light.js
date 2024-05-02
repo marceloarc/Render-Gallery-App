@@ -13,6 +13,11 @@ export default {
         textCategory: "#00406A",
         textCategorySelected: "#FFFFFF",
         borderCategory: "#00406A",
+
+        backgroundBarraPerfil: "#EDEDED",
+        textPrimaryBarraPerfil: "#141414",
+        textSecondaryBarraPerfil: "#00406A",
+
         button:"#00406A",
         borderSearch: "#00406A",
         tabBar:"#292526",

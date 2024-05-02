@@ -113,7 +113,7 @@ export default function Product({ route }) {
   return (
     <SafeAreaView style={styles.background}> 
         <TouchableOpacity onPress={() => navigation.goBack()}  style={styles.buttonIconBack}>
-                <Ionicons  name="chevron-back" size={24} color="black" />
+            <Ionicons  name="chevron-back" size={24} color="black" />
         </TouchableOpacity>
       <ScrollView nestedScrollEnabled = {true}>
         <View style={styles.fundo}>
