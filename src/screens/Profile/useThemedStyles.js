@@ -8,7 +8,7 @@ export const useThemedStyles = () => {
       container: {
           flex: 1,
           backgroundColor: themeStyles.colors.background,
-          paddingTop: 40,
+          paddingTop: 30,
       },
       scrollView: {
           width: '100%',
@@ -68,41 +68,46 @@ export const useThemedStyles = () => {
         borderRadius: 10,
         alignContent: 'center',
         justifyContent: 'center',
-        alignItems: 'center'
-        },
-        containerInterno: {
-            flex: 1,
-            alignItems: 'center'            
-        },
-        textInterno1: {
-            color: themeStyles.colors.textPrimaryBarraPerfil,
-            fontSize: 14
-        },
-        textInterno2: {
-            color: themeStyles.colors.textSecondaryBarraPerfil,
-            fontSize: 14,
-            fontWeight: 'bold'
-        },
-        publiTitle: {
-            fontSize: 20,
-            fontWeight: 'bold',
-            color: themeStyles.colors.textPrimary,
-            marginTop: 10,
-            marginLeft: 10
-        },
-        line: {
-            width: '100%',
-            height: 1,
-            backgroundColor: themeStyles.colors.textPrimary,
-            marginTop: 5,
-        },
-        line2: {
-            width: '32.5%',
-            height: 1,
-            backgroundColor: themeStyles.colors.azulPrimary,
-            marginLeft: 15,
+        alignItems: 'center',
+        paddingLeft: 10
+    },
+    containerInterno: {
+        flex: 1,
+        alignItems: 'center',         
+    },
+    textInterno1: {
+        color: themeStyles.colors.textPrimaryBarraPerfil,
+        fontSize: 13,
+    },
+    textInterno2: {
+        color: themeStyles.colors.textSecondaryBarraPerfil,
+        fontSize: 14,
+        fontWeight: 'bold'
+    },
+    publiTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: themeStyles.colors.textPrimary,
+        marginTop: 10,
+        marginLeft: 10
+    },
+    line: {
+        width: '100%',
+        height: 1,
+        backgroundColor: themeStyles.colors.textPrimary,
+        marginTop: 5,
+        marginBottom: 10
+    },
+    line2: {
+        width: '32.5%',
+        height: 1,
+        backgroundColor: themeStyles.colors.azulPrimary,
+        marginLeft: 15,
 
-        }
+    },
+    space:{
+        height: 70,
+    },
     });
 
     return styles;

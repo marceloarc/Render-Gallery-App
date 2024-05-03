@@ -3,12 +3,19 @@ import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'rea
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useThemedStyles } from './useThemedStyles';
+import { getProductsByUser } from '../../../services/ProductsService';
+import { PostRelated } from '../../../components/Post/PostRelated';
+import { useState } from 'react';
+import { getUsersById } from '../../../services/UsersService';
 
-
-export default function Profile() {
-
+export default function Profile({route}) {
+    let [count, setCount] = useState(0);
     const navigation = useNavigation();
     const styles = useThemedStyles(); 
+    const userId = route.params.userId;
+    const qtdProducts = getProductsByUser(userId).length;
+    let user = getUsersById(userId);
+    console.log(userId)
     return (
         <View style={styles.container}>
             <ScrollView style={styles.scrollView}>
@@ -17,8 +24,8 @@ export default function Profile() {
                     style={styles.coverImage}
                 />
                         <TouchableOpacity onPress={() => navigation.goBack()}  style={styles.buttonIconBack}>
-            <Ionicons  name="chevron-back" size={24} color="black" />
-        </TouchableOpacity>
+                            <Ionicons  name="chevron-back" size={24} color="black" />
+                        </TouchableOpacity>
 
                 <View style={styles.profileSection}>
                     <Image
@@ -28,13 +35,13 @@ export default function Profile() {
                 </View>
 
                 <View style={styles.postsContainer}>
-                    <Text style={styles.profileName}>John Doe</Text>
-                    <Text style={styles.profileDesciption}>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using</Text>
+                    <Text style={styles.profileName}>{user.name}</Text>
+                    <Text style={styles.profileDesciption}>{user.desc}</Text>
 
                     <View style={styles.containerExterno}>
                         <View style={styles.containerInterno}>
                             <Text style={styles.textInterno1}>Publicações</Text>
-                            <Text style={styles.textInterno2}>30</Text>
+                            <Text style={styles.textInterno2}>{qtdProducts}</Text>
                         </View>
                         <View style={styles.containerInterno}>
                             <Text style={styles.textInterno1}>Likes</Text>
@@ -54,11 +61,20 @@ export default function Profile() {
                 <View style={styles.postsContainer}>
                     <Text style={styles.publiTitle}>Publicações</Text>
                     <View style={styles.line}>
-                        <View style={styles.line2}>
-                        </View>
+                        <View style={styles.line2}></View>
                     </View>
+                    <ScrollView horizontal>
+                        {getProductsByUser(userId)
+                            .slice(0, 9) 
+                            .map((relatedProduct, index) => (
+                            <PostRelated key={relatedProduct.id} id={relatedProduct.id} name={relatedProduct.name} image={relatedProduct.image} price={relatedProduct.price} user={relatedProduct.user} style={styles.relatedItem} />
+                            
+                            ))}
+                        </ScrollView>
                 </View>
             </ScrollView>
+            <View style={styles.space}></View>
+
         </View>
     );
 }

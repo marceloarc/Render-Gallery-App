@@ -2,6 +2,7 @@ const USERS = [
     {
         id: 1,
         name: 'Jao miguel',
+        desc: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using',
         email: 'jao@gmail.com',
         pic: require('../assets/users/perfil.jpg'),
         telefone:'12997011131',
@@ -11,7 +12,8 @@ const USERS = [
     },
     {
         id: 2,
-        name: 'Maria antonieta da silva',
+        name: 'Maria silva',
+        desc: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using',
         email: 'maria@gmail.com',
         pic: require('../assets/users/perfil.jpg'),
         telefone:'12997011130',
@@ -22,6 +24,7 @@ const USERS = [
     {
         id: 3,
         name: 'Carlos',
+        desc: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using',
         email: 'carlos@gmail.com',
         pic: require('../assets/users/perfil.jpg'),
         telefone:'12997011111',
@@ -32,6 +35,7 @@ const USERS = [
     {
         id: 4,
         name: 'Felipe',
+        desc: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using',
         email: 'felipe@gmail.com',
         pic: require('../assets/users/perfil.jpg'),
         telefone:'12997011111',

@@ -156,7 +156,11 @@ export default function Product({ route }) {
 
             <View style={styles.infoArt}>
               <View style={styles.infoArt3}>
-                <Text style={styles.conteudoInfo}>{user.name}</Text>
+              <TouchableOpacity  onPress={() => navigation.navigate('Profile', {
+                userId: user.id,
+                })}>
+                    <Text style={styles.conteudoInfo}>{user.name}</Text>
+                </TouchableOpacity>
               </View>
               <View style={styles.infoArt3}>
                 <View style={styles.ratingContainer}>

@@ -9,6 +9,7 @@ export const useThemedStyles = () => {
             flex: 1,
             padding: 5,
             marginBottom: 5,
+            
         },
         image: {
             borderRadius: 22,
@@ -51,6 +52,7 @@ export const useThemedStyles = () => {
         ratingContainer: {
             flexDirection: 'row',
             alignItems: 'center',
+
         },
         rating: {
             color: themeStyles.colors.textPrimary,
