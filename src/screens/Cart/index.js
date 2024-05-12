@@ -24,8 +24,8 @@ export default function Cart () {
   function renderItem({item}) {
     return (
        <TouchableOpacity style={styles.cartLine} onPress={() => {
-        navigation.navigate('ProductDetails', {
-          productId: item.product.id,
+        navigation.navigate('Product', {
+          ProductId: item.product.id,
         });
       }} >
         <Image

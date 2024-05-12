@@ -8,6 +8,7 @@ import { PostRelated } from '../../../components/Post/PostRelated';
 import { useState } from 'react';
 import { getUsersById } from '../../../services/UsersService';
 
+
 export default function Profile({route}) {
     let [count, setCount] = useState(0);
     const navigation = useNavigation();
@@ -15,7 +16,9 @@ export default function Profile({route}) {
     const userId = route.params.userId;
     const qtdProducts = getProductsByUser(userId).length;
     let user = getUsersById(userId);
-    console.log(userId)
+    const pic = user.pic;
+
+    //console.log(userId)
     return (
         <View style={styles.container}>
             <ScrollView style={styles.scrollView}>
@@ -29,7 +32,7 @@ export default function Profile({route}) {
 
                 <View style={styles.profileSection}>
                     <Image
-                        source={{ uri: 'http://192.168.0.13:5000/images/2/fb70e7cbd7b766a9e00a7b1299adf1ad.jpg' }}
+                        source={{ uri: pic }}
                         style={styles.profileImage}
                     />
                 </View>
