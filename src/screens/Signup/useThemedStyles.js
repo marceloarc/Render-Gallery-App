@@ -15,9 +15,9 @@ export const useThemedStyles = () => {
       title: {
             fontSize: 40,
             fontWeight: 'bold',
-            color: themeStyles.colors.textSecondaryBarraPerfil,
+            color: themeStyles.colors.textPrimary,
             textAlign: 'center',
-            marginBottom: 30,
+            marginBottom: 10,
         },
       input: {
           height: 40,
@@ -44,7 +44,7 @@ export const useThemedStyles = () => {
           height: 50,
           justifyContent: 'center',
           width: '90%',
-          marginTop: 50,
+          marginTop: 25,
       },
       textButton: {
           color: themeStyles.colors.brancoPuro,
@@ -53,22 +53,19 @@ export const useThemedStyles = () => {
           fontStyle: 'italic',
       },
       textButton2: {
-        color: themeStyles.colors.textSecondaryBarraPerfil,
+        color: themeStyles.colors.textPrimary,
         textAlign: 'center',
         fontSize: 15,
         fontStyle: 'italic',
-        marginTop: 15,
+        marginTop: 5,
     },
-    textButton3: {
-      color: themeStyles.colors.textSecondaryBarraPerfil,
-      textAlign: 'center',
-      fontSize: 15,
-      fontStyle: 'italic',
-      marginTop: 5,
-  },
-      Image: {
-        marginTop: 50,
-      },
+    image: {
+      width: 130,
+      height: 130,
+      borderRadius: 65, 
+      backgroundColor: '#eee',
+      marginBottom: 15,
+    },
     });
 
     return styles;

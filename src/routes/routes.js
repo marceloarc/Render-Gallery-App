@@ -16,6 +16,7 @@ import darkMode from "../../assets/System/dark-mode.png";
 import lightMode from "../../assets/System/light-mode.png";
 import Login from "../screens/Login";
 import Profile from "../screens/Profile";
+import Signup from "../screens/Signup";
 import { AuthContext } from '../../context/AuthContext';
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -273,6 +274,11 @@ function Routes() {
         <Tab.Screen
           name="Login"
           component={Login}
+          options={{ tabBarVisible: false, headerShown: false, tabBarButton: () => null, tabBarVisible: false, tabBarStyle: { display: "none"}}}
+        />
+        <Tab.Screen
+          name="Signup"
+          component={Signup}
           options={{ tabBarVisible: false, headerShown: false, tabBarButton: () => null, tabBarVisible: false, tabBarStyle: { display: "none"}}}
         />
       </Tab.Navigator>

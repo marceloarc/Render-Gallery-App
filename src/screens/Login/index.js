@@ -22,7 +22,7 @@ export default function Login() {
   const handleLogin = () => {
     console.log("Tentando encontrar o usuário:", email);
     const userFound = getUsersByEmail(email);
-    if (userFound) {
+    if (userFound && userFound.password === password) {
       console.log("Usuário encontrado:", userFound);
       signIn(userFound);
       navigation.dispatch(
@@ -38,6 +38,10 @@ export default function Login() {
 
   const handleForgotPassword = () => {
     navigation.navigate('ForgotPassword');
+  }
+
+  const handleSignUp = () => {
+    navigation.navigate('Signup');
   }
 
   return (
@@ -69,6 +73,11 @@ export default function Login() {
       <TouchableOpacity
         onPress={handleForgotPassword}>
         <Text style={styles.textButton2}>Esqueceu sua senha?</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={handleSignUp}>
+        <Text style={styles.textButton3}>Não tem uma conta? Cadastre-se.</Text>
       </TouchableOpacity>
 
       <Image source={imageSource}

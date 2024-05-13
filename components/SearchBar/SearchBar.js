@@ -30,7 +30,7 @@ const SearchBar = ({onFilterPress, onTextChange}) => {
     return (
       <View style={styles.container}>
         <View style={styles.inputSection}>
-          <Ionicons name="ios-search" style={styles.searchIcon} />
+          <Ionicons name="search" style={styles.searchIcon} />
           <TextInput
             placeholder="Search..."
             placeholderTextColor= {themeStyles.colors.borderSearch}
