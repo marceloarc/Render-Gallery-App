@@ -7,14 +7,14 @@ export const CartContext = createContext();
 export function CartProvider(props) {
   const [items, setItems] = useState([]);
   
-  function addItemToCart(id) {
+  function addItemToCart(id,quantity) {
     const product = getProduct(id);
     setItems((prevItems) => {
       const item = prevItems.find((item) => (item.id == id));
       if(!item) {
           return [...prevItems, {
               id,
-              qty: 1,
+              qty: quantity,
               product,
               totalPrice: product.price 
           }];
@@ -22,7 +22,7 @@ export function CartProvider(props) {
       else { 
           return prevItems.map((item) => {
             if(item.id == id) {
-              item.qty++;
+              item.qty += quantity;
               item.totalPrice += product.price;
             }
             return item;

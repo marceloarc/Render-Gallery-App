@@ -1,0 +1,80 @@
+import React, { useState, useContext, useEffect } from 'react';
+import { View, TextInput, TouchableOpacity, Text, Image } from 'react-native';
+import { AuthContext } from '../../../context/AuthContext';
+import { useNavigation } from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
+import { getUsersByEmail } from '../../../services/UsersService';
+import { useThemedStyles } from "./useThemedStyles";
+import { useTheme } from "../../../ThemeContext";
+import DarkImage from '../../../assets/image-login-dark.png';
+import LightImage from '../../../assets/image-login-light.png';
+
+export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const { signIn } = useContext(AuthContext);
+  const navigation = useNavigation();
+  const styles = useThemedStyles();
+  const { themeStyles, theme } = useTheme();
+
+  let imageSource = theme === "dark" ? DarkImage : LightImage;
+
+  const handleLogin = () => {
+    console.log("Tentando encontrar o usuário:", email);
+    const userFound = getUsersByEmail(email);
+    if (userFound) {
+      console.log("Usuário encontrado:", userFound);
+      signIn(userFound);
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        })
+      );
+    } else {
+      alert("Usuário não encontrado ou senha incorreta!");
+    }
+  };
+
+  const handleForgotPassword = () => {
+    navigation.navigate('ForgotPassword');
+  }
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>
+        Login
+      </Text>
+      <TextInput
+        style={styles.input}
+        placeholder="E-mail"
+        value={email}
+        onChangeText={setEmail}
+        placeholderTextColor= {themeStyles.colors.textPrimary}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        value={password}
+        secureTextEntry
+        onChangeText={setPassword} 
+        placeholderTextColor= {themeStyles.colors.textPrimary}
+      />
+      <TouchableOpacity
+        onPress={handleLogin}
+        style={styles.buttonSubmit}>
+        <Text style={styles.textButton}>Continue</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={handleForgotPassword}>
+        <Text style={styles.textButton2}>Esqueceu sua senha?</Text>
+      </TouchableOpacity>
+
+      <Image source={imageSource}
+          style={styles.Image}>
+      </Image>
+    </View>
+  );
+};
+
