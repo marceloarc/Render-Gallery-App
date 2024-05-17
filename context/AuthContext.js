@@ -5,7 +5,6 @@ export const AuthContext = createContext(null);
 
 import * as SplashScreen from 'expo-splash-screen';
 
-// Evitar que a tela de splash se esconda automaticamente
 SplashScreen.preventAutoHideAsync();
 
 export const AuthProvider = ({ children }) => {
@@ -19,7 +18,7 @@ export const AuthProvider = ({ children }) => {
         setUser(JSON.parse(userData));
       }
       setLoading(false);
-      await SplashScreen.hideAsync(); // Esconder a tela de splash aqui
+      await SplashScreen.hideAsync(); 
     }
 
     loadUserData();

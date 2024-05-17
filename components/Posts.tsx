@@ -9,12 +9,28 @@ export function Posts(props) {
     const [products, setProducts] = useState([]);
     const { themeStyles } = useTheme();
 
-    useEffect(() => {
-        let products = filterProducts(props.CategoryId,props.name)
+    // useEffect(() => {
+    //     let products = filterProducts(props.CategoryId,props.name)
 
-        setProducts(products);
-    }, [props.CategoryId,props.name]);
+    //     setProducts(products);
+    // }, [props.CategoryId,props.name]);
     
+    useEffect(() => {
+        // Chame a função getProducts para obter os produtos da API
+        async function fetchProducts() {
+            try {
+                const productsData = await getProducts();
+                console.log('Resultado da busca da API:', productsData);
+                setProducts(productsData);
+            } catch (error) {
+                console.error('Erro ao buscar produtos:', error);
+            }
+        }
+
+        fetchProducts(); // Chame a função dentro do useEffect para carregar os produtos quando o componente for montado
+
+    }, []);
+
     return (
         <View style={{flex: 1, backgroundColor: themeStyles.colors.background}}>
             <MasonryList

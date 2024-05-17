@@ -3,7 +3,7 @@ import { View, TextInput, TouchableOpacity, Text, Image } from 'react-native';
 import { AuthContext } from '../../../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import { CommonActions } from '@react-navigation/native';
-import { getUsersByEmail } from '../../../services/UsersService';
+import { login } from '../../../services/UsersService';
 import { useThemedStyles } from "./useThemedStyles";
 import { useTheme } from "../../../ThemeContext";
 import DarkImage from '../../../assets/image-login-dark.png';
@@ -19,20 +19,38 @@ export default function Login() {
 
   let imageSource = theme === "dark" ? DarkImage : LightImage;
 
-  const handleLogin = () => {
-    console.log("Tentando encontrar o usuário:", email);
-    const userFound = getUsersByEmail(email);
-    if (userFound && userFound.password === password) {
-      console.log("Usuário encontrado:", userFound);
-      signIn(userFound);
+  // const handleLogin = () => {
+  //   console.log("Tentando encontrar o usuário:", email, password);
+    
+  //   const userFound = login(email, password);
+  //   if (userFound && userFound.password === password) {
+  //     console.log("Usuário encontrado:", userFound);
+  //     signIn(userFound);
+  //     navigation.dispatch(
+  //       CommonActions.reset({
+  //         index: 0,
+  //         routes: [{ name: 'Home' }],
+  //       })
+  //     );
+  //   } else {
+  //     alert("Usuário não encontrado ou senha incorreta!");
+  //   }
+  // };
+
+  const handleLogin = async () => {
+    try {
+      const userData = await login(email, password);
+      console.log("Usuário encontrado:", userData);
+      signIn(userData);
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
           routes: [{ name: 'Home' }],
         })
       );
-    } else {
-      alert("Usuário não encontrado ou senha incorreta!");
+    } catch (error) {
+      console.error("Erro ao fazer login:", error);
+      Alert.alert("Erro", "Usuário não encontrado ou senha incorreta!");
     }
   };
 

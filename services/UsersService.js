@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const USERS = [
     {
         id: 1,
@@ -53,13 +55,24 @@ export function getUsers() {
     return USERS;
 }
 
-export function getUsersByEmail(email){
+// export function getUsersByEmail(email){
+//     return USERS.find((user) => (user.email == email));
+// }
 
+export async function login(email, password) {
+    try {
+      const response = await axios.post('http://192.168.0.13:5000/api/mobile/login', {
+        email: email,
+        password: password
+      });
+      
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+      throw error;
+    }
+  }
 
-    return USERS.find((user) => (user.email == email));
-}
 export function getUsersById(id) {
-
-
     return USERS.find((user) => (user.id == id));
 }

@@ -1,10 +1,12 @@
+import axios from 'axios';
+
 const PRODUCTS = [
     {
         id: 100,
         name: 'Go / jo JJK',
         user: 1,
         price: 350,
-        image: "http://192.168.0.13:5000/images/2/fb70e7cbd7b766a9e00a7b1299adf1ad.jpg",
+        image: 'https://r2.easyimg.io/xtkgzoewa/itadori.jpg',
         category:[1001,1006],
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis ullamcorper viverra. Suspendisse quis elit vel justo ultrices cursus. Donec ipsum odio, tincidunt fringilla semper non, vestibulum eu arcu. Phasellus efficitur ante sit amet nulla lacinia ultrices. Proin leo quam, convallis eget congue ac, efficitur a eros. Quisque a sagittis est. Nulla fringilla libero placerat, mattis velit vitae, elementum nisl. Etiam ut scelerisque ligula, eget tristique nulla. Donec eu imperdiet magna. Duis sollicitudin varius eleifend. Nam urna nibh, posuere quis ultrices sed, dignissim in orci. Nullam porta velit justo, vel ullamcorper nisi pulvinar vel. Etiam dapibus efficitur odio, nec bibendum metus laoreet quis.',
         quantity:2
@@ -14,7 +16,7 @@ const PRODUCTS = [
         name: 'Personagens',
         user: 2,
         price: 350,
-        image: 'http://192.168.0.13:5000/images/3/79fe1829b91df6403564e8a18cd26d9f.jpg',
+        image: 'https://r2.easyimg.io/dghna6854/cyber2.png',
         category:[1001,1006],
         description: 'Vários personagens de vários animes diferentes',
         quantity:10
@@ -91,9 +93,9 @@ const PRODUCTS = [
     },
 ];
 
-export function getProducts() {
-    return PRODUCTS;
-}
+// export function getProducts() {
+//     return PRODUCTS;
+// }
 export function getProductsByCategory(CategoryId, producId = null){
     let products = [];
     products = productsFilterByCategory(CategoryId, producId);
@@ -137,14 +139,35 @@ export function filterProducts(CategoryId, name) {
         return matchesCategory && matchesName;
     });
 }
-export function getProduct(id) {
+// export function getProduct(id) {
 
-    return PRODUCTS.find((product) => (product.id == id));
-}
+//     return PRODUCTS.find((product) => (product.id == id));
+// }
 
 export function getProductsByUser(userId, productId = null) {
     return PRODUCTS.filter(product => product.user === userId && product.id !== productId);
 }
 
+export async function getProducts() {
+    try {
+        const response = await axios.get('http://192.168.0.13:5000/api/mobile/home');
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao puxar produtos:', error);
+        throw error;
+    }
+}
+
+export async function getProduct(productId){
+    try {
+        const response = await axios.get(`http://192.168.0.13:5000/api/mobile/product/${productId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao puxar arte: ', error);
+        throw error;
+    }
+}
+
+  
 
 

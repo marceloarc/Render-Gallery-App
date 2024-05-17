@@ -13,7 +13,7 @@ import { faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import { useThemedStyles } from "./userThemedStyles";
 
 
-export function Post({ id, name, user, price, image, description, height, width }) {
+export function Post({ id, name, user, price, path, height, width }) {
     const styles = useThemedStyles(); 
 
     const toast = useToast();
@@ -24,12 +24,21 @@ export function Post({ id, name, user, price, image, description, height, width 
     const navigation = useNavigation();
 
     useEffect(() => {
-        if (!height || !width) {  // Se height ou width não forem fornecidos
-            Image.getSize(image, (w, h) => {
-                setAspectRatio(w / h);
-            });
+        if (!height || !width) {
+            console.log('URI da imagem:', path); // Adicione este log para depurar a URI
+            Image.getSize(
+                path,
+                (w, h) => setAspectRatio(w / h),
+                (error) => {
+                    console.error('Falha ao obter o tamanho da imagem:', error);
+                    // Defina um aspectRatio padrão
+                    setAspectRatio(1); // ou qualquer valor padrão desejado
+                }
+            );
         }
-    }, [image]);
+    }, [path]);
+    
+    
 
     const updateIcon = () => {
         const favItem = getFavItem(id);
@@ -65,7 +74,7 @@ export function Post({ id, name, user, price, image, description, height, width 
 
     return (
         <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('Product', { ProductId: id })}>
-            <Image source={{ uri: image }} style={[styles.image, { height: height, width: width, aspectRatio: height && width ? undefined : aspectRatio }]} />
+            <Image source={{ uri: path }} style={[styles.image, { height: height, width: width, aspectRatio: height && width ? undefined : aspectRatio }]} />
             
             <TouchableOpacity onPress={onAddToFav} style={styles.buttonIconFav}>
                 <Ionicons name={icon} style={styles.fav} />
