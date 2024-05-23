@@ -9,6 +9,7 @@ export function FavProvider(props) {
   
   function addItemToFav(id) {
     const product = getProduct(id);
+    
     setItems((prevItems) => {
       const item = prevItems.find((item) => (item.id == id));
       if(!item) {

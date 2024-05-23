@@ -40,6 +40,8 @@ export default function Product({ route }) {
         const fetchedProduct = await getProduct(ProductId);
         setProduct(fetchedProduct);
         setUser(fetchedProduct.user);
+
+
         const isFavorite = getFavItem(fetchedProduct.id);
         setIcon(isFavorite ? 'heart' : 'heart-outline');
 
@@ -69,7 +71,7 @@ export default function Product({ route }) {
       </View>
     );
   }
-    
+
     function onAddToCart() {
       addItemToCart(product.id,quantity);
       toast.show("Arte adicionada ao carrinho com sucesso!", {
@@ -176,7 +178,7 @@ export default function Product({ route }) {
               </View>
               <View style={styles.infoArt3}>
                 <View style={styles.category}>
-                  <Text style={styles.CSelected}>Animes</Text>
+                  <Text style={styles.CSelected}>{product.categoria.name}</Text>
                 </View>
               </View>
             </View>

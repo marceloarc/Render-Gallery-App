@@ -41,15 +41,16 @@ export default function MyProfile({ route }) {
     );
   }
 
-  const qtdProducts = getProductsByUser(user.id).length;
   const pic = user.pic;
+  const { publicacoes } = user;
+  const qtdProducts = publicacoes.length;
 
   return (
     <PaperProvider>
       <View style={styles.container}>
         <ScrollView style={styles.scrollView}>
           <Image
-            source={{ uri: "https://r2.easyimg.io/5u66q75r7/sukuna.jpg" }}
+            source={{ uri: "http://192.168.0.13:5000/images/2/c03b65b0d46e6b29d34245e7a4e4e606.jpg" }}
             style={styles.coverImage}
           />
           <TouchableOpacity
@@ -75,8 +76,9 @@ export default function MyProfile({ route }) {
           </View>
 
           <View style={styles.postsContainer}>
-            <Text style={styles.profileName}>{user.name}</Text>
-            <Text style={styles.profileDesciption}>{user.desc}</Text>
+            <View style={styles.containername}>
+              <Text style={styles.profileName}>{user.name}</Text>
+            </View>
 
             <View style={styles.containerExterno}>
               <View style={styles.containerInterno}>
@@ -104,14 +106,12 @@ export default function MyProfile({ route }) {
               <View style={styles.line2}></View>
             </View>
             <ScrollView horizontal>
-              {getProductsByUser(user.id)
-                .slice(0, 9)
-                .map((relatedProduct, index) => (
+              {publicacoes.map((relatedProduct, index) => (
                   <PostRelated
                     key={relatedProduct.id}
                     id={relatedProduct.id}
                     name={relatedProduct.name}
-                    image={relatedProduct.image}
+                    image={relatedProduct.path}
                     price={relatedProduct.price}
                     user={relatedProduct.user}
                     style={styles.relatedItem}

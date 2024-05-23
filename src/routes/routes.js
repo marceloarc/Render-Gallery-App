@@ -148,6 +148,7 @@ function Routes() {
           name="Carrinho"
           component={Cart}
           options={{
+            header: () => null,
             tabBarIcon: ({ focused }) => (
               <Image
                 source={
@@ -186,7 +187,6 @@ function Routes() {
             ),
             tabBarVisible: false,
             tabBarStyle: { display: "none" },
-            headerLeft: () => <BackButton onPress={goBack} />,
           }}
         />
         <Tab.Screen

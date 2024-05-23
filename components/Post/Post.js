@@ -22,36 +22,29 @@ export function Post({ id, name, user, price, path, height, width }) {
     const [aspectRatio, setAspectRatio] = useState(1);
     let [icon, setIcon] = useState('heart-outline');
     const navigation = useNavigation();
+    const [isReady, setIsReady] = useState(false); 
 
     useEffect(() => {
         if (!height || !width) {
-            console.log('URI da imagem:', path); // Adicione este log para depurar a URI
+            //console.log('URI da imagem:', path); 
             Image.getSize(
                 path,
-                (w, h) => setAspectRatio(w / h),
+                (w, h) => {
+                    setAspectRatio(w / h);
+                    setTimeout(() => setIsReady(true), 0); 
+                },
                 (error) => {
                     console.error('Falha ao obter o tamanho da imagem:', error);
-                    // Defina um aspectRatio padrão
-                    setAspectRatio(1); // ou qualquer valor padrão desejado
+                    setAspectRatio(1); 
                 }
             );
         }
     }, [path]);
-    
-    
-
-    const updateIcon = () => {
-        const favItem = getFavItem(id);
-        setIcon(favItem ? 'heart' : 'heart-outline');
-        console.log(favItem);
-    };
 
     useEffect(() => {
-        updateIcon();
-        return navigation.addListener('focus', () => {
-            updateIcon();
-        });
-    }, [navigation, id, getFavItem]);
+        const favItem = getFavItem(id);
+        setIcon(favItem ? 'heart' : 'heart-outline');
+    }, [id, getFavItem]);
 
     function onAddToFav() {
         addItemToFav(id);
@@ -72,6 +65,10 @@ export function Post({ id, name, user, price, path, height, width }) {
         }
     }
 
+    if (!isReady) {
+        return null; 
+    }
+
     return (
         <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('Product', { ProductId: id })}>
             <Image source={{ uri: path }} style={[styles.image, { height: height, width: width, aspectRatio: height && width ? undefined : aspectRatio }]} />
@@ -82,18 +79,18 @@ export function Post({ id, name, user, price, path, height, width }) {
             <View style={styles.footer}>
                 <Text style={styles.title}>{name}</Text>
             </View>
-            <View style={styles.infoContainer}>
+            {/* <View style={styles.infoContainer}>
                 <Text style={styles.user}><Ionicons name="person-outline" style={styles.person} /> {user2.name}</Text>
                 <View style={styles.priceContainer}>
                     <Text style={styles.price}>{price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Text>
                     <View style={styles.ratingContainer}>
-                        <MaterialIcons name="thumb-up" style={styles.like} />
+                        <MaterialIcons name="thumb-up" style={styles.like} /> */}
                         {/* <AntDesign name="like1" style={styles.like} />
                         <FontAwesomeIcon icon={faThumbsUp} style={styles.like} /> */}
-                        <Text style={styles.rating}>5</Text>
+                        {/* <Text style={styles.rating}>5</Text>
                     </View>
                 </View>
-            </View>
+            </View> */}
         </TouchableOpacity>
     );
 }

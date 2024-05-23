@@ -36,6 +36,12 @@ export const useThemedStyles = () => {
           marginTop: 10,
           paddingHorizontal: 20,
       },
+      containername: {
+        paddingHorizontal: 20,
+        alignContent: 'center',
+        justifyContent: 'center',
+        alignItems: 'center'
+      },
       sectionTitle: {
           fontSize: 18,
           fontWeight: 'bold',

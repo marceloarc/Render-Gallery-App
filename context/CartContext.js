@@ -1,50 +1,62 @@
-import React, {createContext, useState} from 'react';
-
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { AuthContext } from './AuthContext';
 import { getProduct } from '../services/ProductsService.js';
 
 export const CartContext = createContext();
 
 export function CartProvider(props) {
   const [items, setItems] = useState([]);
-  
-  function addItemToCart(id,quantity) {
-    const product = getProduct(id);
-    setItems((prevItems) => {
-      const item = prevItems.find((item) => (item.id == id));
-      if(!item) {
-          return [...prevItems, {
-              id,
-              qty: quantity,
-              product,
-              totalPrice: product.price 
-          }];
-      }
-      else { 
-          return prevItems.map((item) => {
-            if(item.id == id) {
-              item.qty += quantity;
-              item.totalPrice += product.price;
-            }
-            return item;
-          });
-      }
-    });
+  const { user } = useContext(AuthContext);
 
+  useEffect(() => {
+    if (user && user.carrinho) {
+      setItems(user.carrinho);
+    }
+  }, [user]);
+
+  function addItemToCart(id, quantity) {
+    const product = getProduct(id);
+    const existingItem = items.find(item => item.id === id);
+    if (existingItem) {
+      setItems(prevItems =>
+        prevItems.map(item =>
+          item.id === id
+            ? {
+                ...item,
+                quantidade: item.quantidade + quantity,
+                totalPrice: item.totalPrice + (quantity * product.price),
+              }
+            : item
+        )
+      );
+    } else {
+      setItems(prevItems => [
+        ...prevItems,
+        {
+          id: id,
+          nomeProduto: product.nomeProduto,
+          path: product.path,
+          price: product.price,
+          quantidade: quantity,
+          totalPrice: quantity * product.price,
+        },
+      ]);
+    }
   }
 
   function getItemsCount() {
-      return items.reduce((sum, item) => (sum + item.qty), 0);
+    return items.reduce((sum, item) => sum + item.quantidade, 0);
   }
-  
+
   function getTotalPrice() {
-      return items.reduce((sum, item) => (sum + item.totalPrice), 0);
-  }  
-  
+    return items.reduce((sum, item) => sum + (item.price * item.quantidade), 0);
+  }
+
   return (
-    <CartContext.Provider 
-      value={{items, setItems, getItemsCount, addItemToCart, getTotalPrice}}>
+    <CartContext.Provider
+      value={{ items, setItems, getItemsCount, addItemToCart, getTotalPrice }}
+    >
       {props.children}
     </CartContext.Provider>
   );
 }
-
