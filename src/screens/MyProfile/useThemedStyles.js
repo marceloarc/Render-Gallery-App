@@ -36,6 +36,12 @@ export const useThemedStyles = () => {
           marginTop: 10,
           paddingHorizontal: 20,
       },
+      containername: {
+        paddingHorizontal: 20,
+        alignContent: 'center',
+        justifyContent: 'center',
+        alignItems: 'center'
+      },
       sectionTitle: {
           fontSize: 18,
           fontWeight: 'bold',
@@ -53,28 +59,30 @@ export const useThemedStyles = () => {
         zIndex: 2,
         left: 20,
       },
-      buttonIconPoint:{
+      buttonIconPoint: {
         width: 40,
         height: 40,
         borderRadius: 100,
-        backgroundColor:themeStyles.colors.brancoPuro,
+        backgroundColor: themeStyles.colors.brancoPuro,
         alignItems: 'center',
         justifyContent: 'center',
-        position:'absolute',
         zIndex: 2,
-        right: 20,
-        top:  -180
-        },
+        position: 'absolute',
+        right: 20,  // Ajustado para 10 para que fique próximo à borda
+        top: 20     // Ajustado para 30 para melhor visualização
+      },
       menuContainer: {
-        marginTop: 50, // Ajuste conforme necessário para o posicionamento
+        marginTop: 0, // Ajuste conforme necessário para o posicionamento
+
         },
         menuItem: {
             padding: 10, // Espaço interno para cada item do menu
-            backgroundColor: 'white' // Fundo do menu
+            backgroundColor: 'white', // Fundo do menu
+
         },
         menuText: {
             color: 'black', // Cor do texto do menu
-            fontSize: 16 // Tamanho do texto
+            fontSize: 16, // Tamanho do texto
         },
       profileDesciption: {
         marginTop: 5,

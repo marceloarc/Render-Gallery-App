@@ -16,6 +16,7 @@ import { PostRelated } from "../../../components/Post/PostRelated";
 import { useState, useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import { Menu, Provider as PaperProvider } from "react-native-paper"; // Importando Menu e PaperProvider
+import { Dimensions } from 'react-native';
 
 export default function MyProfile({ route }) {
   const { user, signOut } = useContext(AuthContext);
@@ -40,15 +41,16 @@ export default function MyProfile({ route }) {
     );
   }
 
-  const qtdProducts = getProductsByUser(user.id).length;
   const pic = user.pic;
+  const { publicacoes } = user;
+  const qtdProducts = publicacoes.length;
 
   return (
     <PaperProvider>
       <View style={styles.container}>
         <ScrollView style={styles.scrollView}>
           <Image
-            source={{ uri: "https://r2.easyimg.io/5u66q75r7/sukuna.jpg" }}
+            source={{ uri: "http://192.168.0.13:5000/images/2/c03b65b0d46e6b29d34245e7a4e4e606.jpg" }}
             style={styles.coverImage}
           />
           <TouchableOpacity
@@ -58,20 +60,15 @@ export default function MyProfile({ route }) {
             <Ionicons name="chevron-back" size={24} color="black" />
           </TouchableOpacity>
 
+          <TouchableOpacity onPress={openMenu} style={styles.buttonIconPoint}>
+            <Ionicons name="ellipsis-vertical" size={24} color="black" />
+        </TouchableOpacity>
           <Menu
             visible={menuVisible}
             onDismiss={closeMenu}
-            anchor={
-              <TouchableOpacity
-                onPress={openMenu}
-                style={styles.buttonIconPoint}
-              >
-                <Ionicons name="ellipsis-vertical" size={24} color="black" />
-              </TouchableOpacity>
-            }
-            style={styles.menuContainer}
+            anchor={{ x: Dimensions.get('window').width - 25, y: 90 }}
           >
-            <Menu.Item onPress={handleLogout} title="Sair" titleStyle={styles.menuText} style={styles.menuItem} />
+            <Menu.Item onPress={handleLogout} title="Sair" style={styles.menuItem} />
           </Menu>
 
           <View style={styles.profileSection}>
@@ -79,8 +76,9 @@ export default function MyProfile({ route }) {
           </View>
 
           <View style={styles.postsContainer}>
-            <Text style={styles.profileName}>{user.name}</Text>
-            <Text style={styles.profileDesciption}>{user.desc}</Text>
+            <View style={styles.containername}>
+              <Text style={styles.profileName}>{user.name}</Text>
+            </View>
 
             <View style={styles.containerExterno}>
               <View style={styles.containerInterno}>
@@ -108,14 +106,12 @@ export default function MyProfile({ route }) {
               <View style={styles.line2}></View>
             </View>
             <ScrollView horizontal>
-              {getProductsByUser(user.id)
-                .slice(0, 9)
-                .map((relatedProduct, index) => (
+              {publicacoes.map((relatedProduct, index) => (
                   <PostRelated
                     key={relatedProduct.id}
                     id={relatedProduct.id}
                     name={relatedProduct.name}
-                    image={relatedProduct.image}
+                    image={relatedProduct.path}
                     price={relatedProduct.price}
                     user={relatedProduct.user}
                     style={styles.relatedItem}
@@ -125,7 +121,6 @@ export default function MyProfile({ route }) {
           </View>
         </ScrollView>
         <View style={styles.space}></View>
-        <Button title="Logout" onPress={handleLogout} color="#FF6347" />
       </View>
     </PaperProvider>
   );

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext } from 'react';
-import { dark, light } from './src/themes'; // Ajuste o caminho conforme necessário
+import { dark, light } from './src/themes'; 
 
 const ThemeContext = createContext(null);
 
@@ -8,7 +8,7 @@ export function useTheme() {
 }
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('dark'); // Tema padrão
+  const [theme, setTheme] = useState('dark');
 
   const toggleTheme = () => {
     setTheme((currTheme) => (currTheme === 'dark' ? 'light' : 'dark'));

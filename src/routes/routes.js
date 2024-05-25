@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Image, TouchableOpacity, Text, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
@@ -16,6 +16,9 @@ import darkMode from "../../assets/System/dark-mode.png";
 import lightMode from "../../assets/System/light-mode.png";
 import Login from "../screens/Login";
 import Profile from "../screens/Profile";
+import Signup from "../screens/Signup";
+import { AuthContext } from '../../context/AuthContext';
+import * as SplashScreen from 'expo-splash-screen';
 
 const Tab = createBottomTabNavigator();
 const BackButton = ({ onPress }) => (
@@ -31,20 +34,50 @@ const BackButton = ({ onPress }) => (
   </TouchableOpacity>
 );
 function Routes() {
+  const { user, loading } = useContext(AuthContext);
   const { getItemsCount } = useContext(CartContext);
   const { getFavCount } = useContext(FavContext);
   const { goBack } = useNavigation();
   const { theme, toggleTheme, themeStyles } = useTheme();
-  let imageSource = "";
-  if (theme == "dark") {
-    imageSource = darkMode;
-  } else {
-    imageSource = lightMode;
-  }
+  const [appIsReady, setAppIsReady] = useState(false);
+
+  let imageSource = theme === "dark" ? darkMode : lightMode;
+
+  useEffect(() => {
+      async function prepare() {
+        try {
+          // Manter a SplashScreen até que tudo esteja carregado
+          await SplashScreen.preventAutoHideAsync();
+          // Aqui você pode colocar mais lógicas de pré-carregamento se necessário
+        } catch (e) {
+          console.warn(e);
+        } finally {
+          // Aguarde até que o estado de loading do AuthContext esteja completo
+          if (!loading) {
+            setAppIsReady(true);
+          }
+        }
+      }
+
+      prepare();
+    }, [loading]);
+
+    useEffect(() => {
+      if (appIsReady) {
+        // Esconda a SplashScreen somente quando tudo estiver pronto
+        SplashScreen.hideAsync();
+      }
+    }, [appIsReady]);
+
+    if (!appIsReady) {
+      return null; // Retorne null ou um componente mínimo enquanto a SplashScreen está ativa
+    }
+
   return (
     <ToastProvider>
       <Tab.Navigator
-        initialRouteName="Login"
+
+        initialRouteName={user ? "Home" : "Login"}
         screenOptions={({ route }) => ({
           headerTintColor: themeStyles.colors.textPrimary,
           headerStatusBarHeight: 30,
@@ -115,6 +148,7 @@ function Routes() {
           name="Carrinho"
           component={Cart}
           options={{
+            header: () => null,
             tabBarIcon: ({ focused }) => (
               <Image
                 source={
@@ -153,7 +187,6 @@ function Routes() {
             ),
             tabBarVisible: false,
             tabBarStyle: { display: "none" },
-            headerLeft: () => <BackButton onPress={goBack} />,
           }}
         />
         <Tab.Screen
@@ -241,6 +274,11 @@ function Routes() {
         <Tab.Screen
           name="Login"
           component={Login}
+          options={{ tabBarVisible: false, headerShown: false, tabBarButton: () => null, tabBarVisible: false, tabBarStyle: { display: "none"}}}
+        />
+        <Tab.Screen
+          name="Signup"
+          component={Signup}
           options={{ tabBarVisible: false, headerShown: false, tabBarButton: () => null, tabBarVisible: false, tabBarStyle: { display: "none"}}}
         />
       </Tab.Navigator>

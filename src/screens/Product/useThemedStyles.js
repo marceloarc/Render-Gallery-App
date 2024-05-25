@@ -58,7 +58,7 @@ export const useThemedStyles = () => {
           },
           name: {
             color:themeStyles.colors.textPrimary,
-            fontSize: 24,
+            fontSize: 32,
             fontWeight: 'bold',
           },
           quantidade:{

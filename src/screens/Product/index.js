@@ -16,11 +16,14 @@ import { PostRelated } from '../../../components/Post/PostRelated.js';
 import { getProductsByCategory } from '../../../services/ProductsService';
 import { useTheme } from '../../../ThemeContext';
 import { useThemedStyles } from "./useThemedStyles";
+
 export default function Product({ route }) {
   const { themeStyles } = useTheme();
   const ProductId = route.params.ProductId;
+  
   const [product, setProduct] = useState({});
   const [user, setUser] = useState({});
+  
   const [isLoading, setIsLoading] = useState(true);
   const [dialogVisible, setDialogVisible] = useState(false);
   const toast = useToast();
@@ -30,15 +33,18 @@ export default function Product({ route }) {
   const [quantity, setQuantity] = useState(1);
   const [icon, setIcon] = useState('heart-outline');
   const styles = useThemedStyles(); 
+  
   useEffect(() => {
     async function fetchProduct() {
       try {
         const fetchedProduct = await getProduct(ProductId);
         setProduct(fetchedProduct);
+        setUser(fetchedProduct.user);
+
+
         const isFavorite = getFavItem(fetchedProduct.id);
         setIcon(isFavorite ? 'heart' : 'heart-outline');
-        const fetchedUser = await getUsersById(fetchedProduct.user);
-        setUser(fetchedUser);
+
       } catch (error) {
         console.error('Failed to fetch data:', error);
         toast.show("Erro ao carregar dados.", {
@@ -65,7 +71,7 @@ export default function Product({ route }) {
       </View>
     );
   }
-    
+
     function onAddToCart() {
       addItemToCart(product.id,quantity);
       toast.show("Arte adicionada ao carrinho com sucesso!", {
@@ -119,7 +125,7 @@ export default function Product({ route }) {
         <View style={styles.fundo}>
           <Image
             style={[styles.image]} 
-            source={{ uri: product.image }}
+            source={{ uri: product.path }}
           />
           <TouchableOpacity onPress={() => onAddToFav() }  style={styles.buttonIconFav}>
                 <Ionicons name={icon} size={24} color="#F13658" />
@@ -172,7 +178,7 @@ export default function Product({ route }) {
               </View>
               <View style={styles.infoArt3}>
                 <View style={styles.category}>
-                  <Text style={styles.CSelected}>Animes</Text>
+                  <Text style={styles.CSelected}>{product.categoria.name}</Text>
                 </View>
               </View>
             </View>
