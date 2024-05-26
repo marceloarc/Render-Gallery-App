@@ -20,6 +20,10 @@ import Signup from "../screens/Signup";
 import { AuthContext } from '../../context/AuthContext';
 import * as SplashScreen from 'expo-splash-screen';
 import axios from 'axios';
+import { API_BASE_URL } from '../../env.js';
+
+const urlApi = API_BASE_URL;
+
 const Tab = createBottomTabNavigator();
 const BackButton = ({ onPress }) => (
   <TouchableOpacity
@@ -72,7 +76,7 @@ function Routes() {
       async function fetchUserInfo() {
         try {
           if (user && user.id) {
-            const response = await axios.post("http://192.168.0.9:5000/api/mobile/UserInfoAll", { Id: user.id });
+            const response = await axios.post(`${urlApi}/api/mobile/UserInfoAll`, { Id: user.id });
             signIn(response.data);
             // console.log("Informações do usuário atualizadas:", response.data);
           }

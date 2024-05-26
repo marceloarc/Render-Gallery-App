@@ -22,7 +22,6 @@
 
 
     function renderItem({ item }) {
-      console.log(item.path);
       return (
         <TouchableOpacity
           style={styles.cartLine}
