@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Image, TouchableOpacity, Text, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { NavigationContainer, useNavigation, useFocusEffect } from "@react-navigation/native";
 import { CartContext } from "../../context/CartContext";
 import { FavContext } from "../../context/FavContext";
 import { ToastProvider } from "react-native-toast-notifications";
@@ -19,7 +19,7 @@ import Profile from "../screens/Profile";
 import Signup from "../screens/Signup";
 import { AuthContext } from '../../context/AuthContext';
 import * as SplashScreen from 'expo-splash-screen';
-
+import axios from 'axios';
 const Tab = createBottomTabNavigator();
 const BackButton = ({ onPress }) => (
   <TouchableOpacity
@@ -40,38 +40,78 @@ function Routes() {
   const { goBack } = useNavigation();
   const { theme, toggleTheme, themeStyles } = useTheme();
   const [appIsReady, setAppIsReady] = useState(false);
+  const { signIn } = useContext(AuthContext);
+  const [timer, setTimer] = useState(null); // Estado para armazenar o temporizador
 
   let imageSource = theme === "dark" ? darkMode : lightMode;
 
   useEffect(() => {
-      async function prepare() {
+    async function prepare() {
+      try {
+        await SplashScreen.preventAutoHideAsync();
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        if (!loading) {
+          setAppIsReady(true);
+        }
+      }
+    }
+
+    prepare();
+  }, [loading]);
+
+  useEffect(() => {
+    if (appIsReady) {
+      SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      async function fetchUserInfo() {
         try {
-          // Manter a SplashScreen até que tudo esteja carregado
-          await SplashScreen.preventAutoHideAsync();
-          // Aqui você pode colocar mais lógicas de pré-carregamento se necessário
-        } catch (e) {
-          console.warn(e);
-        } finally {
-          // Aguarde até que o estado de loading do AuthContext esteja completo
-          if (!loading) {
-            setAppIsReady(true);
+          if (user && user.id) {
+            const response = await axios.post("http://192.168.0.9:5000/api/mobile/UserInfoAll", { Id: user.id });
+            signIn(response.data);
+            // console.log("Informações do usuário atualizadas:", response.data);
+          }
+        } catch (error) {
+          if (error.response && error.response.data) {
+              throw new Error(JSON.stringify(error.response.data));
+          } else if (error.request) {
+              throw new Error('Erro de rede: não foi possível conectar ao servidor');
+          } else {
+              throw new Error('Erro ao enviar solicitação');
           }
         }
       }
-
-      prepare();
-    }, [loading]);
-
-    useEffect(() => {
+  
       if (appIsReady) {
-        // Esconda a SplashScreen somente quando tudo estiver pronto
-        SplashScreen.hideAsync();
+        const intervalId = setInterval(fetchUserInfo, 5000);
+        setTimer(intervalId);
       }
-    }, [appIsReady]);
+      return () => {
+        if (timer) {
+          clearInterval(timer);
+        }
+      };
+    }, [appIsReady, user, signIn])
+  );
 
-    if (!appIsReady) {
-      return null; // Retorne null ou um componente mínimo enquanto a SplashScreen está ativa
-    }
+  // Limpa o temporizador quando o componente é desmontado
+  useEffect(() => {
+    return () => {
+      if (timer) {
+        clearInterval(timer);
+      }
+    };
+  }, [timer]);
+
+  if (!appIsReady) {
+    return null;
+  }
+
 
   return (
     <ToastProvider>
@@ -260,7 +300,7 @@ function Routes() {
             unmountOnBlur: true,
           }}
         />
-          <Tab.Screen
+        <Tab.Screen
           name="Profile"
           component={Profile}
           options={{

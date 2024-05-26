@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { AuthContext } from './AuthContext';
-import { getProduct } from '../services/ProductsService.js';
+import { addItemToCartService } from '../services/ProductsService.js'; 
+import { getProduct } from '../services/ProductsService.js'; 
 
 export const CartContext = createContext();
 
@@ -14,33 +15,40 @@ export function CartProvider(props) {
     }
   }, [user]);
 
-  function addItemToCart(id, quantity) {
-    const product = getProduct(id);
-    const existingItem = items.find(item => item.id === id);
-    if (existingItem) {
-      setItems(prevItems =>
-        prevItems.map(item =>
-          item.id === id
-            ? {
-                ...item,
-                quantidade: item.quantidade + quantity,
-                totalPrice: item.totalPrice + (quantity * product.price),
-              }
-            : item
-        )
-      );
-    } else {
-      setItems(prevItems => [
-        ...prevItems,
-        {
-          id: id,
-          nomeProduto: product.nomeProduto,
-          path: product.path,
-          price: product.price,
-          quantidade: quantity,
-          totalPrice: quantity * product.price,
-        },
-      ]);
+  async function addItemToCart(id, quantity) {
+    try {
+      await addItemToCartService(user.id, id, quantity);
+      
+      const product = await getProduct(id);
+      const existingItem = items.find(item => item.id === id);
+      if (existingItem) {
+        setItems(prevItems =>
+          prevItems.map(item =>
+            item.id === id
+              ? {
+                  ...item,
+                  quantidade: item.quantidade + quantity,
+                  totalPrice: item.totalPrice + quantity * product.price,
+                }
+              : item
+          )
+        );
+      } else {
+        setItems(prevItems => [
+          ...prevItems,
+          {
+            id: id,
+            nomeProduto: product.nomeProduto,
+            path: product.path,
+            price: product.price,
+            quantidade: quantity,
+            totalPrice: quantity * product.price,
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error('Erro ao adicionar item ao carrinho:', error);
+      // Trate o erro conforme necessário
     }
   }
 
@@ -49,7 +57,7 @@ export function CartProvider(props) {
   }
 
   function getTotalPrice() {
-    return items.reduce((sum, item) => sum + (item.price * item.quantidade), 0);
+    return items.reduce((sum, item) => sum + item.price * item.quantidade, 0);
   }
 
   return (

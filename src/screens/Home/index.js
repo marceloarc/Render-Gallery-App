@@ -38,7 +38,7 @@ export default function Home({route}) {
     async function fetchProducts(categoryId, searchText) {
         try {
             const productsData = await getProducts(categoryId, searchText);
-            console.log('Resultado da busca da API:', productsData);
+            // console.log('Resultado da busca da API:', productsData);
             setProducts(productsData);
         } catch (error) {
             console.error('Erro ao buscar produtos:', error);

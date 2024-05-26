@@ -59,20 +59,27 @@ export function getUsers() {
 //     return USERS.find((user) => (user.email == email));
 // }
 
-const urlApi = process.env.API_BASE_URL;
+import { API_BASE_URL } from '../env.js';
+
+const urlApi = API_BASE_URL;
 
 
 export async function login(email, password) {
     try {
-      const response = await axios.post(`http://192.168.0.9:5000/api/mobile/login`, {
+      const response = await axios.post(`${urlApi}/api/mobile/login`, {
         email: email,
         password: password
       });
       
       return response.data;
     } catch (error) {
-      console.error('Erro ao fazer login:', error);
-      throw error;
+      if (error.response && error.response.data) {
+          throw new Error(JSON.stringify(error.response.data));
+      } else if (error.request) {
+          throw new Error('Erro de rede: não foi possível conectar ao servidor');
+      } else {
+          throw new Error('Erro ao enviar solicitação');
+      }
     }
   }
 

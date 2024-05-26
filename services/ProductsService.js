@@ -72,8 +72,13 @@ export async function getProducts(categoryId, searchText) {
         });
         return response.data;
     } catch (error) {
-        console.error('Erro ao puxar produtos:', error);
-        throw error;
+        if (error.response && error.response.data) {
+            throw new Error(JSON.stringify(error.response.data));
+        } else if (error.request) {
+            throw new Error('Erro de rede: não foi possível conectar ao servidor');
+        } else {
+            throw new Error('Erro ao enviar solicitação');
+        }
     }
 }
 
@@ -82,11 +87,35 @@ export async function getProduct(productId){
         const response = await axios.get(`${urlApi}/api/mobile/product/${productId}`);
         return response.data;
     } catch (error) {
-        console.error('Erro ao puxar arte: ', error);
-        throw error;
+        if (error.response && error.response.data) {
+            throw new Error(JSON.stringify(error.response.data));
+        } else if (error.request) {
+            throw new Error('Erro de rede: não foi possível conectar ao servidor');
+        } else {
+            throw new Error('Erro ao enviar solicitação');
+        }
     }
 }
 
-  
+
+export async function addItemToCartService(userId, productId, quantity) {
+    try {
+        const response = await axios.post(`${urlApi}/api/mobile/addtoCart`, {
+            userId: userId,
+            artId: productId,
+            quantidade: quantity
+        });
+        return response.data; 
+    } catch (error) {
+        if (error.response && error.response.data) {
+            throw new Error(JSON.stringify(error.response.data));
+        } else if (error.request) {
+            throw new Error('Erro de rede: não foi possível conectar ao servidor');
+        } else {
+            throw new Error('Erro ao enviar solicitação');
+        }
+    }
+}
+
 
 
