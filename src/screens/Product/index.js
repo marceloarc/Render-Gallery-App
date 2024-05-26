@@ -59,8 +59,8 @@ export default function Product({ route }) {
       }
     }
 
-    setQuantity(1); // Inicializa a quantidade
-    setIsLoading(true); // Reinicia o carregamento
+    setQuantity(1); 
+    setIsLoading(true); 
     fetchProduct();
   }, [ProductId]);
 

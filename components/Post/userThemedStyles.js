@@ -67,19 +67,19 @@ export const useThemedStyles = () => {
             marginLeft: 5,
         },
         fav: {
-            color: themeStyles.colors.vermelho,
+            color: themeStyles.colors.brancoPuro,
             fontSize: 20,
         },
         buttonIconFav: {
             width: 30,
             height: 30,
             borderRadius: 100,
-            backgroundColor: themeStyles.colors.brancoPuro,
+            // backgroundColor: themeStyles.colors.brancoPuro,
             alignItems: 'center',
             justifyContent: 'center',
-            position: 'absolute',
-            top: 15,
-            right: 15,
+            // position: 'absolute',
+            // top: 15,
+            // right: 15,
         },
     });
 

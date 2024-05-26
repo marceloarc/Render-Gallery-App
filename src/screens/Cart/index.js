@@ -198,11 +198,11 @@
       marginLeft: 10,
     },
     quantityContainer: {
-      height: '100%', // Define a altura para 100% para igualar à altura do container infoItem
+      height: '100%', 
       alignItems: "flex-end",
       justifyContent: "space-between",
-      paddingTop: 7,
-      paddingBottom: 7,
+      paddingTop: 3,
+      paddingBottom: 5,
     },
     quantity: {
       flexDirection: "row",

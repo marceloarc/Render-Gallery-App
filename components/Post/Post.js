@@ -73,11 +73,12 @@ export function Post({ id, name, user, price, path, height, width }) {
         <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('Product', { ProductId: id })}>
             <Image source={{ uri: path }} style={[styles.image, { height: height, width: width, aspectRatio: height && width ? undefined : aspectRatio }]} />
             
-            <TouchableOpacity onPress={onAddToFav} style={styles.buttonIconFav}>
-                <Ionicons name={icon} style={styles.fav} />
-            </TouchableOpacity>
+
             <View style={styles.footer}>
                 <Text style={styles.title}>{name}</Text>
+                <TouchableOpacity onPress={onAddToFav} style={styles.buttonIconFav}>
+                <Ionicons name={icon} style={styles.fav} />
+            </TouchableOpacity>
             </View>
             {/* <View style={styles.infoContainer}>
                 <Text style={styles.user}><Ionicons name="person-outline" style={styles.person} /> {user2.name}</Text>
