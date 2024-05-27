@@ -20,25 +20,25 @@ export default function Home({route}) {
     const searchText = route.params.name;
     const [visibilityC, setVisibility] = useState(false);
     const [text, setText] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState(CategoryId); // Estado para armazenar a categoria selecionada
+    const [selectedCategory, setSelectedCategory] = useState(CategoryId); 
 
     const handleTextChange = (searchText) => {
         setText(searchText);
         if (searchText === '') {
-            fetchProducts(selectedCategory, ''); // Se o texto estiver vazio, busca apenas pela categoria
+            fetchProducts(selectedCategory, '');
         } else {
-            fetchProducts(selectedCategory, searchText); // Senão, busca por categoria e texto de pesquisa
+            fetchProducts(selectedCategory, searchText); 
         }
     };
 
     useEffect(() => {
-        fetchProducts(selectedCategory, searchText); // Inicializa a lista de produtos com a categoria selecionada
+        fetchProducts(selectedCategory, searchText); 
     }, []);
 
     async function fetchProducts(categoryId, searchText) {
         try {
             const productsData = await getProducts(categoryId, searchText);
-            console.log('Resultado da busca da API:', productsData);
+            // console.log('Resultado da busca da API:', productsData);
             setProducts(productsData);
         } catch (error) {
             console.error('Erro ao buscar produtos:', error);

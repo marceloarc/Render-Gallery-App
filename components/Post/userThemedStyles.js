@@ -74,12 +74,12 @@ export const useThemedStyles = () => {
             width: 30,
             height: 30,
             borderRadius: 100,
-            backgroundColor: themeStyles.colors.brancoPuro,
+            // backgroundColor: themeStyles.colors.brancoPuro,
             alignItems: 'center',
             justifyContent: 'center',
-            position: 'absolute',
-            top: 15,
-            right: 15,
+            // position: 'absolute',
+            // top: 15,
+            // right: 15,
         },
     });
 

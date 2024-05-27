@@ -48,6 +48,7 @@ export const useThemedStyles = () => {
             justifyContent: 'left',
             alignItems: 'left',
             width: "60%",
+            left: 10,
         
           },
           containerIconPlus:{

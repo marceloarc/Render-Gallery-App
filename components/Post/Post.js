@@ -13,12 +13,11 @@ import { faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import { useThemedStyles } from "./userThemedStyles";
 
 
-export function Post({ id, name, user, price, path, height, width }) {
+export function Post({ id, name, user, price, path, height, width, categoriaId }) {
     const styles = useThemedStyles(); 
 
     const toast = useToast();
     const { getFavItem, addItemToFav } = useContext(FavContext);
-    const user2 = getUsersById(user);
     const [aspectRatio, setAspectRatio] = useState(1);
     let [icon, setIcon] = useState('heart-outline');
     const navigation = useNavigation();
@@ -70,14 +69,15 @@ export function Post({ id, name, user, price, path, height, width }) {
     }
 
     return (
-        <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('Product', { ProductId: id })}>
+        <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('Product', { Id: id, Name: name, Price: price, Path: path, UserId: user, CategoriaId: categoriaId })}>
             <Image source={{ uri: path }} style={[styles.image, { height: height, width: width, aspectRatio: height && width ? undefined : aspectRatio }]} />
             
-            <TouchableOpacity onPress={onAddToFav} style={styles.buttonIconFav}>
-                <Ionicons name={icon} style={styles.fav} />
-            </TouchableOpacity>
+
             <View style={styles.footer}>
                 <Text style={styles.title}>{name}</Text>
+                <TouchableOpacity onPress={onAddToFav} style={styles.buttonIconFav}>
+                <Ionicons name={icon} style={styles.fav} />
+            </TouchableOpacity>
             </View>
             {/* <View style={styles.infoContainer}>
                 <Text style={styles.user}><Ionicons name="person-outline" style={styles.person} /> {user2.name}</Text>

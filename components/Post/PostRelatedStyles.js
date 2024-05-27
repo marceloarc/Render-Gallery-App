@@ -41,6 +41,7 @@ export const useThemedStyles = () => {
             color: themeStyles.colors.textPrimary,
             fontSize: 14,
             fontWeight: 'bold',
+            left: 5,
         },
         user: {
             color: themeStyles.colors.textSecondary,
@@ -76,12 +77,9 @@ export const useThemedStyles = () => {
             width: 30,
             height: 30,
             borderRadius: 100,
-            backgroundColor: themeStyles.colors.brancoPuro,
             alignItems: 'center',
             justifyContent: 'center',
-            position: 'absolute',
-            top: 15,
-            right: 20,
+            right: 7,
         },
     });
 
