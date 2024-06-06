@@ -237,6 +237,7 @@ function Routes() {
           name="Favoritos"
           component={Favorites}
           options={{
+            header: () => null,
             tabBarIcon: ({ focused }) => (
               <Image
                 source={

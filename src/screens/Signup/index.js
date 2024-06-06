@@ -5,23 +5,18 @@ import { useNavigation } from '@react-navigation/native';
 import { useThemedStyles } from "./useThemedStyles";
 import { useTheme } from "../../../ThemeContext";
 import * as ImagePicker from 'expo-image-picker';
+import axios from 'axios';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [confirmpassword, setConfirmpassword] = useState('');
-  const [imageUri, setImageUri] = useState(null); // Adicionado para armazenar o URI da imagem
+  const [imageUri, setImageUri] = useState(null);
   const { signIn } = useContext(AuthContext);
   const navigation = useNavigation();
   const styles = useThemedStyles();
-  const { themeStyles } = useTheme(); // Simplificado
-
-  const handleSignUp = () => {
-    console.log("Tentando cadastrar o usuário:", email);
-    // Implemente aqui a lógica para cadastrar o usuário
-    // navigation.navigate('Signup'); // Esta linha parece estar incorreta pois entraria em loop. Removida.
-  };
+  const { themeStyles } = useTheme();
 
   const handleLogin = () => {
     navigation.navigate('Login');
@@ -34,9 +29,63 @@ export default function Signup() {
       return;
     }
 
-    const pickerResult = await ImagePicker.launchImageLibraryAsync();
-    if (!pickerResult.cancelled) {
-      setImageUri(pickerResult.uri);
+    try {
+      const pickerResult = await ImagePicker.launchImageLibraryAsync();
+      console.log("Picker Result:", pickerResult);
+      
+      if (!pickerResult.cancelled) {
+        const firstAsset = pickerResult.assets[0]; 
+        if (firstAsset) {
+          setImageUri(firstAsset.uri); 
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao selecionar imagem:", error);
+      Alert.alert("Erro ao selecionar imagem", "Ocorreu um erro ao selecionar a imagem.");
+    }
+  };
+
+  useEffect(() => {
+    console.log("imageUri mudou:", imageUri);
+  }, [imageUri]);
+  
+
+  const handleSignUp = async () => {
+    console.log("Tentando cadastrar o usuário:", imageUri);
+  
+    if (!imageUri) {
+      Alert.alert("Erro", "Por favor, selecione uma imagem.");
+      return;
+    }
+  
+    try {
+      const formData = new FormData();
+      formData.append('File', {
+        uri: imageUri,
+        type: 'image/jpeg',
+        name: 'photo.jpg',
+      });
+      formData.append('Nome', name);
+      formData.append('Email', email);
+      formData.append('Password', password);
+  
+      const response = await axios.post('http://192.168.0.10:5000/api/mobile/register', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      if (response.status === 200) {
+        console.log("Usuário cadastrado com sucesso:", response.data);
+        // Redirecionar para a tela de login ou realizar o login automaticamente
+        // navigation.navigate('Login');
+      } else {
+        console.error("Erro ao cadastrar usuário:", response.data);
+        Alert.alert('Erro', 'Ocorreu um erro ao cadastrar o usuário. Por favor, tente novamente.');
+      }
+    } catch (error) {
+      console.error("Erro ao cadastrar usuário:", error.message);
+      Alert.alert('Erro', 'Ocorreu um erro ao cadastrar o usuário. Por favor, tente novamente.');
     }
   };
 
@@ -45,7 +94,11 @@ export default function Signup() {
       <Text style={styles.title}>Registre-se</Text>
 
       <TouchableOpacity onPress={handlePress}>
-        <Image source={{ uri: imageUri }} style={styles.image} />
+        {imageUri ? (
+          <Image source={{ uri: imageUri }} style={styles.image} />
+        ) : (
+          <Text>Selecione uma imagem</Text>
+        )}
       </TouchableOpacity>
 
       <TextInput

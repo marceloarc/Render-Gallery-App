@@ -8,6 +8,7 @@ export default function PaymentMethod() {
   const { items, getItemsCount, getTotalPrice } = useContext(CartContext);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [cardDetailsFilled, setCardDetailsFilled] = useState(false);
+  let [total, setTotal] = useState(0);
   const [cardDetails, setCardDetails] = useState({
     cardNumber: '',
     expiryDate: '',
@@ -34,18 +35,16 @@ export default function PaymentMethod() {
       return cardDetails.cardNumber != (null || "") ? cardDetails.cardNumber : 'Cartão de Crédito';
     }
   };
-
+  async function fetchTotal(){
+    let subTotal = items.reduce((sum, item) => sum + item.price * item.quantidade, 0);
+    setTotal(subTotal);
+  }
   function Totals({ type }) {
-    let [total, setTotal] = useState(0);
+   
 
     useEffect(() => {
       if (type === "sub") {
-        // Se for solicitado o subtotal, calcula o subtotal
-        let subTotal = items.reduce(
-          (acc, item) => acc + item.price * item.quantity,
-          0
-        );
-        setTotal(subTotal);
+        fetchTotal();
       } else {
         // Caso contrário, calcula o total normal
         setTotal(getTotalPrice());
@@ -119,8 +118,7 @@ export default function PaymentMethod() {
 const styles = StyleSheet.create({
   container: {
     margin: 20,
-    position: 'absolute',
-    top: 425,
+
     width: '90%',
   },
   title: {

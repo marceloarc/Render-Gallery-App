@@ -13,12 +13,10 @@ import { faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import { useThemedStyles } from "./userThemedStyles";
 
 
-export function Post({ id, name, user, price, path, height, width }) {
+export function Post({ id, name, user, price, path, height, width, categoriaId, quantidade }) {
     const styles = useThemedStyles(); 
-
     const toast = useToast();
     const { getFavItem, addItemToFav } = useContext(FavContext);
-    const user2 = getUsersById(user);
     const [aspectRatio, setAspectRatio] = useState(1);
     let [icon, setIcon] = useState('heart-outline');
     const navigation = useNavigation();
@@ -48,21 +46,21 @@ export function Post({ id, name, user, price, path, height, width }) {
 
     function onAddToFav() {
         addItemToFav(id);
-        if (!getFavItem(id)) {
-            toast.show("Arte Favoritada com sucesso!", {
-                type: "warning",
-                placement: "bottom",
-                duration: 2000,
-                offset: 30,
-                animationType: "fade",
-                textStyle: { color: 'white' },
-                backgroundColor: "#FF5722",
-                icon: <Ionicons name="heart-outline" size={24} color="white" />,
-            });
-            setIcon('heart');
-        } else {
-            setIcon('heart-outline');
-        }
+        // if (!getFavItem(id)) {
+        //     toast.show("Arte Favoritada com sucesso!", {
+        //         type: "warning",
+        //         placement: "bottom",
+        //         duration: 2000,
+        //         offset: 30,
+        //         animationType: "fade",
+        //         textStyle: { color: 'white' },
+        //         backgroundColor: "#FF5722",
+        //         icon: <Ionicons name="heart-outline" size={24} color="white" />,
+        //     });
+        //     setIcon('heart');
+        // } else {
+        //     setIcon('heart-outline');
+        // }
     }
 
     if (!isReady) {
@@ -70,15 +68,15 @@ export function Post({ id, name, user, price, path, height, width }) {
     }
 
     return (
-        <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('Product', { ProductId: id })}>
+        <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('Product', { Id: id, Name: name, Price: price, Path: path, UserId: user, CategoriaId: categoriaId, quantity:quantidade })}>
             <Image source={{ uri: path }} style={[styles.image, { height: height, width: width, aspectRatio: height && width ? undefined : aspectRatio }]} />
             
 
             <View style={styles.footer}>
                 <Text style={styles.title}>{name}</Text>
                 <TouchableOpacity onPress={onAddToFav} style={styles.buttonIconFav}>
-                <Ionicons name={icon} style={styles.fav} />
-            </TouchableOpacity>
+                    <Ionicons name={icon} style={styles.fav} />
+                </TouchableOpacity>
             </View>
             {/* <View style={styles.infoContainer}>
                 <Text style={styles.user}><Ionicons name="person-outline" style={styles.person} /> {user2.name}</Text>

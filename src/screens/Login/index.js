@@ -8,8 +8,10 @@ import { useThemedStyles } from "./useThemedStyles";
 import { useTheme } from "../../../ThemeContext";
 import DarkImage from '../../../assets/image-login-dark.png';
 import LightImage from '../../../assets/image-login-light.png';
-
+import { useToast } from "react-native-toast-notifications";
+import { Ionicons } from "@expo/vector-icons";
 export default function Login() {
+  const toast = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { signIn } = useContext(AuthContext);
@@ -40,14 +42,28 @@ export default function Login() {
   const handleLogin = async () => {
     try {
       const userData = await login(email, password);
-      console.log("Usuário encontrado:", userData);
-      signIn(userData);
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'Home' }],
-        })
-      );
+      if(!userData.message){
+        console.log("Usuário encontrado:", userData);
+        signIn(userData);
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'Home' }],
+          })
+        );
+      }else{
+        toast.show(userData.message, {
+          type: "warning",
+          placement: "bottom",
+          duration: 2000,
+          offset: 30,
+          animationType: "fade",
+          textStyle: { color: 'white' },
+          backgroundColor: "#FF5722",
+          icon: <Ionicons name="heart-outline" size={24} color="white" />,
+      });
+      }
+  
     } catch (error) {
       console.error("Erro ao fazer login:", error);
       Alert.alert("Erro", "Usuário não encontrado ou senha incorreta!");

@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { AuthContext } from './AuthContext';
 import { addItemToCartService } from '../services/ProductsService.js'; 
+import { removeItemToCartService } from '../services/ProductsService.js'; 
 import { getProduct } from '../services/ProductsService.js'; 
 
 export const CartContext = createContext();
@@ -19,36 +20,20 @@ export function CartProvider(props) {
     try {
       await addItemToCartService(user.id, id, quantity);
       
-      const product = await getProduct(id);
-      const existingItem = items.find(item => item.id === id);
-      if (existingItem) {
-        setItems(prevItems =>
-          prevItems.map(item =>
-            item.id === id
-              ? {
-                  ...item,
-                  quantidade: item.quantidade + quantity,
-                  totalPrice: item.totalPrice + quantity * product.price,
-                }
-              : item
-          )
-        );
-      } else {
-        setItems(prevItems => [
-          ...prevItems,
-          {
-            id: id,
-            nomeProduto: product.nomeProduto,
-            path: product.path,
-            price: product.price,
-            quantidade: quantity,
-            totalPrice: quantity * product.price,
-          },
-        ]);
-      }
+     
     } catch (error) {
       console.error('Erro ao adicionar item ao carrinho:', error);
       // Trate o erro conforme necessário
+    }
+  }
+
+  async function removeItemFromCart(itemId) {
+    try {
+      await removeItemToCartService(user.id, itemId);
+      const updatedItems = items.filter(item => item.id !== itemId);
+      setItems(updatedItems);
+    } catch (error) {
+      console.error('Erro ao remover item do carrinho:', error);
     }
   }
 
@@ -62,7 +47,7 @@ export function CartProvider(props) {
 
   return (
     <CartContext.Provider
-      value={{ items, setItems, getItemsCount, addItemToCart, getTotalPrice }}
+      value={{ items, setItems, getItemsCount, addItemToCart, getTotalPrice, removeItemFromCart }}
     >
       {props.children}
     </CartContext.Provider>

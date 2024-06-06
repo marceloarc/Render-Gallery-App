@@ -50,7 +50,7 @@ export default function MyProfile({ route }) {
       <View style={styles.container}>
         <ScrollView style={styles.scrollView}>
           <Image
-            source={{ uri: "http://192.168.0.13:5000/images/2/c03b65b0d46e6b29d34245e7a4e4e606.jpg" }}
+            source={{ uri: "http://192.168.166.114:5000/images/2/6307a0f69ce861064cc219e7e3900ffd.jpeg" }}
             style={styles.coverImage}
           />
           <TouchableOpacity
@@ -62,7 +62,7 @@ export default function MyProfile({ route }) {
 
           <TouchableOpacity onPress={openMenu} style={styles.buttonIconPoint}>
             <Ionicons name="ellipsis-vertical" size={24} color="black" />
-        </TouchableOpacity>
+          </TouchableOpacity>
           <Menu
             visible={menuVisible}
             onDismiss={closeMenu}
@@ -111,7 +111,7 @@ export default function MyProfile({ route }) {
                     key={relatedProduct.id}
                     id={relatedProduct.id}
                     name={relatedProduct.name}
-                    image={relatedProduct.path}
+                    path={relatedProduct.path}
                     price={relatedProduct.price}
                     user={relatedProduct.user}
                     style={styles.relatedItem}

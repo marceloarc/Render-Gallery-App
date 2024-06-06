@@ -67,7 +67,7 @@ export const useThemedStyles = () => {
             marginLeft: 5,
         },
         fav: {
-            color: themeStyles.colors.brancoPuro,
+            color: themeStyles.colors.vermelho,
             fontSize: 20,
         },
         buttonIconFav: {

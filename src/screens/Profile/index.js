@@ -3,27 +3,28 @@ import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'rea
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useThemedStyles } from './useThemedStyles';
-import { getProductsByUser } from '../../../services/ProductsService';
+// import { getProductsByUser } from '../../../services/ProductsService';
 import { PostRelated } from '../../../components/Post/PostRelated';
 import { useState } from 'react';
 import { getUsersById } from '../../../services/UsersService';
+import { API_BASE_URL } from '../../../env.js';
 
+const urlApi = API_BASE_URL;
 
 export default function Profile({route}) {
     let [count, setCount] = useState(0);
     const navigation = useNavigation();
     const styles = useThemedStyles(); 
-    const userId = route.params.userId;
-    const qtdProducts = getProductsByUser(userId).length;
+    const { userId, name, path, publicacoes } = route.params;
+    const qtdProducts = publicacoes.length;
     let user = getUsersById(userId);
-    const pic = user.pic;
+    const pic = urlApi + "/";
 
-    //console.log(userId)
     return (
         <View style={styles.container}>
             <ScrollView style={styles.scrollView}>
                 <Image
-                    source={{ uri: 'https://r2.easyimg.io/5u66q75r7/sukuna.jpg' }}
+                    source={{ uri: 'http://192.168.166.114:5000/images/2/6307a0f69ce861064cc219e7e3900ffd.jpeg' }}
                     style={styles.coverImage}
                 />
                         <TouchableOpacity onPress={() => navigation.goBack()}  style={styles.buttonIconBack}>
@@ -32,14 +33,13 @@ export default function Profile({route}) {
 
                 <View style={styles.profileSection}>
                     <Image
-                        source={{ uri: pic }}
+                        source={{ uri: pic + path }}
                         style={styles.profileImage}
                     />
                 </View>
 
                 <View style={styles.postsContainer}>
                     <Text style={styles.profileName}>{user.name}</Text>
-                    <Text style={styles.profileDesciption}>{user.desc}</Text>
 
                     <View style={styles.containerExterno}>
                         <View style={styles.containerInterno}>
@@ -67,13 +67,18 @@ export default function Profile({route}) {
                         <View style={styles.line2}></View>
                     </View>
                     <ScrollView horizontal>
-                        {getProductsByUser(userId)
-                            .slice(0, 9) 
-                            .map((relatedProduct, index) => (
-                            <PostRelated key={relatedProduct.id} id={relatedProduct.id} name={relatedProduct.name} image={relatedProduct.image} price={relatedProduct.price} user={relatedProduct.user} style={styles.relatedItem} />
-                            
+                        {publicacoes.map((relatedProduct, index) => (
+                            <PostRelated
+                                key={relatedProduct.id}
+                                id={relatedProduct.id}
+                                name={relatedProduct.name}
+                                image={pic + relatedProduct.path}
+                                price={relatedProduct.price}
+                                user={relatedProduct.user}
+                                style={styles.relatedItem}
+                            />
                             ))}
-                        </ScrollView>
+                    </ScrollView>
                 </View>
             </ScrollView>
             <View style={styles.space}></View>

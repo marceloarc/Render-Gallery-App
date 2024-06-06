@@ -105,6 +105,46 @@ export async function addItemToCartService(userId, productId, quantity) {
             artId: productId,
             quantidade: quantity
         });
+        console.log(response.data);
+        return response.data; 
+    } catch (error) {
+        if (error.response && error.response.data) {
+            throw new Error(JSON.stringify(error.response.data));
+        } else if (error.request) {
+            throw new Error('Erro de rede: não foi possível conectar ao servidor');
+        } else {
+            throw new Error('Erro ao enviar solicitação');
+        }
+    }
+}
+
+export async function removeItemToCartService(userId, productId) {
+    try {
+        const response = await axios.post(`${urlApi}/api/mobile/removetoCart`, {
+            userId: userId,
+            artId: productId,
+        });
+        console.log(response.data);
+        return response.data; 
+    } catch (error) {
+        if (error.response && error.response.data) {
+            throw new Error(JSON.stringify(error.response.data));
+        } else if (error.request) {
+            throw new Error('Erro de rede: não foi possível conectar ao servidor');
+        } else {
+            throw new Error('Erro ao enviar solicitação');
+        }
+    }
+}
+
+
+export async function addItemToFavService(userId, productId) {
+    try {
+        const response = await axios.post(`${urlApi}/api/mobile/toggleFavorito`, {
+            userId: userId,
+            artId: productId
+        });
+        console.log(response.data);
         return response.data; 
     } catch (error) {
         if (error.response && error.response.data) {

@@ -1,53 +1,60 @@
-import React, {createContext, useState} from 'react';
-
-import { getProduct } from '../services/ProductsService.js';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { AuthContext } from './AuthContext';
+import { addItemToFavService, getProduct } from '../services/ProductsService.js'; 
 
 export const FavContext = createContext();
 
 export function FavProvider(props) {
   const [items, setItems] = useState([]);
-  
-  function addItemToFav(id) {
-    const product = getProduct(id);
-    
-    setItems((prevItems) => {
-      const item = prevItems.find((item) => (item.id == id));
-      if(!item) {
-          return [...prevItems, {
-              id,
-              qty: 1,
-              product,
-              totalPrice: product.price 
-          }];
-      }
-      else { 
-        return prevItems.filter((item) => item.id !== id);
-      }
-    });
+  const { user } = useContext(AuthContext);
 
+  useEffect(() => {
+    if (user && user.favoritos) {
+      setItems(user.favoritos);
+    }
+  }, [user]);
+
+  async function addItemToFav(id) {
+    try {
+      const isItemInFav = getFavItem(id); 
+  
+      if (isItemInFav) {
+        await addItemToFavService(user.id, id); 
+        setItems(prevItems => prevItems.filter(item => item.id !== id));
+      } else {
+        await addItemToFavService(user.id, id); 
+        const product = await getProduct(id);
+        if(product && product.name){
+          setItems(prevItems => [
+            ...prevItems,
+            {
+              id: id,
+              name: product.name,
+              path: product.path,
+              price: product.price,
+              artista: product.user
+            },
+          ]);
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao adicionar/remover item aos favoritos:', error);
+    }
   }
 
   function getFavCount() {
-      return items.reduce((sum, item) => (sum + item.qty), 0);
-  }
-  
-  function getFavItem(id){
-    const item = items.find((item) => (item.id == id));
-    if(item){
-      return true;
-    }
-    return false;
+    return items.length;
   }
 
-  function getTotalPrice() {
-      return items.reduce((sum, item) => (sum + item.totalPrice), 0);
-  }  
-  
+  function getFavItem(id){
+    return items.some(item => item.id === id);
+  }
+
   return (
-    <FavContext.Provider 
-      value={{items, setItems, getFavCount, addItemToFav, getTotalPrice, getFavItem}}>
+    <FavContext.Provider
+      value={{ items, setItems, getFavCount, addItemToFav, getFavItem }}
+    >
       {props.children}
     </FavContext.Provider>
   );
 }
-

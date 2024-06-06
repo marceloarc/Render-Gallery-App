@@ -4,6 +4,9 @@ import { CartProvider } from './context/CartContext.js';
 import { FavProvider } from './context/FavContext.js';
 import { ThemeContext, ThemeProvider } from './ThemeContext'; // Importe o ThemeProvider ajustado
 import { AuthProvider } from './context/AuthContext.js';
+import { LogBox } from "react-native"
+
+LogBox.ignoreAllLogs(true)
 
 export default function App() {
   return (

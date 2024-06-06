@@ -13,7 +13,7 @@ import { faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import { useThemedStyles } from "./PostRelatedStyles";
 
 
-export function PostRelated({ id, name, user, price, image, description, height, width }) {
+export function PostRelated({ id, name, user, price, path, height, width, categoriaId, quantidade }) {
     const styles = useThemedStyles(); 
 
     const toast = useToast();
@@ -25,16 +25,15 @@ export function PostRelated({ id, name, user, price, image, description, height,
 
     useEffect(() => {
         if (!height || !width) {  // Se height ou width não forem fornecidos
-            Image.getSize(image, (w, h) => {
+            Image.getSize(path, (w, h) => {
                 setAspectRatio(w / h);
             });
         }
-    }, [image]);
+    }, [path]);
 
     const updateIcon = () => {
         const favItem = getFavItem(id);
         setIcon(favItem ? 'heart' : 'heart-outline');
-        console.log(favItem);
     };
 
     useEffect(() => {
@@ -63,28 +62,31 @@ export function PostRelated({ id, name, user, price, image, description, height,
         }
     }
 
+    const truncatedName = name.length > 10 ? name.slice(0, 12) + '...' : name;
+
     return (
-        <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('Product', { ProductId: id })}>
-            <Image source={{ uri: image }} style={styles.image } />
+        <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('Product', { Id: id, Name: name, Price: price, Path: path, UserId: user, CategoriaId: categoriaId, quantity:quantidade })}>
+            <Image source={{ uri: path }} style={styles.image } />
             
-            <TouchableOpacity onPress={onAddToFav} style={styles.buttonIconFav}>
-                <Ionicons name={icon} style={styles.fav} />
-            </TouchableOpacity>
+
             <View style={styles.footer}>
-                <Text style={styles.title}>{name}</Text>
+                <Text style={styles.title}>{truncatedName}</Text>
+                <TouchableOpacity onPress={onAddToFav} style={styles.buttonIconFav}>
+                    <Ionicons name={icon} style={styles.fav} />
+                </TouchableOpacity>
             </View>
-            <View style={styles.infoContainer}>
+            {/* <View style={styles.infoContainer}>
                 <Text style={styles.user}><Ionicons name="person-outline" style={styles.person} /> {user2.name}</Text>
                 <View style={styles.priceContainer}>
                     <Text style={styles.price}>{price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Text>
                     <View style={styles.ratingContainer}>
                         <MaterialIcons name="thumb-up" style={styles.like} />
-                        {/* <AntDesign name="like1" style={styles.like} />
-                        <FontAwesomeIcon icon={faThumbsUp} style={styles.like} /> */}
+                        <AntDesign name="like1" style={styles.like} />
+                        <FontAwesomeIcon icon={faThumbsUp} style={styles.like} />
                         <Text style={styles.rating}>5</Text>
                     </View>
                 </View>
-            </View>
+            </View> */}
         </TouchableOpacity>
     );
 }

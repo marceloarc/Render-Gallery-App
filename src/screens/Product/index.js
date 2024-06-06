@@ -16,53 +16,90 @@ import { PostRelated } from '../../../components/Post/PostRelated.js';
 import { getProductsByCategory } from '../../../services/ProductsService';
 import { useTheme } from '../../../ThemeContext';
 import { useThemedStyles } from "./useThemedStyles";
+import { getCategory } from '../../../services/CategoryService';
+import { AuthContext } from '../../../context/AuthContext';
+import { getProducts } from '../../../services/ProductsService';
+import { API_BASE_URL } from '../../../env.js';
+
+const urlApi = API_BASE_URL + "/";
 
 export default function Product({ route }) {
   const { themeStyles } = useTheme();
-  const ProductId = route.params.ProductId;
-  
+  const { Id, Name, Price, Path, CategoriaId, UserId, quantity } = route.params;
+  const [user2, setUser] = useState({});
   const [product, setProduct] = useState({});
-  const [user, setUser] = useState({});
-  
+  const { user } = useContext(AuthContext);
+  const isCurrentUser = user.id === UserId;
+
   const [isLoading, setIsLoading] = useState(true);
   const [dialogVisible, setDialogVisible] = useState(false);
   const toast = useToast();
   const { addItemToCart } = useContext(CartContext);
   const { addItemToFav, getFavItem } = useContext(FavContext);
   const navigation = useNavigation();
-  const [quantity, setQuantity] = useState(1);
+  const [quantity2, setQuantity] = useState(1);
   const [icon, setIcon] = useState('heart-outline');
   const styles = useThemedStyles(); 
-  
+  const categoria = getCategory(CategoriaId);
+  const categoriaName = categoria.name;
+  const categoriaId = getCategory(CategoriaId).id;
+  const [relatedProducts, setRelatedProducts] = useState([]);
+
   useEffect(() => {
-    async function fetchProduct() {
+    const fetchData = async () => {
       try {
-        const fetchedProduct = await getProduct(ProductId);
-        setProduct(fetchedProduct);
-        setUser(fetchedProduct.user);
-
-
-        const isFavorite = getFavItem(fetchedProduct.id);
+        const userData = await getUsersById(UserId);
+        setUser(userData);
+        const isFavorite = getFavItem(Id);
         setIcon(isFavorite ? 'heart' : 'heart-outline');
-
       } catch (error) {
-        console.error('Failed to fetch data:', error);
-        toast.show("Erro ao carregar dados.", {
-          type: "error",
-          placement: "bottom",
-          duration: 3000,
-          offset: 30,
-          animationType: "fade",
-        });
+        console.error("Error fetching user data:", error);
       } finally {
         setIsLoading(false);
       }
-    }
+    };
 
     setQuantity(1); 
     setIsLoading(true); 
-    fetchProduct();
-  }, [ProductId]);
+    fetchData();
+  }, [UserId]);
+
+  const navigateToProfile = () => {
+    if (isCurrentUser) {
+      navigation.navigate('MyProfile');
+    } else {
+      navigation.navigate('Profile', {
+        userId: user2.id,
+        name: user2.name,
+        path: user2.path,
+        publicacoes: user2.publicacoes
+      });
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (categoriaId) {
+          const relatedProducts = await getProducts(categoriaId);
+          if (Array.isArray(relatedProducts)) {
+            setRelatedProducts(relatedProducts.slice(0, 9));
+          } else {
+            console.error("A função getProducts não retornou um array de produtos.");
+          }
+        }
+      } catch (error) {
+        console.error("Erro ao buscar os produtos relacionados:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    setQuantity(1); 
+    setIsLoading(true); 
+    fetchData();
+  }, [categoriaId]);
+  
 
   if (isLoading) {
     return (
@@ -73,7 +110,7 @@ export default function Product({ route }) {
   }
 
     function onAddToCart() {
-      addItemToCart(product.id,quantity);
+      addItemToCart(Id ,quantity2);
       toast.show("Arte adicionada ao carrinho com sucesso!", {
         type: "success",
         placement: "bottom",
@@ -88,8 +125,8 @@ export default function Product({ route }) {
     }
     
     function onAddToFav() {
-      addItemToFav(product.id);
-      if(!getFavItem(ProductId)){
+      addItemToFav(Id);
+      if(!getFavItem(Id)){
         toast.show("Arte Favoritada com sucesso!", {
           type: "success",
           successColor: "#FF5722",
@@ -106,13 +143,13 @@ export default function Product({ route }) {
       }
     }
     const decreaseQuantity = () => {
-      if (quantity > 1) {
-        setQuantity(quantity - 1);
+      if (quantity2 > 1) {
+        setQuantity(quantity2 - 1);
       }
     }
     const IncreaseQuantity = () => {
-      if (quantity < product.quantity) {
-        setQuantity(quantity + 1);
+      if (quantity2 < quantity) {
+        setQuantity(quantity2 + 1);
       }
     }
   
@@ -125,7 +162,7 @@ export default function Product({ route }) {
         <View style={styles.fundo}>
           <Image
             style={[styles.image]} 
-            source={{ uri: product.path }}
+            source={{ uri: Path }}
           />
           <TouchableOpacity onPress={() => onAddToFav() }  style={styles.buttonIconFav}>
                 <Ionicons name={icon} size={24} color="#F13658" />
@@ -135,13 +172,13 @@ export default function Product({ route }) {
         <View style={styles.infoContainer}>
             <View style={styles.nameContainer} >
               <View style={styles.containerTitle}>
-                <Text style={styles.name}>{product.name}</Text>
+                <Text style={styles.name}>{Name}</Text>
               </View>
               <View style={styles.containerIconPlus}>
                 <TouchableOpacity onPress={() => {decreaseQuantity()} }  style={styles.buttonIconPlus}>
                   <Ionicons style={styles.IconPlus} name="remove-outline" size={24}  />
                 </TouchableOpacity>
-                <Text style={styles.quantidade}>{quantity}</Text>
+                <Text style={styles.quantidade}>{quantity2}</Text>
                 <TouchableOpacity onPress={() => {IncreaseQuantity()} }  style={styles.buttonIconPlus}>
                       <Ionicons style={styles.IconPlus}  name="add-outline" size={24} />
                 </TouchableOpacity>
@@ -162,10 +199,8 @@ export default function Product({ route }) {
 
             <View style={styles.infoArt}>
               <View style={styles.infoArt3}>
-              <TouchableOpacity  onPress={() => navigation.navigate('Profile', {
-                userId: user.id,
-                })}>
-                    <Text style={styles.conteudoInfo}>{user.name}</Text>
+              <TouchableOpacity onPress={navigateToProfile}>
+                    <Text style={styles.conteudoInfo}>{user2.name}</Text>
                 </TouchableOpacity>
               </View>
               <View style={styles.infoArt3}>
@@ -178,7 +213,7 @@ export default function Product({ route }) {
               </View>
               <View style={styles.infoArt3}>
                 <View style={styles.category}>
-                  <Text style={styles.CSelected}>{product.categoria.name}</Text>
+                  <Text style={styles.CSelected}>{categoriaName}</Text>
                 </View>
               </View>
             </View>
@@ -187,7 +222,7 @@ export default function Product({ route }) {
             <View style={styles.infoContainer2}>
               <ConfirmDialog
                       title="Adicionar ao carrinho"
-                      message={"Tem certeza que deseja adicionar "+quantity+" "+product.name+"(s) ao carrinho??"}
+                      message={"Tem certeza que deseja adicionar "+quantity2+" "+Name+"(s) ao carrinho??"}
                       visible={dialogVisible}
                       onTouchOutside={() => setDialogVisible(false)}
                       positiveButton={{
@@ -204,20 +239,27 @@ export default function Product({ route }) {
             <View style={styles.line}></View>
             <Text style={styles.tilte2}>Artes Relacionadas</Text>
             <ScrollView horizontal>
-              {product.category ? getProductsByCategory(product.category, product.id)
-                .slice(0, 9) 
-                .map((relatedProduct, index) => (
-                  <PostRelated key={relatedProduct.id} id={relatedProduct.id} name={relatedProduct.name} image={relatedProduct.image} price={relatedProduct.price} user={relatedProduct.user} style={styles.relatedItem} />
-                )) : null }
+              {relatedProducts.map((relatedProduct, index) => (
+                <PostRelated
+                  key={relatedProduct.id}
+                  id={relatedProduct.id}
+                  name={relatedProduct.name}
+                  path={relatedProduct.path}
+                  price={relatedProduct.price}
+                  user={relatedProduct.user}
+                  categoriaId={relatedProduct.categoriaId}
+                  style={styles.relatedItem}
+                />
+              ))}
             </ScrollView>
             <View style={styles.space}></View>
         </View>
 
       </ScrollView>
       <TouchableOpacity onPress={() => setDialogVisible(true)}style={styles.buttonIcon}>
-        <Ionicons name="cart-outline"  size={24} color="white" />
+       <Ionicons name={quantity > 0 ? 'cart-outline' : ''}  size={24} color="white" />
         <Text style={styles.nameButton}>
-          Adicionar ao carrinho | {product.price ? product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'Preço não disponível'}
+        {quantity < 1 ? 'Fora de Estoque':`Adicionar ao carrinho | ${Price ? Price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'Preço não disponível'}`}  
         </Text>
       </TouchableOpacity>
     </SafeAreaView>
