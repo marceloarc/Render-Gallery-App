@@ -35,7 +35,7 @@ export default function MyProfile({ route }) {
     navigation.setOptions({
       tabBarStyle: {
         position: "absolute",
-        backgroundColor: '#000',
+        backgroundColor: themeStyles.colors.preto,
         borderTopWidth: 0,
         bottom: 14,
         left: 14,
@@ -73,7 +73,9 @@ export default function MyProfile({ route }) {
           snapPoint={100}
           modalStyle={styles.modal}
           onClosed={() => setMenuVisible(true)}
-          modalHeight={100}
+          // modalHeight={100}
+          adjustToContentHeight={true}
+          openAnimationConfig={{ timing: { duration: 350 } }}
         >
           <View style={{ justifyContent: "center", alignItems: "center" }}>
           <TouchableOpacity onPress={handleLogout} style={styles.buttonSair}>

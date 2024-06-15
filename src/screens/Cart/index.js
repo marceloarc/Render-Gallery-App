@@ -135,7 +135,7 @@ export default function Cart() {
           </View>
 
 
-          <Modalize ref={modalizeref} snapPoint={500}>
+          <Modalize ref={modalizeref} snapPoint={500} adjustToContentHeight={true} openAnimationConfig={{ timing: { duration: 1000 } }} >
             <View style={{justifyContent: "center", alignItems: "center"}}>
             <PaymentMethod />
             <TouchableOpacity

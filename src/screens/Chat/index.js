@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform, Keyboard, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Chat() {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const [keyboardIsOpen, setKeyboardIsOpen] = useState(false);
+    const navigation = useNavigation();
 
     const scrollViewRef = useRef();
 
@@ -45,7 +47,12 @@ export default function Chat() {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Ionicons name='chevron-back' size={25} color="#00406A" />
+                <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    style={styles.buttonIconBack}
+                    >
+                    <Ionicons name="chevron-back" size={25} color="#00406A" />
+                </TouchableOpacity>
                 <Image
                     source={{ uri: "http://192.168.0.10:5000/images/2/6307a0f69ce861064cc219e7e3900ffd.jpeg" }}
                     style={{ width: 40, height: 40, borderRadius: 25, marginLeft: 10}}

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { Image, TouchableOpacity, Text, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -22,6 +22,8 @@ import { AuthContext } from '../../context/AuthContext';
 import * as SplashScreen from 'expo-splash-screen';
 import axios from 'axios';
 import { API_BASE_URL } from '../../env.js';
+import { Modalize } from 'react-native-modalize';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const urlApi = API_BASE_URL;
 
@@ -42,11 +44,12 @@ function Routes() {
   const { user, loading } = useContext(AuthContext);
   const { getItemsCount } = useContext(CartContext);
   const { getFavCount } = useContext(FavContext);
-  const { goBack } = useNavigation();
+  const navigation = useNavigation();
   const { theme, toggleTheme, themeStyles } = useTheme();
   const [appIsReady, setAppIsReady] = useState(false);
   const { signIn } = useContext(AuthContext);
   const [timer, setTimer] = useState(null); // Estado para armazenar o temporizador
+  const modalizeref = useRef(null);
 
   let imageSource = theme === "dark" ? darkMode : lightMode;
 
@@ -117,223 +120,260 @@ function Routes() {
     return null;
   }
 
+  const onOpen = () => {
+    // setMenuVisible(false);
+    modalizeref.current?.open();
+  };
+
+  const onCloseModalize = () => {
+    modalizeref.current?.close();
+  };
+
+  const navigateToChat = () => {
+      onCloseModalize(); // Fechar o Modalize antes de navegar para o chat
+      navigation.navigate('Chat'); // Navegar para a tela de chat
+  };
+
 
   return (
     <ToastProvider>
-      <Tab.Navigator
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <Tab.Navigator
 
-        initialRouteName={user ? "Home" : "Login"}
-        screenOptions={({ route }) => ({
-          headerTintColor: themeStyles.colors.textPrimary,
-          headerStatusBarHeight: 30,
-          headerStyle: {
-            backgroundColor: themeStyles.colors.background,
-            borderWidth: 0,
-            elevation: 0,
-            shadowOpacity: 0,
-          },
-          animationEnabled: true, // Ativa animações
-          animationTypeForReplace: "fade", // Define o tipo de animação (por exemplo, 'push', 'pop', 'fade', etc.)
-          animationIn: "slideInDown", // Define a animação de entrada
-          animationOut: "slideOutUp", // Define a animação de saída
-          tabBarVisible: route.name !== "Product",
-
-          tabBarShowLabel: true,
-          tabBarStyle: {
-            position: "absolute",
-            backgroundColor: themeStyles.colors.preto,
-            borderTopWidth: 0,
-            bottom: 14,
-            left: 14,
-            right: 14,
-            elevation: 0,
-            borderRadius: 40,
-            height: 60,
-          },
-        })}
-      >
-        <Tab.Screen
-          name="Home"
-          component={Home}
-          initialParams={{ CategoryId: 0, name: "" }}
-          options={{
-            headerTitle: () => (
-              <Image
-                source={require("../../assets/System/logo.png")}
-                style={{ width: 120, height: 40 }}
-              />
-            ),
-            headerRight: () => {
-              return (
-                <TouchableOpacity
-                  onPress={toggleTheme}
-                  style={{ marginRight: 15 }}
-                >
-                  <Image
-                    source={imageSource}
-                    style={{ width: 60, height: 35 }}
-                  />
-                </TouchableOpacity>
-              );
+          initialRouteName={user ? "Home" : "Login"}
+          screenOptions={({ route }) => ({
+            headerTintColor: themeStyles.colors.textPrimary,
+            headerStatusBarHeight: 30,
+            headerStyle: {
+              backgroundColor: themeStyles.colors.background,
+              borderWidth: 0,
+              elevation: 0,
+              shadowOpacity: 0,
             },
-            tabBarIcon: ({ focused }) => (
-              <Image
-                source={
-                  focused
-                    ? require("../../assets/System/home-active.png")
-                    : require("../../assets/System/home-inactive.png")
-                }
-                style={{ width: 40, height: 40 }}
-              />
-            ),
-            tabBarLabel: ({ focused }) => null,
-          }}
-        />
-        <Tab.Screen
-          name="Carrinho"
-          component={Cart}
-          options={{
-            header: () => null,
-            tabBarIcon: ({ focused }) => (
-              <Image
-                source={
-                  focused
-                    ? require("../../assets/System/cart-active.png")
-                    : require("../../assets/System/cart-inactive.png")
-                }
-                style={{ width: 40, height: 40 }}
-              />
-            ),
-            tabBarLabel: ({ focused }) => (
-              <View
-                style={{
-                  width: 12,
-                  height: 12,
-                  top: 30,
-                  left: 30,
-                  backgroundColor: themeStyles.colors.vermelho,
-                  borderRadius: 50,
-                  position: "absolute",
-                }}
-              >
-                <Text
+            animationEnabled: true, // Ativa animações
+            animationTypeForReplace: "fade", // Define o tipo de animação (por exemplo, 'push', 'pop', 'fade', etc.)
+            animationIn: "slideInDown", // Define a animação de entrada
+            animationOut: "slideOutUp", // Define a animação de saída
+            tabBarVisible: route.name !== "Product",
+
+            tabBarShowLabel: true,
+            tabBarStyle: {
+              position: "absolute",
+              backgroundColor: themeStyles.colors.preto,
+              borderTopWidth: 0,
+              bottom: 14,
+              left: 14,
+              right: 14,
+              elevation: 0,
+              borderRadius: 40,
+              height: 60,
+            },
+          })}
+        >
+          <Tab.Screen
+            name="Home"
+            component={Home}
+            initialParams={{ CategoryId: 0, name: "" }}
+            options={{
+              headerTitle: () => (
+                <Image
+                  source={require("../../assets/System/logo.png")}
+                  style={{ width: 120, height: 40 }}
+                />
+              ),
+              headerRight: () => {
+                return (
+                  <View style={{flexDirection: "row", alignItems: "center"}}>
+                    <TouchableOpacity onPress={onOpen} style={{marginRight: 15}}>
+                        <Ionicons name="chatbubble-ellipses" size={30} color={themeStyles.colors.textCategory} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={toggleTheme}
+                      style={{ marginRight: 15 }}
+                    >
+                      <Image
+                        source={imageSource}
+                        style={{ width: 60, height: 35 }}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                );
+              },
+              tabBarIcon: ({ focused }) => (
+                <Image
+                  source={
+                    focused
+                      ? require("../../assets/System/home-active.png")
+                      : require("../../assets/System/home-inactive.png")
+                  }
+                  style={{ width: 40, height: 40 }}
+                />
+              ),
+              tabBarLabel: ({ focused }) => null,
+            }}
+          />
+          <Tab.Screen
+            name="Carrinho"
+            component={Cart}
+            options={{
+              header: () => null,
+              tabBarIcon: ({ focused }) => (
+                <Image
+                  source={
+                    focused
+                      ? require("../../assets/System/cart-active.png")
+                      : require("../../assets/System/cart-inactive.png")
+                  }
+                  style={{ width: 40, height: 40 }}
+                />
+              ),
+              tabBarLabel: ({ focused }) => (
+                <View
                   style={{
-                    textAlign: "center",
-                    marginRight: 1,
-                    top: -1,
-                    fontSize: 10,
-                    fontWeight: "500",
-                    color: themeStyles.colors.brancoPuro,
+                    width: 12,
+                    height: 12,
+                    top: 30,
+                    left: 30,
+                    backgroundColor: themeStyles.colors.vermelho,
+                    borderRadius: 50,
+                    position: "absolute",
                   }}
                 >
-                  {getItemsCount()}
-                </Text>
-              </View>
-            ),
-            tabBarVisible: false,
-            tabBarStyle: { display: "none" },
-          }}
-        />
-        <Tab.Screen
-          name="Favoritos"
-          component={Favorites}
-          options={{
-            header: () => null,
-            tabBarIcon: ({ focused }) => (
-              <Image
-                source={
-                  focused
-                    ? require("../../assets/System/heart-active.png")
-                    : require("../../assets/System/heart-inactive.png")
-                }
-                style={{ width: 40, height: 40 }}
-              />
-            ),
-            tabBarLabel: ({ focused }) => (
-              <View
-                style={{
-                  width: 12,
-                  height: 12,
-                  top: 30,
-                  left: 30,
-                  backgroundColor: themeStyles.colors.vermelho,
-                  borderRadius: 50,
-                  position: "absolute",
-                }}
-              >
-                <Text
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      marginRight: 1,
+                      top: -1,
+                      fontSize: 10,
+                      fontWeight: "500",
+                      color: themeStyles.colors.brancoPuro,
+                    }}
+                  >
+                    {getItemsCount()}
+                  </Text>
+                </View>
+              ),
+              tabBarVisible: false,
+              tabBarStyle: { display: "none" },
+            }}
+          />
+          <Tab.Screen
+            name="Favoritos"
+            component={Favorites}
+            options={{
+              header: () => null,
+              tabBarIcon: ({ focused }) => (
+                <Image
+                  source={
+                    focused
+                      ? require("../../assets/System/heart-active.png")
+                      : require("../../assets/System/heart-inactive.png")
+                  }
+                  style={{ width: 40, height: 40 }}
+                />
+              ),
+              tabBarLabel: ({ focused }) => (
+                <View
                   style={{
-                    textAlign: "center",
-                    marginRight: 1,
-                    top: -1,
-                    fontSize: 10,
-                    fontWeight: "500",
-                    color: themeStyles.colors.brancoPuro,
+                    width: 12,
+                    height: 12,
+                    top: 30,
+                    left: 30,
+                    backgroundColor: themeStyles.colors.vermelho,
+                    borderRadius: 50,
+                    position: "absolute",
                   }}
                 >
-                  {getFavCount()}
-                </Text>
-              </View>
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="MyProfile"
-          component={MyProfile}
-          options={{
-            header: () => null,
-            tabBarIcon: ({ focused }) => (
-              <Image
-                source={
-                  focused
-                    ? require("../../assets/System/profile-active.png")
-                    : require("../../assets/System/profile-inactive.png")
-                }
-                style={{ width: 40, height: 40 }}
-              />
-            ),
-            tabBarLabel: ({ focused }) => null,
-          }}
-        />
-        <Tab.Screen
-          name="Product"
-          component={Product}
-          options={{
-            tabBarButton: () => null,
-            tabBarVisible: false,
-            tabBarStyle: { display: "none" },
-            header: () => null,
-            unmountOnBlur: true,
-          }}
-        />
-        <Tab.Screen
-          name="Profile"
-          component={Profile}
-          options={{
-            tabBarButton: () => null,
-            tabBarVisible: false,
-            tabBarStyle: { display: "none" },
-            header: () => null,
-            unmountOnBlur: true,
-          }}
-        />
-        <Tab.Screen
-          name="Login"
-          component={Login}
-          options={{ tabBarVisible: false, headerShown: false, tabBarButton: () => null, tabBarVisible: false, tabBarStyle: { display: "none"}}}
-        />
-        <Tab.Screen
-          name="Signup"
-          component={Signup}
-          options={{ tabBarVisible: false, headerShown: false, tabBarButton: () => null, tabBarVisible: false, tabBarStyle: { display: "none"}}}
-        />
-        <Tab.Screen
-          name="Chat"
-          component={Chat}
-          options={{ tabBarVisible: false, headerShown: false, tabBarButton: () => null, tabBarVisible: false, tabBarStyle: { display: "none"}}}
-        />
-      </Tab.Navigator>
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      marginRight: 1,
+                      top: -1,
+                      fontSize: 10,
+                      fontWeight: "500",
+                      color: themeStyles.colors.brancoPuro,
+                    }}
+                  >
+                    {getFavCount()}
+                  </Text>
+                </View>
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="MyProfile"
+            component={MyProfile}
+            options={{
+              header: () => null,
+              tabBarIcon: ({ focused }) => (
+                <Image
+                  source={
+                    focused
+                      ? require("../../assets/System/profile-active.png")
+                      : require("../../assets/System/profile-inactive.png")
+                  }
+                  style={{ width: 40, height: 40 }}
+                />
+              ),
+              tabBarLabel: ({ focused }) => null,
+            }}
+          />
+          <Tab.Screen
+            name="Product"
+            component={Product}
+            options={{
+              tabBarButton: () => null,
+              tabBarVisible: false,
+              tabBarStyle: { display: "none" },
+              header: () => null,
+              unmountOnBlur: true,
+            }}
+          />
+          <Tab.Screen
+            name="Profile"
+            component={Profile}
+            options={{
+              tabBarButton: () => null,
+              tabBarVisible: false,
+              tabBarStyle: { display: "none" },
+              header: () => null,
+              unmountOnBlur: true,
+            }}
+          />
+          <Tab.Screen
+            name="Login"
+            component={Login}
+            options={{ tabBarVisible: false, headerShown: false, tabBarButton: () => null, tabBarVisible: false, tabBarStyle: { display: "none"}}}
+          />
+          <Tab.Screen
+            name="Signup"
+            component={Signup}
+            options={{ tabBarVisible: false, headerShown: false, tabBarButton: () => null, tabBarVisible: false, tabBarStyle: { display: "none"}}}
+          />
+          <Tab.Screen
+            name="Chat"
+            component={Chat}
+            options={{ tabBarVisible: false, headerShown: false, tabBarButton: () => null, tabBarVisible: false, tabBarStyle: { display: "none"}}}
+          />
+        </Tab.Navigator>
+        <Modalize
+            ref={modalizeref}
+            snapPoint={750}
+            // modalStyle={styles.modal}
+            // onClosed={() => setMenuVisible(true)}
+            // modalHeight={750}
+            adjustToContentHeight={true}
+            openAnimationConfig={{ timing: { duration: 500 } }}
+        >
+            <View style={{ justifyContent: "center", alignItems: "center", height: 750 }}>
+            <TouchableOpacity onPress={navigateToChat}>
+                <Text >Vá para o chat</Text>
+            </TouchableOpacity>
+            </View>
+        </Modalize> 
+      </GestureHandlerRootView>
     </ToastProvider>
+    
   );
 }
 

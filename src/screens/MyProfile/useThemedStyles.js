@@ -193,9 +193,9 @@ export const useThemedStyles = () => {
         backgroundColor: "red", // Cor de fundo do botão
         padding: 10,
         borderRadius: 10,
-        marginTop: 10,
         width: '100%',
         alignItems: 'center',
+        marginBottom: 20,
     },
     nameButton: {
         color: "white", // Cor do texto do botão
