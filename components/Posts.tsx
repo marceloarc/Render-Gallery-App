@@ -1,3 +1,4 @@
+// posts.js
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { getProducts} from '../services/ProductsService';
@@ -8,17 +9,20 @@ import { useTheme } from '../ThemeContext';
 export function Posts(props) {
     const [products, setProducts] = useState([]);
     const { themeStyles } = useTheme();
+    const [sortedPosts, setSortedPosts] = useState([]);
 
     useEffect(() => {
-        setProducts(props.Products);
+        // Classificar os posts por ID de forma decrescente
+        const sorted = [...props.Products].sort((a, b) => b.id - a.id);
+        setSortedPosts(sorted);
     }, [props.Products]);
-
+    
     return (
         <View style={{flex: 1, backgroundColor: themeStyles.colors.background}}>
             <MasonryList
-                data={products}
+                data={sortedPosts}
                 keyExtractor={item => item.id.toString()}
-                renderItem={({ item }) => <Post {...item} />}
+                renderItem={({ item }) => <Post {...item} returnScreen={props.returnScreen} />}
                 numColumns={2}
                 contentContainerStyle={styles.list}
             />

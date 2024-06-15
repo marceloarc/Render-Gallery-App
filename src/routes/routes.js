@@ -11,6 +11,7 @@ import Cart from "../screens/Cart";
 import Favorites from "../screens/Favorites";
 import MyProfile from "../screens/MyProfile";
 import Product from "../screens/Product";
+import Chat from "../screens/Chat";
 import { useTheme } from "../../ThemeContext";
 import darkMode from "../../assets/System/dark-mode.png";
 import lightMode from "../../assets/System/light-mode.png";
@@ -324,6 +325,11 @@ function Routes() {
         <Tab.Screen
           name="Signup"
           component={Signup}
+          options={{ tabBarVisible: false, headerShown: false, tabBarButton: () => null, tabBarVisible: false, tabBarStyle: { display: "none"}}}
+        />
+        <Tab.Screen
+          name="Chat"
+          component={Chat}
           options={{ tabBarVisible: false, headerShown: false, tabBarButton: () => null, tabBarVisible: false, tabBarStyle: { display: "none"}}}
         />
       </Tab.Navigator>
