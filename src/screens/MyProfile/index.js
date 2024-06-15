@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,33 +6,51 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  Button,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useThemedStyles } from "./useThemedStyles";
-import { getProductsByUser } from "../../../services/ProductsService";
-import { PostRelated } from "../../../components/Post/PostRelated";
-import { useState, useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
-import { Menu, Provider as PaperProvider } from "react-native-paper"; // Importando Menu e PaperProvider
-import { Dimensions } from 'react-native';
 import { Posts } from '../../../components/Posts';
-import { useTheme } from '../../../ThemeContext';
+import { Modalize } from 'react-native-modalize';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useTheme } from "../../../ThemeContext";
+
 
 export default function MyProfile({ route }) {
   const { user, signOut } = useContext(AuthContext);
   const navigation = useNavigation();
   const styles = useThemedStyles();
-  const [menuVisible, setMenuVisible] = useState(false); // Estado para controlar a visibilidade do menu
-  const openMenu = () => setMenuVisible(true);
-  const closeMenu = () => setMenuVisible(false);
-  const { theme, toggleTheme, themeStyles } = useTheme();
+  const [menuVisible, setMenuVisible] = useState(true);
+  const modalizeref = useRef(null);
+  const { themeStyles } = useTheme();
 
   // Função para lidar com o logout
   const handleLogout = () => {
     signOut();
     navigation.navigate("Login");
+  };
+
+  useEffect(() => {
+    navigation.setOptions({
+      tabBarStyle: {
+        position: "absolute",
+        backgroundColor: '#000',
+        borderTopWidth: 0,
+        bottom: 14,
+        left: 14,
+        right: 14,
+        elevation: 0,
+        borderRadius: 40,
+        height: 60,
+        display: menuVisible ? "flex" : "none",
+      },
+    });
+  }, [navigation, menuVisible]);
+
+  const onOpen = () => {
+    setMenuVisible(false);
+    modalizeref.current?.open();
   };
 
   if (!user) {
@@ -44,36 +62,38 @@ export default function MyProfile({ route }) {
     );
   }
 
-  const pic = user.pic;
   const { publicacoes } = user;
   const qtdProducts = publicacoes.length;
 
   return (
-    <PaperProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
+        <Modalize
+          ref={modalizeref}
+          snapPoint={100}
+          modalStyle={styles.modal}
+          onClosed={() => setMenuVisible(true)}
+          modalHeight={100}
+        >
+          <View style={{ justifyContent: "center", alignItems: "center" }}>
+          <TouchableOpacity onPress={handleLogout} style={styles.buttonSair}>
+            <Text style={styles.nameButton}>Sair</Text>
+          </TouchableOpacity>
+          </View>
+        </Modalize>
+
         <ScrollView style={styles.scrollView}>
           <View style={styles.spaceheader}></View>
-          {/* <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.buttonIconBack}
-          >
-            <Ionicons name="chevron-back" size={24} color="black" />
-          </TouchableOpacity> */}
 
-          <TouchableOpacity onPress={openMenu} style={styles.buttonIconPoint}>
+          <TouchableOpacity onPress={onOpen} style={styles.buttonIconPoint}>
             <Ionicons name="ellipsis-vertical" size={24} color={themeStyles.colors.textPrimary} />
           </TouchableOpacity>
-          <Menu
-            visible={menuVisible}
-            onDismiss={closeMenu}
-            anchor={{ x: Dimensions.get('window').width - 25, y: 90 }}
-
->
-            <Menu.Item onPress={handleLogout} title="Sair" style={styles.menuItem}   titleStyle={{ color: 'black', backgroundColor: 'red' }} />
-          </Menu>
 
           <View style={styles.profileSection}>
-            <Image source={{ uri: "http://192.168.166.114:5000/images/2/6307a0f69ce861064cc219e7e3900ffd.jpeg" }} style={styles.profileImage} />
+            <Image
+              source={{ uri: "http://192.168.166.114:5000/images/2/6307a0f69ce861064cc219e7e3900ffd.jpeg" }}
+              style={styles.profileImage}
+            />
             <View style={styles.containername}>
               <Text style={styles.profileName}>@{user.name}</Text>
               <Text style={styles.profileName2}>Usuário desde 01/01/1999</Text>
@@ -86,8 +106,6 @@ export default function MyProfile({ route }) {
           </View>
 
           <View style={styles.postsContainer}>
-
-
             <View style={styles.containerExterno}>
               <View style={styles.containerInterno}>
                 <Text style={styles.textInterno1}>Artes</Text>
@@ -113,25 +131,11 @@ export default function MyProfile({ route }) {
             <View style={styles.line}>
               <View style={styles.line2}></View>
             </View>
-            {/* <ScrollView horizontal>
-              {publicacoes.map((relatedProduct, index) => (
-                  <PostRelated
-                    key={relatedProduct.id}
-                    id={relatedProduct.id}
-                    name={relatedProduct.name}
-                    path={relatedProduct.path}
-                    price={relatedProduct.price}
-                    user={relatedProduct.user}
-                    style={styles.relatedItem}
-                  />
-                ))}
-            </ScrollView> */}
-          <Posts Products={publicacoes} returnScreen={'MyProfile'} />
-
+            <Posts Products={publicacoes} returnScreen={'MyProfile'} />
           </View>
+
         </ScrollView>
-        <View style={styles.space}></View>
       </View>
-    </PaperProvider>
+    </GestureHandlerRootView>
   );
 }

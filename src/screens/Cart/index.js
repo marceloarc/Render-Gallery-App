@@ -17,7 +17,6 @@ import PaymentMethod from "../../../components/PaymentMethod/PaymentMethod";
 import { Modalize } from 'react-native-modalize'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { getCategory } from "../../../services/CategoryService";
-import { Menu, Provider as PaperProvider } from "react-native-paper"; // Importando Menu e PaperProvider
 import { removeItemToCartService } from "../../../services/ProductsService";
 import { useThemedStyles } from "./useThemedStyles";
 import { useTheme } from "../../../ThemeContext";
@@ -30,19 +29,6 @@ export default function Cart() {
   const modalizeref = useRef(null);
   const styles = useThemedStyles(); 
   const { themeStyles } = useTheme();
-
-    // Crie um array para controlar a visibilidade do menu para cada item
-    const [menuVisible, setMenuVisible] = useState(Array(items.length).fill(false));
-
-    // Função para abrir o menu para um item específico
-    const openMenu = (index) => {
-      setMenuVisible(menuVisible.map((value, i) => (i === index ? true : value)));
-    };
-  
-    // Função para fechar o menu para um item específico
-    const closeMenu = (index) => {
-      setMenuVisible(menuVisible.map((value, i) => (i === index ? false : value)));
-    };
   
   const handleRemoveProduct = (Id) => {
     removeItemFromCart(Id);
@@ -86,23 +72,9 @@ export default function Cart() {
           </Text>
         </View>
         <View style={styles.quantityContainer}>
-        <TouchableOpacity onPress={() => openMenu(index)} style={styles.buttonIconPoint}>
-            <Ionicons name="ellipsis-horizontal" size={24} color={themeStyles.colors.textPrimary} />
+        <TouchableOpacity onPress={() => handleRemoveProduct(itemid)} style={styles.buttonIconPoint}>
+            <Ionicons name="trash-outline" size={20} color="red" />
           </TouchableOpacity>
-          <Menu
-            visible={menuVisible[index]}
-            onDismiss={() => closeMenu(index)}
-            anchor={
-              <Ionicons
-                name="ellipsis-horizontal"
-                size={10}
-                color="transparent"
-                style={styles.menuIcon}
-              />
-            }
-          >
-            <Menu.Item onPress={() => handleRemoveProduct(itemid)} title="Remove" />
-          </Menu>
 
           <View style={styles.quantity}>
             <TouchableOpacity
@@ -127,7 +99,6 @@ export default function Cart() {
   }
 
   return (
-    <PaperProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <View style={styles.container2}>
           <View style={styles.header}>
@@ -186,6 +157,5 @@ export default function Cart() {
           </View>
         </View>
       </GestureHandlerRootView>
-    </PaperProvider>
   );
 }

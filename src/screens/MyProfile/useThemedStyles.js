@@ -73,7 +73,7 @@ export const useThemedStyles = () => {
         backgroundColor: themeStyles.colors.background,
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 2,
+        zIndex: 1,
         position: 'absolute',
         right: 20,  // Ajustado para 10 para que fique próximo à borda
         top: 40     // Ajustado para 30 para melhor visualização
@@ -179,7 +179,29 @@ export const useThemedStyles = () => {
         color: themeStyles.colors.textSecondary,
         paddingTop: 10,
         fontSize: 12
-    }
+    },
+    modal: {
+        backgroundColor: themeStyles.colors.background, // Cor de fundo do modal
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        paddingHorizontal: 20,
+        paddingTop: 20,
+        elevation: 999, // Elevação para aparecer acima do TabNavigatorBottom
+        zIndex: 999, // Z-index para aparecer acima do TabNavigatorBottom
+    },
+    buttonSair: {
+        backgroundColor: "red", // Cor de fundo do botão
+        padding: 10,
+        borderRadius: 10,
+        marginTop: 10,
+        width: '100%',
+        alignItems: 'center',
+    },
+    nameButton: {
+        color: "white", // Cor do texto do botão
+        fontSize: 20, // Tamanho do texto do botão
+        fontStyle: 'Bold'
+    },
     });
 
     return styles;
