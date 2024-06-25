@@ -8,12 +8,14 @@ import { useTheme } from "../../../ThemeContext";
 import * as ImagePicker from 'expo-image-picker';
 import { useToast } from "react-native-toast-notifications";
 import { Ionicons } from "@expo/vector-icons";
+import imageicon from '../../../assets/System/select-foto.png'
 export default function Signup() {
+  const imageiconuri = Image.resolveAssetSource(imageicon).uri
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [confirmpassword, setConfirmpassword] = useState('');
-  const [imageUri, setImageUri] = useState(null);
+  const [imageUri, setImageUri] = useState("");
   const { signIn } = useContext(AuthContext);
   const navigation = useNavigation();
   const styles = useThemedStyles();
@@ -59,7 +61,7 @@ export default function Signup() {
       return;
     }
   
-   
+ 
       const formData = new FormData();
       formData.append('File', {
         uri: imageUri,
@@ -93,7 +95,7 @@ export default function Signup() {
           animationType: "fade",
           textStyle: { color: 'white' },
           backgroundColor: "#FF5722",
-          icon: <Ionicons name="heart-outline" size={24} color="white" />,
+          icon: <Ionicons name="alert-outline" size={24} color="white" />,
       });
       }
 
@@ -107,7 +109,7 @@ export default function Signup() {
         {imageUri ? (
           <Image source={{ uri: imageUri }} style={styles.image} />
         ) : (
-          <Text>Selecione uma imagem</Text>
+          <Image source={{ uri: imageiconuri }} style={styles.image} />
         )}
       </TouchableOpacity>
 

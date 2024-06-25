@@ -41,7 +41,7 @@ export async function login(email, password) {
 
           return response.data;
         } catch (error) {
-          console.error("Erro ao cadastrar usuário:", error.message);
+          console.error("Erro ao cadastrar usuáriokk:", error.message);
           Alert.alert('Erro', 'Ocorreu um erro ao cadastrar o usuário. Por favor, tente novamente.');
         }
   }

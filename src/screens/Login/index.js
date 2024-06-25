@@ -60,7 +60,7 @@ export default function Login() {
           animationType: "fade",
           textStyle: { color: 'white' },
           backgroundColor: "#FF5722",
-          icon: <Ionicons name="heart-outline" size={24} color="white" />,
+          icon: <Ionicons name="alert-outline" size={24} color="white" />,
       });
       }
   
