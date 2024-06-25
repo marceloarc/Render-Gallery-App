@@ -45,7 +45,21 @@ export async function login(email, password) {
           Alert.alert('Erro', 'Ocorreu um erro ao cadastrar o usuário. Por favor, tente novamente.');
         }
   }
-
+export async function visualizar_mensagem(cid, user_id){
+  try {
+    const response = await axios.get(`${urlApi}/api/mobile/visualizar/${cid}/${user_id}`,);
+    
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+        throw new Error(JSON.stringify(error.response.data));
+    } else if (error.request) {
+        throw new Error('Erro de rede: não foi possível conectar ao servidor');
+    } else {
+        throw new Error('Erro ao enviar solicitação');
+    }
+  }
+}
 export async function getUsersById(userId){
     try {
         const response = await axios.get(`${urlApi}/api/mobile/Getuser/${userId}`);

@@ -122,7 +122,7 @@ function Routes() {
   if (!appIsReady) {
     return null;
   }
-
+  
   const onOpen = () => {
     // setMenuVisible(false);
     modalizeref.current?.open();
@@ -189,6 +189,30 @@ function Routes() {
                   <View style={{flexDirection: "row", alignItems: "center"}}>
                     <TouchableOpacity onPress={onOpen} style={{marginRight: 15}}>
                         <Ionicons name="chatbubble-ellipses" size={30} color={themeStyles.colors.textCategory} />
+                        <View
+                  style={{
+                    width: 12,
+                    height: 12,
+                    top: 0,
+                    left: 20,
+                    backgroundColor: themeStyles.colors.vermelho,
+                    borderRadius: 50,
+                    position: "absolute",
+                  }}
+                >
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      marginRight: 1,
+                      top: -1,
+                      fontSize: 10,
+                      fontWeight: "500",
+                      color: themeStyles.colors.brancoPuro,
+                    }}
+                  >
+                    {user.newMessages}
+                  </Text>
+                </View>
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={toggleTheme}

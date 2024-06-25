@@ -6,7 +6,7 @@ import * as SignalR from '@microsoft/signalr';
 import { AuthContext } from "../../../context/AuthContext";
 import axios from 'axios';
 import { API_BASE_URL } from '../../../env';
-
+import { visualizar_mensagem } from "../../../services/UsersService";
 export default function Chat() {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
@@ -25,8 +25,9 @@ export default function Chat() {
     const { user_chat } = route.params;
     const { chat_id } = route.params;
     const { messages_chat } = route.params;
-
+    
     useEffect(() => {
+        visualizar_mensagem(chat_id,user.id);
         if (messages_chat && messages_chat.length > 0) {
             setMessages(messages_chat.map((msg, index) => ({
                 id: index,
