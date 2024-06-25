@@ -5,6 +5,7 @@ import { getProducts} from '../services/ProductsService';
 import { Post } from './Post/Post';
 import MasonryList from '@react-native-seoul/masonry-list';
 import { useTheme } from '../ThemeContext';
+import { FlatList } from 'react-native-gesture-handler';
 
 export function Posts(props) {
     const [products, setProducts] = useState([]);
@@ -12,7 +13,6 @@ export function Posts(props) {
     const [sortedPosts, setSortedPosts] = useState([]);
 
     useEffect(() => {
-        // Classificar os posts por ID de forma decrescente
         const sorted = [...props.Products].sort((a, b) => b.id - a.id);
         setSortedPosts(sorted);
     }, [props.Products]);

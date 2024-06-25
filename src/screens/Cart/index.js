@@ -111,12 +111,14 @@ export default function Cart() {
 
             <Text style={styles.title}>Carrinho</Text>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => navigation.navigate('Chat')}
               style={styles.buttonFilter}
             >
               <Ionicons name="filter" size={24} color={themeStyles.colors.textPrimary} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+            <View style={styles.buttonFilter}>
+            </View> 
           </View>
           <View style={styles.container}>
             <View style={styles.listContainer}>
@@ -135,7 +137,7 @@ export default function Cart() {
           </View>
 
 
-          <Modalize ref={modalizeref} snapPoint={500} adjustToContentHeight={true} openAnimationConfig={{ timing: { duration: 1000 } }} >
+          <Modalize ref={modalizeref} snapPoint={500} adjustToContentHeight={true} openAnimationConfig={{ timing: { duration: 500 } }} >
             <View style={{justifyContent: "center", alignItems: "center"}}>
             <PaymentMethod />
             <TouchableOpacity

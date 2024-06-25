@@ -67,9 +67,9 @@ export const useThemedStyles = () => {
             buttonFilter: {
             width: 40,
             height: 40,
-            borderRadius: 100,
-            borderWidth: 1,
-            borderColor: themeStyles.colors.textPrimary,
+            // borderRadius: 100,
+            // borderWidth: 1,
+            // borderColor: themeStyles.colors.textPrimary,
             alignItems: "center",
             justifyContent: "center",
             right: 20,
@@ -104,7 +104,7 @@ export const useThemedStyles = () => {
             fontSize: 24,
             fontWeight: "bold",
             textAlign: "center",
-            color: themeStyles.colors.textPrimary
+            color: themeStyles.colors.textPrimary,
             },
             buttonIcon: {
             alignItems: "center",

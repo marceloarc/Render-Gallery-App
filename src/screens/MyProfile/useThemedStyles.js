@@ -38,8 +38,7 @@ export const useThemedStyles = () => {
           paddingHorizontal: 20,
       },
       postsContainer2: {
-        marginTop: 10,
-        paddingHorizontal:10,
+        paddingHorizontal:0,
     },
       containername: {
         paddingHorizontal: 20,
@@ -68,8 +67,6 @@ export const useThemedStyles = () => {
         width: 40,
         height: 40,
         borderRadius: 100,
-        borderWidth: 1,
-        borderColor: themeStyles.colors.textPrimary,
         backgroundColor: themeStyles.colors.background,
         alignItems: 'center',
         justifyContent: 'center',
@@ -142,7 +139,7 @@ export const useThemedStyles = () => {
 
     },
     space:{
-        height: 25,
+        height: 40,
     },
     spaceheader:{
         height: 100,
@@ -190,7 +187,7 @@ export const useThemedStyles = () => {
         zIndex: 999, // Z-index para aparecer acima do TabNavigatorBottom
     },
     buttonSair: {
-        backgroundColor: "red", // Cor de fundo do botão
+        backgroundColor: themeStyles.colors.buttonSair, // Cor de fundo do botão
         padding: 10,
         borderRadius: 10,
         width: '100%',
@@ -198,7 +195,7 @@ export const useThemedStyles = () => {
         marginBottom: 20,
     },
     nameButton: {
-        color: "white", // Cor do texto do botão
+        color: themeStyles.colors.textPrimaryButton, // Cor do texto do botão
         fontSize: 20, // Tamanho do texto do botão
         fontStyle: 'Bold'
     },

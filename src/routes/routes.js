@@ -24,6 +24,7 @@ import axios from 'axios';
 import { API_BASE_URL } from '../../env.js';
 import { Modalize } from 'react-native-modalize';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import ChatList from "../../components/ChatList/ChatList";
 
 const urlApi = API_BASE_URL;
 
@@ -51,6 +52,8 @@ function Routes() {
   const [timer, setTimer] = useState(null); // Estado para armazenar o temporizador
   const modalizeref = useRef(null);
 
+  const chats = user ? user.chats : [];
+  // console.log("Chats:", chats);
   let imageSource = theme === "dark" ? darkMode : lightMode;
 
   useEffect(() => {
@@ -129,10 +132,10 @@ function Routes() {
     modalizeref.current?.close();
   };
 
-  const navigateToChat = () => {
-      onCloseModalize(); // Fechar o Modalize antes de navegar para o chat
-      navigation.navigate('Chat'); // Navegar para a tela de chat
-  };
+  const navigateToChat = (item) => {
+    onCloseModalize(); // Fechar o Modalize antes de navegar para o chat
+    navigation.navigate('Chat', { user_chat: item.user_chat, chat_id: item.chat_id, messages_chat: item.messages});
+};
 
 
   return (
@@ -335,7 +338,7 @@ function Routes() {
             options={{
               tabBarButton: () => null,
               tabBarVisible: false,
-              tabBarStyle: { display: "none" },
+              // tabBarStyle: { display: "none" },
               header: () => null,
               unmountOnBlur: true,
             }}
@@ -364,11 +367,14 @@ function Routes() {
             // modalHeight={750}
             adjustToContentHeight={true}
             openAnimationConfig={{ timing: { duration: 500 } }}
+            modalStyle={{backgroundColor: themeStyles.colors.background, borderTopLeftRadius: 20, borderTopRightRadius: 20}}
         >
-            <View style={{ justifyContent: "center", alignItems: "center", height: 750 }}>
-            <TouchableOpacity onPress={navigateToChat}>
-                <Text >Vá para o chat</Text>
-            </TouchableOpacity>
+            <View style={{height: 750 }}>
+              <Text style={{fontSize: 25, fontWeight: 'bold', textAlign: 'center', marginVertical: 10, color: themeStyles.colors.textPrimary, marginTop: 20}}>Conversas</Text>
+              <ChatList
+                  chats={chats}
+                  onPressChatItem={navigateToChat} 
+              />
             </View>
         </Modalize> 
       </GestureHandlerRootView>

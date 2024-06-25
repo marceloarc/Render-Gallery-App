@@ -52,7 +52,7 @@ export const useThemedStyles = () => {
         marginTop: 70,
         height: 64,
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "center",
       },
       buttonIconBack: {
         width: 40,

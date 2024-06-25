@@ -59,17 +59,18 @@ export default function Favorites() {
   return (
     <View style={styles.container2}>
       <View style={styles.header}>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.buttonIconBack}
         >
           <Ionicons name="chevron-back" size={24} color={themeStyles.colors.textPrimary} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <Text style={styles.title}>Favorites</Text>
 
-        <View style={styles.buttonFilter}>
-        </View>
+        {/* <View style={styles.buttonFilter}>
+          <Ionicons name="options" size={24} color={themeStyles.colors.textPrimary} />
+        </View> */}
       </View>
       <View style={styles.container}>
         <View style={styles.listContainer}>

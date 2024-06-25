@@ -1,26 +1,48 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform, Keyboard, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native'; 
+import * as SignalR from '@microsoft/signalr';
+import { AuthContext } from "../../../context/AuthContext";
+import axios from 'axios';
+import { API_BASE_URL } from '../../../env';
 
 export default function Chat() {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const [keyboardIsOpen, setKeyboardIsOpen] = useState(false);
     const navigation = useNavigation();
-
     const scrollViewRef = useRef();
+    const { user } = useContext(AuthContext);
+    const urlApi = API_BASE_URL;
+
+    if(user == null) {
+        navigation.navigate("Login");
+    }
+
+    const route = useRoute();
+
+    const { user_chat } = route.params;
+    const { chat_id } = route.params;
+    const { messages_chat } = route.params;
 
     useEffect(() => {
-        // Scroll para a última mensagem ao carregar
+        if (messages_chat && messages_chat.length > 0) {
+            setMessages(messages_chat.map((msg, index) => ({
+                id: index,
+                text: msg.msg_content,
+                sender: msg.user_id_from === user.id ? 'user' : 'other',
+                senderName: msg.user_id_from === user.id ? user.name : user_chat.name,
+                timestamp: new Date(msg.dataHora)
+            })));
+        } else {
+            setMessages([]);
+        }
+    }, [messages_chat]);
+
+    useEffect(() => {
         scrollViewRef.current.scrollToEnd({ animated: true });
     }, [messages]);
-
-    useEffect(() => {
-        // Adiciona mensagem de exemplo
-        const exampleMessage = { id: 0, text: 'Olá, tudo bem?', sender: 'other', senderName: 'Maria Alberto', timestamp: new Date() };
-        setMessages([exampleMessage]);
-    }, []);
 
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -37,11 +59,77 @@ export default function Chat() {
         };
     }, []);
 
-    const handleMessageSend = () => {
+    useEffect(() => {
+        // Configurar conexão com SignalR
+        const connection = new SignalR.HubConnectionBuilder()
+            .withUrl(`${urlApi}/chatHub`) 
+            .configureLogging(SignalR.LogLevel.Information)
+            .build();
+
+        connection.start()
+            .then(() => console.log("Conectado ao SignalR"))
+            .catch((err) => console.error("Erro ao conectar ao SignalR", err));
+
+        connection.on("ReceiveMessage", (message) => {
+            console.log("Nova mensagem recebida:", message);
+            setMessages(prevMessages => [...prevMessages, {
+                id: prevMessages.length,
+                text: message.message,
+                sender: 'other',
+                senderName: message.from.toString(),
+                timestamp: new Date(message.dateTime)
+            }]);
+        });
+
+        return () => {
+            connection.stop().then(() => console.log("Desconectado do SignalR"));
+        };
+    }, [user.id]);
+
+    const handleMessageSend = async () => {
         if (message.trim() === '') return;
-        const newMessage = { id: messages.length, text: message, sender: 'user', timestamp: new Date() };
-        setMessages([...messages, newMessage]);
-        setMessage('');
+
+        try {
+            const data = {
+                from: user.id,
+                to: user_chat.id, 
+                msg: message,
+                cid: chat_id
+            };
+
+            const response = await axios.post(`${urlApi}/sendMessageChat`, data);
+
+            console.log(response.data);
+
+            const newMessage = { id: messages.length, text: message, sender: 'user', timestamp: new Date() };
+            setMessages([...messages, newMessage]);
+            setMessage('');
+        } catch (error) {
+            console.error('Erro ao enviar mensagem:', error);
+        }
+    };
+
+    const renderMessagesWithDateSeparators = () => {
+        let lastMessageDate = null;
+
+        return messages.map((msg, index) => {
+            const messageDate = msg.timestamp.toDateString();
+            const showDateSeparator = messageDate !== lastMessageDate;
+            lastMessageDate = messageDate;
+
+            return (
+                <View key={msg.id}>
+                    {showDateSeparator && <Text style={styles.dateSeparator}>{messageDate}</Text>}
+                    <Message
+                        text={msg.text}
+                        sender={msg.sender}
+                        senderName={msg.senderName}
+                        timestamp={msg.timestamp}
+                        messages={messages} 
+                    />
+                </View>
+            );
+        });
     };
 
     return (
@@ -50,15 +138,15 @@ export default function Chat() {
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
                     style={styles.buttonIconBack}
-                    >
+                >
                     <Ionicons name="chevron-back" size={25} color="#00406A" />
                 </TouchableOpacity>
                 <Image
-                    source={{ uri: "http://192.168.0.10:5000/images/2/6307a0f69ce861064cc219e7e3900ffd.jpeg" }}
-                    style={{ width: 40, height: 40, borderRadius: 25, marginLeft: 10}}
-                />                
-                <View style={{ alignItems: "flex-start", height: "100%"}}>
-                    <Text style={styles.title}>Maria Alberto</Text>
+                    source={{ uri: user_chat.pic }}
+                    style={{ width: 40, height: 40, borderRadius: 25, marginLeft: 10 }}
+                />
+                <View style={{ alignItems: "flex-start", height: "100%" }}>
+                    <Text style={styles.title}>{user_chat.name}</Text>
                     <Text style={styles.title2}>Online</Text>
                 </View>
             </View>
@@ -67,12 +155,10 @@ export default function Chat() {
                 contentContainerStyle={styles.messagesContainer}
                 onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
             >
-                {messages.map((msg, index) => (
-                    <Message key={msg.id} text={msg.text} sender={msg.sender} senderName={msg.senderName} timestamp={msg.timestamp} index={index} />
-                ))}
+                {renderMessagesWithDateSeparators()}
             </ScrollView>
             <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "position" : undefined}
+                behavior={Platform.OS === "ios" ? "padding" : undefined}
                 style={[styles.inputContainer, { paddingBottom: 5 }]}
             >
                 <TextInput
@@ -82,26 +168,25 @@ export default function Chat() {
                     onChangeText={(text) => setMessage(text)}
                     onSubmitEditing={handleMessageSend}
                 />
-                <View style={styles.circleContainer}>
-                    <Ionicons name="send" size={24} color="#fff" onPress={handleMessageSend} />
-                </View>
+                <TouchableOpacity style={styles.circleContainer} onPress={handleMessageSend}>
+                    <Ionicons name="send" size={24} color="#fff" />
+                </TouchableOpacity>
             </KeyboardAvoidingView>
         </View>
     );
 }
 
-const Message = ({ text, sender, senderName, timestamp, index }) => {
+const Message = ({ text, sender, senderName, timestamp, messages }) => {
     const isUser = sender === 'user';
     const messageStyle = isUser ? styles.userMessage : styles.otherMessage;
     const timeStyle = isUser ? styles.userMessage : styles.otherMessage;
     const messageTextColor = isUser ? 'white' : 'black';
-    const showSenderName = !isUser && (index === 0 || messages[index - 1]?.sender !== 'other');
+    const showSenderName = !isUser && (messages.length === 0 || messages[messages.length - 1]?.sender !== 'other');
 
     const formattedTime = timestamp ? formatTime(timestamp) : '';
 
     return (
         <View>
-            {showSenderName && <Text style={styles.senderName}>{senderName}</Text>}
             <View style={[styles.messageContainer, messageStyle]}>
                 <Text style={[styles.messageText, { color: messageTextColor }]}>{text}</Text>
                 <Text style={[styles.timestamp, { color: messageTextColor }]}>{formattedTime}</Text>
@@ -130,8 +215,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         marginBottom: 20,
         flexDirection: 'row',
-        // alignItems: 'flex-end',
-        alignItems: 'center', 
+        alignItems: 'center',
         paddingTop: 50,
     },
     title: {
@@ -151,6 +235,16 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingHorizontal: 20,
     },
+    dateSeparator: {
+        alignSelf: 'center',
+        backgroundColor: '#e0e0e0',
+        borderRadius: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        marginVertical: 10,
+        fontWeight: 'bold',
+        color: '#333',
+    },
     messageContainer: {
         maxWidth: '80%',
         alignSelf: 'flex-start',
@@ -164,7 +258,7 @@ const styles = StyleSheet.create({
     userMessage: {
         alignSelf: 'flex-end',
         backgroundColor: '#00406A',
-        marginTop: 0, // Removendo espaço acima do balão do usuário
+        marginTop: 0, 
         borderTopRightRadius: 0,
     },
     otherMessage: {

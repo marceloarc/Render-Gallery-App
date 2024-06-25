@@ -62,6 +62,7 @@ export default function MyProfile({ route }) {
     );
   }
 
+  const path = user.pic;
   const { publicacoes } = user;
   const qtdProducts = publicacoes.length;
 
@@ -88,12 +89,12 @@ export default function MyProfile({ route }) {
           <View style={styles.spaceheader}></View>
 
           <TouchableOpacity onPress={onOpen} style={styles.buttonIconPoint}>
-            <Ionicons name="ellipsis-vertical" size={24} color={themeStyles.colors.textPrimary} />
+            <Ionicons name="ellipsis-horizontal" size={24} color={themeStyles.colors.textPrimary} />
           </TouchableOpacity>
 
           <View style={styles.profileSection}>
             <Image
-              source={{ uri: "http://192.168.166.114:5000/images/2/6307a0f69ce861064cc219e7e3900ffd.jpeg" }}
+              source={{ uri: path }}
               style={styles.profileImage}
             />
             <View style={styles.containername}>
@@ -126,17 +127,19 @@ export default function MyProfile({ route }) {
                 <Text style={styles.textInterno2}>11</Text>
               </View>
             </View>
-          </View>
-
-          <View style={styles.postsContainer2}>
             <Text style={styles.publiTitle}>Publicações</Text>
             <View style={styles.line}>
               <View style={styles.line2}></View>
             </View>
+          </View>
+
+          <View style={styles.postsContainer2}>
+
             <Posts Products={publicacoes} returnScreen={'MyProfile'} />
           </View>
 
         </ScrollView>
+        <View style={styles.space}></View>
       </View>
     </GestureHandlerRootView>
   );
