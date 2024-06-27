@@ -6,7 +6,7 @@ const ChatList = ({ chats, onPressChatItem }) => {
     const { user} = useContext(AuthContext);
     const styles = useThemedStyles(); 
     const renderChatItem = ({ item }) => {
-        console.log(item);
+ 
         return (
             <TouchableOpacity
                 style={styles.chatItem}

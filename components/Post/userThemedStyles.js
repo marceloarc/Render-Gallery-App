@@ -12,7 +12,7 @@ export const useThemedStyles = () => {
             
         },
         image: {
-            borderRadius: 15,
+            borderRadius: 22,
         },
         footer: {
             flexDirection: "row",
@@ -80,9 +80,6 @@ export const useThemedStyles = () => {
             // position: 'absolute',
             // top: 15,
             // right: 15,
-        },
-        doubleHeight: {
-            height: 400, // Ajuste aqui para o tamanho desejado do primeiro post
         },
     });
 

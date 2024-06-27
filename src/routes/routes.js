@@ -41,19 +41,19 @@ const BackButton = ({ onPress }) => (
     <Ionicons name="chevron-back" size={24} color="white" />
   </TouchableOpacity>
 );
-function Routes() {
-  const { user, loading } = useContext(AuthContext);
+
+function Routes({ connection, isConnected }) {
+  const { user, loading, signIn } = useContext(AuthContext);
   const { getItemsCount } = useContext(CartContext);
   const { getFavCount } = useContext(FavContext);
   const navigation = useNavigation();
   const { theme, toggleTheme, themeStyles } = useTheme();
   const [appIsReady, setAppIsReady] = useState(false);
-  const { signIn } = useContext(AuthContext);
   const [timer, setTimer] = useState(null); // Estado para armazenar o temporizador
   const modalizeref = useRef(null);
+  var newMessages = user ? user.newMessages : 0;
 
   const chats = user ? user.chats : [];
-  // console.log("Chats:", chats);
   let imageSource = theme === "dark" ? darkMode : lightMode;
 
   useEffect(() => {
@@ -84,20 +84,20 @@ function Routes() {
         try {
           if (user && user.id) {
             const response = await axios.post(`${urlApi}/api/mobile/UserInfoAll`, { Id: user.id });
+            
             signIn(response.data);
-            // console.log("Informações do usuário atualizadas:", response.data);
           }
         } catch (error) {
           if (error.response && error.response.data) {
-              throw new Error(JSON.stringify(error.response.data));
+            throw new Error(JSON.stringify(error.response.data));
           } else if (error.request) {
-              throw new Error('Erro de rede: não foi possível conectar ao servidor');
+            throw new Error('Erro de rede: não foi possível conectar ao servidor');
           } else {
-              throw new Error('Erro ao enviar solicitação');
+            throw new Error('Erro ao enviar solicitação');
           }
         }
       }
-  
+
       if (appIsReady) {
         const intervalId = setInterval(fetchUserInfo, 5000);
         setTimer(intervalId);
@@ -110,11 +110,12 @@ function Routes() {
     }, [appIsReady, user, signIn])
   );
 
-  // Limpa o temporizador quando o componente é desmontado
   useEffect(() => {
+    
     return () => {
       if (timer) {
         clearInterval(timer);
+        
       }
     };
   }, [timer]);
@@ -122,9 +123,8 @@ function Routes() {
   if (!appIsReady) {
     return null;
   }
-  
+
   const onOpen = () => {
-    // setMenuVisible(false);
     modalizeref.current?.open();
   };
 
@@ -134,15 +134,13 @@ function Routes() {
 
   const navigateToChat = (item) => {
     onCloseModalize(); // Fechar o Modalize antes de navegar para o chat
-    navigation.navigate('Chat', { user_chat: item.user_chat, chat_id: item.chat_id, messages_chat: item.messages});
-};
-
+    navigation.navigate('Chat', { user_chat: item.user_chat, chat_id: item.chat_id, messages_chat: item.messages, connection, isConnected });
+  };
 
   return (
     <ToastProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <Tab.Navigator
-
           initialRouteName={user ? "Home" : "Login"}
           screenOptions={({ route }) => ({
             headerTintColor: themeStyles.colors.textPrimary,
@@ -153,12 +151,11 @@ function Routes() {
               elevation: 0,
               shadowOpacity: 0,
             },
-            animationEnabled: true, // Ativa animações
-            animationTypeForReplace: "fade", // Define o tipo de animação (por exemplo, 'push', 'pop', 'fade', etc.)
-            animationIn: "slideInDown", // Define a animação de entrada
-            animationOut: "slideOutUp", // Define a animação de saída
+            animationEnabled: true,
+            animationTypeForReplace: "fade",
+            animationIn: "slideInDown",
+            animationOut: "slideOutUp",
             tabBarVisible: route.name !== "Product",
-
             tabBarShowLabel: true,
             tabBarStyle: {
               position: "absolute",
@@ -184,12 +181,11 @@ function Routes() {
                   style={{ width: 120, height: 40 }}
                 />
               ),
-              headerRight: () => {
-                return (
-                  <View style={{flexDirection: "row", alignItems: "center"}}>
-                    <TouchableOpacity onPress={onOpen} style={{marginRight: 15}}>
-                        <Ionicons name="chatbubble-ellipses" size={30} color={themeStyles.colors.textCategory} />
-                        <View
+              headerRight: () => (
+                <View style={{flexDirection: "row", alignItems: "center"}}>
+                  <TouchableOpacity onPress={onOpen} style={{marginRight: 15}}>
+                    <Ionicons name="chatbubble-ellipses" size={30} color={themeStyles.colors.textCategory} />
+                    <View
                   style={{
                     width: 12,
                     height: 12,
@@ -210,22 +206,21 @@ function Routes() {
                       color: themeStyles.colors.brancoPuro,
                     }}
                   >
-                    {user.newMessages}
+                    {newMessages}
                   </Text>
                 </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={toggleTheme}
-                      style={{ marginRight: 15 }}
-                    >
-                      <Image
-                        source={imageSource}
-                        style={{ width: 60, height: 35 }}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                );
-              },
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={toggleTheme}
+                    style={{ marginRight: 15 }}
+                  >
+                    <Image
+                      source={imageSource}
+                      style={{ width: 60, height: 35 }}
+                    />
+                  </TouchableOpacity>
+                </View>
+              ),
               tabBarIcon: ({ focused }) => (
                 <Image
                   source={
@@ -362,7 +357,6 @@ function Routes() {
             options={{
               tabBarButton: () => null,
               tabBarVisible: false,
-              // tabBarStyle: { display: "none" },
               header: () => null,
               unmountOnBlur: true,
             }}
@@ -381,29 +375,26 @@ function Routes() {
             name="Chat"
             component={Chat}
             options={{ tabBarVisible: false, headerShown: false, tabBarButton: () => null, tabBarVisible: false, tabBarStyle: { display: "none"}}}
+            initialParams={{ connection, isConnected }}
           />
         </Tab.Navigator>
         <Modalize
-            ref={modalizeref}
-            snapPoint={750}
-            // modalStyle={styles.modal}
-            // onClosed={() => setMenuVisible(true)}
-            // modalHeight={750}
-            adjustToContentHeight={true}
-            openAnimationConfig={{ timing: { duration: 500 } }}
-            modalStyle={{backgroundColor: themeStyles.colors.background, borderTopLeftRadius: 20, borderTopRightRadius: 20}}
+          ref={modalizeref}
+          snapPoint={750}
+          adjustToContentHeight={true}
+          openAnimationConfig={{ timing: { duration: 500 } }}
+          modalStyle={{backgroundColor: themeStyles.colors.background, borderTopLeftRadius: 20, borderTopRightRadius: 20}}
         >
-            <View style={{height: 750 }}>
-              <Text style={{fontSize: 25, fontWeight: 'bold', textAlign: 'center', marginVertical: 10, color: themeStyles.colors.textPrimary, marginTop: 20}}>Conversas</Text>
-              <ChatList
-                  chats={chats}
-                  onPressChatItem={navigateToChat} 
-              />
-            </View>
+          <View style={{height: 750 }}>
+            <Text style={{fontSize: 25, fontWeight: 'bold', textAlign: 'center', marginVertical: 10, color: themeStyles.colors.textPrimary, marginTop: 20}}>Conversas</Text>
+            <ChatList
+              chats={chats}
+              onPressChatItem={navigateToChat} 
+            />
+          </View>
         </Modalize> 
       </GestureHandlerRootView>
     </ToastProvider>
-    
   );
 }
 

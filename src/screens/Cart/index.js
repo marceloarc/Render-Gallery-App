@@ -18,7 +18,6 @@ import { Modalize } from 'react-native-modalize'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { getCategory } from "../../../services/CategoryService";
 import { removeItemToCartService } from "../../../services/ProductsService";
-import { UpdateItemService } from "../../../services/ProductsService";
 import { useThemedStyles } from "./useThemedStyles";
 import { useTheme } from "../../../ThemeContext";
 
@@ -41,17 +40,17 @@ export default function Cart() {
     }
   }
 
-  function Item({ item, index }) {
+  function renderItem({ item, index }) {
     const categoriaId = item.categoria;
     const categoria = getCategory(categoriaId);
     const itemid = item.idProduto;
-    const [quantity, setQuantity] = useState(item.quantidade);
+
     return (
       <TouchableOpacity
         style={styles.cartLine}
         onPress={() => {
           navigation.navigate("Product", {
-            Id: itemid,
+            Id: item.id,
             Name: item.nomeProduto,
             Price: item.price,
             Path: item.path,
@@ -72,49 +71,28 @@ export default function Cart() {
             })}
           </Text>
         </View>
-        <View style={styles.quantityContainer} >
+        <View style={styles.quantityContainer}>
         <TouchableOpacity onPress={() => handleRemoveProduct(itemid)} style={styles.buttonIconPoint}>
             <Ionicons name="trash-outline" size={20} color="red" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.quantity} >
+          <View style={styles.quantity}>
             <TouchableOpacity
               onPress={() => {
-                if(quantity > 0){
-                  var quantity2 = quantity - 1;
-                  if(quantity2 < 1){
-                    handleRemoveProduct(itemid);
-                  }
-                  setQuantity(quantity2);
-                  try {
-                    console.log(user.id, itemid, quantity);
-                    UpdateItemService(user.id, itemid, quantity-1);    
-                  } catch (error) {
-                    console.error('Erro ao adicionar item ao carrinho:', error);
-                    // Trate o erro conforme necessário
-                  }
-                }
-              
+                // Decrease quantity logic here
               }}
             >
               <Text style={styles.quantityText}>-</Text>
             </TouchableOpacity>
-            <Text style={styles.quantityText}>{quantity}</Text>
+            <Text style={styles.quantityText}>{item.quantidade}</Text>
             <TouchableOpacity
               onPress={() => {
-                var quantity2 = quantity + 1;
-                setQuantity(quantity2);
-                try {
-                  UpdateItemService(user.id, itemid, quantity+1);    
-                } catch (error) {
-                  console.error('Erro ao adicionar item ao carrinho:', error);
-                  // Trate o erro conforme necessário
-                }
+                // Increase quantity logic here
               }}
             >
               <Text style={styles.quantityText}>+</Text>
             </TouchableOpacity>
-          </TouchableOpacity>
+          </View>
         </View>
       </TouchableOpacity>
     );
@@ -149,7 +127,7 @@ export default function Cart() {
                 persistentScrollbar={true}
                 contentContainerStyle={styles.itemsListContainer}
                 data={items}
-                renderItem={({item, index, separators}) => <Item item={item}/> }
+                renderItem={renderItem}
                 keyExtractor={(item) => item.idProduto.toString()}
               />
             </View>

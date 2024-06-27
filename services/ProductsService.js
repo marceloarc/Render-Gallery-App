@@ -117,25 +117,6 @@ export async function addItemToCartService(userId, productId, quantity) {
         }
     }
 }
-export async function UpdateItemService(userId, productId, quantity) {
-    try {
-        const response = await axios.post(`${urlApi}/api/mobile/updateProductCart`, {
-            userId: userId,
-            artId: productId,
-            quantidade: quantity
-        });
-        console.log(response.data);
-        return response.data; 
-    } catch (error) {
-        if (error.response && error.response.data) {
-            throw new Error(JSON.stringify(error.response.data));
-        } else if (error.request) {
-            throw new Error('Erro de rede: não foi possível conectar ao servidor');
-        } else {
-            throw new Error('Erro ao enviar solicitação');
-        }
-    }
-}
 
 export async function removeItemToCartService(userId, productId) {
     try {
