@@ -17,9 +17,14 @@ export default function Profile({route}) {
     let [count, setCount] = useState(0);
     const navigation = useNavigation();
     const styles = useThemedStyles(); 
-    const { userId, name, path, publicacoes, publicacaoId, publicacaoName, publicacaoPrice, publicacaoPath, publicacaoUserId, publicacaoCategoriaId, publicacaoQuantidade } = route.params;
+    const { userId, name, path, publicacoes, publicacaoId, publicacaoName, publicacaoPrice, publicacaoPath, publicacaoUserId, publicacaoCategoriaId, publicacaoQuantidade, dataCriacao } = route.params;
     const qtdProducts = publicacoes.length;
     const { themeStyles } = useTheme();
+    const formattedDate = new Date(dataCriacao).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      });
 
     return (
         <View style={styles.container}>
@@ -36,7 +41,7 @@ export default function Profile({route}) {
                     />
                     <View style={styles.containername}>
                     <Text style={styles.profileName}>@{name}</Text>
-                    <Text style={styles.profileName2}>Usuário desde 01/01/1999</Text>
+                    <Text style={styles.profileName2}>Usuário desde {formattedDate}</Text>
                     <View style={styles.infoArt3}>
                         <View style={styles.category}>
                         <Text style={styles.CSelected}>Animes</Text>

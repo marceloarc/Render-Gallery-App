@@ -6,6 +6,7 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -25,46 +26,54 @@ export default function MyProfile({ route }) {
   const modalizeref = useRef(null);
   const { themeStyles } = useTheme();
 
-  // Função para lidar com o logout
+  // Verifica se o usuário está logado e renderiza apenas se o usuário existir
+  useEffect(() => {
+    if (!user) {
+      navigation.navigate("Login");
+    }
+  }, [user, navigation]);
+
+  // Verifica se o usuário está definido e se tem a propriedade dataCriacao
+  useEffect(() => {
+    if (user && !user.dataCriacao) {
+      user.dataCriacao = new Date();
+    }
+  }, [user]);
+
+  // Se o usuário não estiver definido, renderiza um componente de carregamento ou retorna nulo
+  if (!user) {
+    return (
+      <View style={styles.container}>
+        <Text>Carregando...</Text>
+      </View>
+    );
+  }
+
+  // Formatando a data de criação do usuário
+  const formattedDate = new Date(user.dataCriacao).toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+
   const handleLogout = () => {
     signOut();
     navigation.navigate("Login");
   };
-
-  useEffect(() => {
-    navigation.setOptions({
-      tabBarStyle: {
-        position: "absolute",
-        backgroundColor: themeStyles.colors.preto,
-        borderTopWidth: 0,
-        bottom: 14,
-        left: 14,
-        right: 14,
-        elevation: 0,
-        borderRadius: 40,
-        height: 60,
-        display: menuVisible ? "flex" : "none",
-      },
-    });
-  }, [navigation, menuVisible]);
 
   const onOpen = () => {
     setMenuVisible(false);
     modalizeref.current?.open();
   };
 
-  if (!user) {
-    handleLogout();
-    return (
-      <View style={styles.container}>
-        <Text>Deslogando...</Text>
-      </View>
-    );
-  }
-
   const path = user.pic;
   const { publicacoes } = user;
   const qtdProducts = publicacoes.length;
+
+  let totalFavoritos = 0;
+  publicacoes.forEach((publicacao) => {
+    totalFavoritos += publicacao.favoritosCount;
+  });
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -79,17 +88,18 @@ export default function MyProfile({ route }) {
           openAnimationConfig={{ timing: { duration: 350 } }}
         >
           <View style={{ justifyContent: "center", alignItems: "center" }}>
-          <TouchableOpacity onPress={handleLogout} style={styles.buttonSair}>
-            <Text style={styles.nameButton}>Sair</Text>
-          </TouchableOpacity>
+            <TouchableOpacity onPress={handleLogout} style={styles.buttonSair}>
+              <Text style={styles.nameButton}>Sair</Text>
+            </TouchableOpacity>
           </View>
         </Modalize>
 
         <ScrollView style={styles.scrollView}>
           <View style={styles.spaceheader}></View>
 
-          <TouchableOpacity onPress={onOpen} style={styles.buttonIconPoint}>
-            <Ionicons name="ellipsis-horizontal" size={24} color={themeStyles.colors.textPrimary} />
+          <TouchableOpacity onPress={handleLogout} style={styles.buttonIconPoint}>
+            <Text style={{color: themeStyles.colors.vermelho, fontSize: 16, marginRight: 5}}>Sair</Text>
+            <Ionicons name="log-out-outline" size={24} color={themeStyles.colors.vermelho} />
           </TouchableOpacity>
 
           <View style={styles.profileSection}>
@@ -99,7 +109,7 @@ export default function MyProfile({ route }) {
             />
             <View style={styles.containername}>
               <Text style={styles.profileName}>@{user.name}</Text>
-              <Text style={styles.profileName2}>Usuário desde 01/01/1999</Text>
+              <Text style={styles.profileName2}>Usuário desde {formattedDate}</Text>
               <View style={styles.infoArt3}>
                 <View style={styles.category}>
                   <Text style={styles.CSelected}>Animes</Text>
@@ -115,8 +125,8 @@ export default function MyProfile({ route }) {
                 <Text style={styles.textInterno2}>{qtdProducts}</Text>
               </View>
               <View style={styles.containerInterno}>
-                <Text style={styles.textInterno1}>Likes</Text>
-                <Text style={styles.textInterno2}>50</Text>
+                <Text style={styles.textInterno1}>Favoritados</Text>
+                <Text style={styles.textInterno2}>{totalFavoritos}</Text>
               </View>
               <View style={styles.containerInterno}>
                 <Text style={styles.textInterno1}>Views</Text>
@@ -124,7 +134,7 @@ export default function MyProfile({ route }) {
               </View>
               <View style={styles.containerInterno}>
                 <Text style={styles.textInterno1}>Vendas</Text>
-                <Text style={styles.textInterno2}>11</Text>
+                <Text style={styles.textInterno2}>{user.vendas}</Text>
               </View>
             </View>
             <Text style={styles.publiTitle}>Publicações</Text>
@@ -134,7 +144,6 @@ export default function MyProfile({ route }) {
           </View>
 
           <View style={styles.postsContainer2}>
-
             <Posts Products={publicacoes} returnScreen={'MyProfile'} />
           </View>
 

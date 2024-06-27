@@ -137,7 +137,35 @@ export const useThemedStyles = () => {
             },
             emptyText: {
                 color: themeStyles.colors.textPrimary
-              }
+              },
+              dialogContainer: {
+                backgroundColor: themeStyles.colors.background,
+                padding: 20,
+                borderRadius: 10,
+              },
+              dialogStyle: {
+                backgroundColor: themeStyles.colors.background,
+                padding: 20,
+                borderRadius: 10,
+                alignContent: "center",
+                justifyContent: "center",
+                alignSelf: "center",
+              },
+              titleContainer: {
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              },
+              icon: {
+                marginRight: 8,
+              },
+              titleText: {
+                color: themeStyles.colors.textPrimary, // Ajuste para a cor do tema
+                fontWeight: "bold",
+                fontSize: 20,
+                textAlign: "center",
+                marginRight: 8,
+              },
     });
 
     return styles;

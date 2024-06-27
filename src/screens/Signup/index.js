@@ -4,11 +4,14 @@ import { AuthContext } from '../../../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import { useThemedStyles } from "./useThemedStyles";
 import { register } from '../../../services/UsersService';
+import { login } from '../../../services/UsersService';
 import { useTheme } from "../../../ThemeContext";
 import * as ImagePicker from 'expo-image-picker';
 import { useToast } from "react-native-toast-notifications";
 import { Ionicons } from "@expo/vector-icons";
-import imageicon from '../../../assets/System/select-foto.png'
+import imageicon from '../../../assets/System/select-foto.png';
+import { CommonActions } from '@react-navigation/native';
+
 export default function Signup() {
   const imageiconuri = Image.resolveAssetSource(imageicon).uri
   const [email, setEmail] = useState('');
@@ -61,20 +64,21 @@ export default function Signup() {
       return;
     }
   
- 
-      const formData = new FormData();
-      formData.append('File', {
-        uri: imageUri,
-        type: 'image/jpeg',
-        name: 'photo.jpg',
-      });
-      formData.append('Nome', name);
-      formData.append('Email', email);
-      formData.append('Password', password);
-      
+    const formData = new FormData();
+    formData.append('File', {
+      uri: imageUri,
+      type: 'image/jpeg',
+      name: 'photo.jpg',
+    });
+    formData.append('Nome', name);
+    formData.append('Email', email);
+    formData.append('Password', password);
+  
+    try {
       const response = await register(formData);
-      console.log(response);
-      if(response.success){
+      console.log("Response from register:", response);
+  
+      if (response.success) {
         toast.show(response.success, {
           type: "success",
           placement: "bottom",
@@ -84,9 +88,23 @@ export default function Signup() {
           textStyle: { color: 'white' },
           backgroundColor: "#FF5722",
           icon: <Ionicons name="heart-outline" size={24} color="white" />,
-      });
-        navigation.navigate('Login');
-      }else if(response.error){
+        });
+  
+        const userData = await login(email, password);
+        console.log("Response from login:", userData);
+  
+        if (!userData.message) {
+          console.log("Usuário encontrado:", userData);
+          signIn(userData);
+  
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: 'Home' }],
+            })
+          );
+        }
+      } else if (response.error) {
         toast.show(response.error, {
           type: "warning",
           placement: "bottom",
@@ -96,10 +114,23 @@ export default function Signup() {
           textStyle: { color: 'white' },
           backgroundColor: "#FF5722",
           icon: <Ionicons name="alert-outline" size={24} color="white" />,
-      });
+        });
       }
-
+    } catch (error) {
+      console.error("Error during sign up:", error);
+      toast.show("Erro ao cadastrar usuário", {
+        type: "error",
+        placement: "bottom",
+        duration: 2000,
+        offset: 30,
+        animationType: "fade",
+        textStyle: { color: 'white' },
+        backgroundColor: "#FF5722",
+        icon: <Ionicons name="alert-circle-outline" size={24} color="white" />,
+      });
+    }
   };
+  
 
   return (
     <View style={styles.container}>
@@ -135,14 +166,7 @@ export default function Signup() {
         onChangeText={setPassword} 
         placeholderTextColor={themeStyles.colors.textPrimary}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Confirme sua senha"
-        value={confirmpassword}
-        secureTextEntry
-        onChangeText={setConfirmpassword} 
-        placeholderTextColor={themeStyles.colors.textPrimary}
-      />
+
       <TouchableOpacity
         onPress={handleSignUp}
         style={styles.buttonSubmit}>

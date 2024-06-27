@@ -3,25 +3,71 @@ import {
   Text, Image, View, ScrollView, SafeAreaView,
   TouchableOpacity, StyleSheet, ActivityIndicator
 } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useToast } from "react-native-toast-notifications";
-import { getProduct, getProductsByUser } from "../../../services/ProductsService";
+import { getProduct, getProductsByUser, getProductsByCategory, getProducts } from "../../../services/ProductsService";
 import { CartContext } from '../../../context/CartContext';
 import { FavContext } from '../../../context/FavContext';
-import { ConfirmDialog } from 'react-native-simple-dialogs';
+import { ConfirmDialog, ProgressDialog, Dialog } from 'react-native-simple-dialogs';
 import { getUsersById } from "../../../services/UsersService";
 import { PostRelated } from '../../../components/Post/PostRelated.js';
-import { getProductsByCategory } from '../../../services/ProductsService';
 import { useTheme } from '../../../ThemeContext';
 import { useThemedStyles } from "./useThemedStyles";
 import { getCategory } from '../../../services/CategoryService';
 import { AuthContext } from '../../../context/AuthContext';
-import { getProducts } from '../../../services/ProductsService';
 import { API_BASE_URL } from '../../../env.js';
+import * as Progress from 'react-native-progress';
 
 const urlApi = API_BASE_URL + "/";
+
+const CustomProgressDialog = ({ dialogVisibleError, setDialogVisibleError }) => {
+  const [progress, setProgress] = useState(0);
+  const styles = useThemedStyles();
+  const { themeStyles } = useTheme();
+
+  useEffect(() => {
+    if (dialogVisibleError) {
+      setProgress(0);
+      let progressInterval = setInterval(() => {
+        setProgress((prev) => prev + 0.01);
+      }, 30);
+
+      let timeout = setTimeout(() => {
+        clearInterval(progressInterval);
+        setDialogVisibleError(false);
+      }, 3000);
+
+      return () => {
+        clearInterval(progressInterval);
+        clearTimeout(timeout);
+      };
+    }
+  }, [dialogVisibleError]);
+
+  return (
+    <Dialog
+      visible={dialogVisibleError}
+      onTouchOutside={() => setDialogVisibleError(false)}
+      style={styles.dialogContainer}
+      dialogStyle={styles.dialogStyle}
+      titleStyle={{ color: themeStyles.colors.textPrimary, fontWeight: "bold", fontSize: 20, textAlign: "center" }}
+      title={
+        <View style={styles.titleContainer}>
+          <Ionicons name="alert-circle-outline" size={24} color={themeStyles.colors.vermelho} style={styles.icon} />
+          <Text style={styles.titleText}>Erro</Text>
+        </View>
+      }
+    >
+      <View style={styles.progressContainer}>
+        <Text style={{ color: themeStyles.colors.textPrimary, textAlign: "center", marginBottom: 20 }}>
+        Produto fora de estoque!
+        </Text>
+        <Progress.Bar progress={progress} width={200} color={themeStyles.colors.textPrimary} borderRadius={2} />
+      </View>
+    </Dialog>
+  );
+};
 
 export default function Product({ route }) {
   const { themeStyles } = useTheme();
@@ -30,9 +76,10 @@ export default function Product({ route }) {
   const [product, setProduct] = useState({});
   const { user } = useContext(AuthContext);
   const isCurrentUser = user.id === UserId;
-
   const [isLoading, setIsLoading] = useState(true);
   const [dialogVisible, setDialogVisible] = useState(false);
+  const [dialogVisibleError, setDialogVisibleError] = useState(false);
+  const [dialogVisibleSuccess, setDialogVisibleSuccess] = useState(false);
   const toast = useToast();
   const { addItemToCart } = useContext(CartContext);
   const { addItemToFav, getFavItem } = useContext(FavContext);
@@ -71,6 +118,7 @@ export default function Product({ route }) {
         userId: user2.id,
         name: user2.name,
         path: user2.path,
+        dataCriacao: user2.dataCriacao,
         publicacoes: user2.publicacoes,
         publicacaoId: Id,
         publicacaoName: Name,
@@ -128,58 +176,42 @@ export default function Product({ route }) {
       });
     } else {
       addItemToCart(Id, quantity2);
-      toast.show("Arte adicionada ao carrinho com sucesso!", {
-        type: "success",
-        placement: "bottom",
-        duration: 3000,
-        offset: 30,
-        animationType: "fade",
-        textStyle: { color: 'white' },
-        backgroundColor: "#388E3C", 
-        icon: <Ionicons name="cart-outline" size={24} color="white" />, 
-      });
+      setDialogVisibleSuccess(true);
+      setTimeout(() => {
+        setDialogVisibleSuccess(false);
+      }, 3000);
     }
     setDialogVisible(false);
   }  
     
-    function onAddToFav() {
-      addItemToFav(Id);
-      if(!getFavItem(Id)){
-        toast.show("Arte Favoritada com sucesso!", {
-          type: "success",
-          successColor: "#FF5722",
-          placement: "bottom",
-          duration: 2000,
-          offset: 30,
-          animationType: "fade",
-          textStyle: { color: 'white' }, 
-          icon: <Ionicons name="heart-outline" size={24} color="white" />, 
-        });
-        setIcon('heart');
-      }else{
-        setIcon('heart-outline');
-      }
+  function onAddToFav() {
+    addItemToFav(Id);
+    if(!getFavItem(Id)){
+      setIcon('heart');
+    } else {
+      setIcon('heart-outline');
     }
-
-    function Back() {
-      if(route.params?.returnScreen == 'MyProfile'){
-        navigation.navigate('MyProfile');
-      } else {
-          navigation.goBack();
-      }
   }
 
-    const decreaseQuantity = () => {
-      if (quantity2 > 1) {
-        setQuantity(quantity2 - 1);
-      }
+  function Back() {
+    if(route.params?.returnScreen == 'MyProfile'){
+      navigation.navigate('MyProfile');
+    } else {
+        navigation.goBack();
     }
-    const IncreaseQuantity = () => {
-      if (quantity2 < quantity) {
-        setQuantity(quantity2 + 1);
-      }
+  }
+
+  const decreaseQuantity = () => {
+    if (quantity2 > 1) {
+      setQuantity(quantity2 - 1);
     }
-  
+  }
+  const IncreaseQuantity = () => {
+    if (quantity2 < quantity) {
+      setQuantity(quantity2 + 1);
+    }
+  }
+
   return (
     <SafeAreaView style={styles.background}> 
         <TouchableOpacity onPress={() => Back()}  style={styles.buttonIconBack}>
@@ -249,21 +281,34 @@ export default function Product({ route }) {
               </View>
             </View>
 
-
             <View style={styles.infoContainer2}>
               <ConfirmDialog
-                      title="Adicionar ao carrinho"
-                      message={"Tem certeza que deseja adicionar "+quantity2+" "+Name+"(s) ao carrinho??"}
-                      visible={dialogVisible}
-                      onTouchOutside={() => setDialogVisible(false)}
-                      positiveButton={{
-                          title: "Sim",
-                          onPress: () => onAddToCart()
-                      }}
-                      negativeButton={{
-                          title: "Não",
-                          onPress: () => setDialogVisible(false)
-                      }}
+                title="Adicionar ao carrinho"
+                message={`Tem certeza que deseja adicionar ${quantity2} ${Name}(s) ao carrinho?`}
+                visible={dialogVisible}
+                onTouchOutside={() => setDialogVisible(false)}
+                positiveButton={{
+                  title: "Sim",
+                  onPress: () => onAddToCart(),
+                  titleStyle: { color: 'green', fontWeight: 'bold' }, // Exemplo de estilo para o texto do botão
+                  style: { backgroundColor: '#e6ffe6', borderRadius: 5, width: '50%', alignItems: 'center' } // Exemplo de estilo para o botão
+                }}
+                negativeButton={{
+                  title: "Não",
+                  onPress: () => setDialogVisible(false),
+                  titleStyle: { color: 'red' }, // Alinha o texto no centro do botão
+                  style: { backgroundColor: '#ffcccc', borderRadius: 5, width: '50%', alignItems: 'center' } // Exemplo de estilo para o botão
+                }}
+                dialogStyle={styles.dialogContainer}
+                titleStyle={styles.dialogTitle}
+                messageStyle={styles.dialogMessage}
+                buttonStyle={styles.dialogButton}
+
+                />
+
+              <CustomProgressDialog
+                dialogVisibleError={dialogVisibleError}
+                setDialogVisibleError={setDialogVisibleError}
               />
                 
             </View>
@@ -290,7 +335,7 @@ export default function Product({ route }) {
 
         {isCurrentUser ? null : (
           <>
-            <TouchableOpacity onPress={() => setDialogVisible(true)} style={styles.buttonIcon}>
+            <TouchableOpacity onPress={() => {quantity < 1 ? setDialogVisibleError(true) : setDialogVisible(true)}} style={styles.buttonIcon}>
               <Ionicons name={quantity > 0 ? 'cart-outline' : ''} size={24} color="white" />
               <Text style={styles.nameButton}>
                 {quantity < 1 ? 'Fora de Estoque' : `Adicionar ao carrinho | ${Price ? Price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'Preço não disponível'}`}  
@@ -298,6 +343,21 @@ export default function Product({ route }) {
             </TouchableOpacity>
           </>
         )}
+
+        {dialogVisibleSuccess && (
+          <View style={[styles.dialogContainerSuccess, { position: 'absolute', top: 35, left: 10, width: '95%', zIndex: 999, borderRadius: 50 }]}>
+            <View style={[styles.dialogStyle, { marginTop: 20, alignSelf: 'flex-start' }]}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}>
+                <Ionicons name="checkmark-circle-outline" size={24} color='green' style={styles.icon} />
+                <Text style={[styles.titleText, { fontWeight: 'bold', fontSize: 20, textAlign: 'center' }]}>Sucesso</Text>
+              </View>
+              <Text style={{ color: themeStyles.colors.textPrimary, textAlign: 'center', marginTop: 10 }}>
+                Produto adicionado ao carrinho com sucesso!
+              </Text>
+            </View>
+          </View>
+        )}
+
 
     </SafeAreaView>
   );

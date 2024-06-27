@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useRef, useState } from 'r
 import * as SignalR from '@microsoft/signalr';
 import { API_BASE_URL } from '../env';
 import { registerForPushNotificationsAsync, scheduleNotification } from '../notificationHelper';
+import { useFocusEffect } from '@react-navigation/native'; // Importe useFocusEffect
 
 const SignalRContext = createContext();
 
@@ -9,6 +10,7 @@ export const SignalRProvider = ({ children }) => {
   const connection = useRef(null);
   const [isConnected, setIsConnected] = useState(false);
   const [token, setToken] = useState(null);
+  const [routeChanged, setRouteChanged] = useState(false); // Estado para controlar mudanças de rota
 
   useEffect(() => {
     async function configureNotifications() {
@@ -56,6 +58,19 @@ export const SignalRProvider = ({ children }) => {
     // Coloque outras lógicas dependentes do token aqui, se necessário
 
   }, [token]);
+
+  // Efeito para monitorar mudanças de rota
+  useFocusEffect(
+    React.useCallback(() => {
+      // Atualize o contexto do SignalR aqui, se necessário
+      setRouteChanged(true);
+
+      return () => {
+        // Limpeza, se necessário ao sair da tela
+        setRouteChanged(false);
+      };
+    }, [])
+  );
 
   return (
     <SignalRContext.Provider value={{ connection: connection.current, isConnected }}>

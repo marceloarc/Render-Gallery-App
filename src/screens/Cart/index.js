@@ -18,8 +18,10 @@ import { Modalize } from 'react-native-modalize'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { getCategory } from "../../../services/CategoryService";
 import { removeItemToCartService } from "../../../services/ProductsService";
+import { UpdateItemService } from "../../../services/ProductsService";
 import { useThemedStyles } from "./useThemedStyles";
 import { useTheme } from "../../../ThemeContext";
+import { Dialog } from "react-native-simple-dialogs";
 
 export default function Cart() {
   const { user } = useContext(AuthContext);
@@ -29,7 +31,8 @@ export default function Cart() {
   const modalizeref = useRef(null);
   const styles = useThemedStyles(); 
   const { themeStyles } = useTheme();
-  
+  const [dialogVisible, setDialogVisible] = useState(false);
+
   const handleRemoveProduct = (Id) => {
     removeItemFromCart(Id);
   };
@@ -40,17 +43,18 @@ export default function Cart() {
     }
   }
 
-  function renderItem({ item, index }) {
+  function Item({ item, index }) {
     const categoriaId = item.categoria;
     const categoria = getCategory(categoriaId);
     const itemid = item.idProduto;
+    const [quantity, setQuantity] = useState(item.quantidade);
 
     return (
       <TouchableOpacity
         style={styles.cartLine}
         onPress={() => {
           navigation.navigate("Product", {
-            Id: item.id,
+            Id: itemid,
             Name: item.nomeProduto,
             Price: item.price,
             Path: item.path,
@@ -71,28 +75,56 @@ export default function Cart() {
             })}
           </Text>
         </View>
-        <View style={styles.quantityContainer}>
+        <View style={styles.quantityContainer} >
         <TouchableOpacity onPress={() => handleRemoveProduct(itemid)} style={styles.buttonIconPoint}>
             <Ionicons name="trash-outline" size={20} color="red" />
           </TouchableOpacity>
 
-          <View style={styles.quantity}>
+          <TouchableOpacity style={styles.quantity} >
+          <TouchableOpacity
+            onPress={() => {
+              if (quantity > 1) {
+                var quantity2 = quantity - 1;
+                if (quantity2 < 1) {
+                  handleRemoveProduct(itemid);
+                }
+                setQuantity(quantity2);
+                try {
+                  console.log(user.id, itemid, quantity);
+                  UpdateItemService(user.id, itemid, quantity - 1);
+                } catch (error) {
+                  console.error('Erro ao adicionar item ao carrinho:', error);
+                }
+              }
+            }}
+            disabled={quantity === 1} 
+          >
+              <Text style={[styles.quantityText, quantity === 1 ? { color: 'transparent' } : null]}>-</Text>
+          </TouchableOpacity>
+            <Text style={styles.quantityText}>{quantity}</Text>
             <TouchableOpacity
               onPress={() => {
-                // Decrease quantity logic here
-              }}
-            >
-              <Text style={styles.quantityText}>-</Text>
-            </TouchableOpacity>
-            <Text style={styles.quantityText}>{item.quantidade}</Text>
-            <TouchableOpacity
-              onPress={() => {
-                // Increase quantity logic here
+                var quantity2 = quantity + 1;
+                try {
+                  UpdateItemService(user.id, itemid, quantity+1) 
+                  .then(result => {
+                    console.log("resultado de somar", result.message);
+                    if(result.message == "Produto atualizado com sucesso"){
+                      setQuantity(quantity2);
+                    } else {
+                      setDialogVisible(true);
+                      //console.log("Erro ao adicionar item ao carrinho:", result.message);
+                    }
+                  })   
+                } catch (error) {
+                  console.error('Erro ao adicionar item ao carrinho:', error);
+                  // Trate o erro conforme necessário
+                }
               }}
             >
               <Text style={styles.quantityText}>+</Text>
             </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
         </View>
       </TouchableOpacity>
     );
@@ -100,6 +132,26 @@ export default function Cart() {
 
   return (
       <GestureHandlerRootView style={{ flex: 1 }}>
+        <Dialog
+          visible={dialogVisible}
+          title={
+            <View style={styles.titleContainer}>
+              <Ionicons name="alert-circle-outline" size={24} color={themeStyles.colors.vermelho} style={styles.icon} />
+              <Text style={styles.titleText}>Erro</Text>
+            </View>
+          }
+          onTouchOutside={() => setDialogVisible(false)} 
+          style={styles.dialogContainer}
+          dialogStyle={styles.dialogStyle}
+          titleStyle={{color: themeStyles.colors.textPrimary, fontWeight: "bold", fontSize: 20, textAlign: "center"}}
+          >
+          <View style={{ alignItems: 'center'}}>
+            <Text style={{ color: themeStyles.colors.textPrimary, textAlign: "center", marginBottom: 20 }}>Desculpe, só temos uma unidade disponível no estoque.</Text>
+            <TouchableOpacity style={{ backgroundColor: themeStyles.colors.background, width: '80%', height: 30, justifyContent: 'center', borderRadius: 5}} onPress={() => setDialogVisible(false) }>
+              <Text style={{textAlign: 'center', color: themeStyles.colors.textPrimary}}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </Dialog>
         <View style={styles.container2}>
           <View style={styles.header}>
             <TouchableOpacity
@@ -127,7 +179,7 @@ export default function Cart() {
                 persistentScrollbar={true}
                 contentContainerStyle={styles.itemsListContainer}
                 data={items}
-                renderItem={renderItem}
+                renderItem={({item, index, separators}) => <Item item={item}/> }
                 keyExtractor={(item) => item.idProduto.toString()}
               />
             </View>

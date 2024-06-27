@@ -14,7 +14,7 @@ export const useThemedStyles = () => {
             alignItems: 'center',
             paddingVertical: 10,
             borderBottomWidth: 1,
-            borderBottomColor: '#ccc',
+            borderBottomColor: themeStyles.colors.textSecondary,
         },
         userPic: {
             width: 50,

@@ -70,6 +70,7 @@ export const useThemedStyles = () => {
         backgroundColor: themeStyles.colors.background,
         alignItems: 'center',
         justifyContent: 'center',
+        flexDirection: 'row',
         zIndex: 1,
         position: 'absolute',
         right: 20,  // Ajustado para 10 para que fique próximo à borda

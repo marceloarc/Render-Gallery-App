@@ -16,11 +16,11 @@ export default function App() {
       <ThemeProvider>
         <CartProvider>
           <FavProvider>
-            <SignalRProvider>
-              <NavigationContainer>
+            <NavigationContainer>
+              <SignalRProvider>
                 <Routes />
-              </NavigationContainer>
-            </SignalRProvider>
+              </SignalRProvider>
+            </NavigationContainer>
           </FavProvider>
         </CartProvider>
       </ThemeProvider>

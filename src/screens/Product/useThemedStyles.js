@@ -240,7 +240,95 @@ export const useThemedStyles = () => {
       CSelected: {
         textAlign: 'center',
         color: themeStyles.colors.textCategorySelected
-      }
+      },
+      dialogContainer: {
+        backgroundColor: themeStyles.colors.background,
+        borderRadius: 10,
+        padding: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      dialogTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        textAlign: 'center',
+        color: themeStyles.colors.textPrimary,
+      },
+      dialogMessage: {
+        fontSize: 16,
+        marginBottom: 20,
+        textAlign: 'center',
+        color: themeStyles.colors.textPrimary,
+      },
+      dialogButton: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginTop: 10,
+      },
+      positiveButton: {
+        backgroundColor: '#5cb85c', // verde
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+      },
+      negativeButton: {
+        backgroundColor: '#d9534f', // vermelho
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+      },
+      positiveButtonText: {
+        color: '#fff',
+        fontSize: 16,
+      },
+      negativeButtonText: {
+        color: '#fff',
+        fontSize: 16,
+      },
+      progressContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        },
+      progressText: {
+        marginBottom: 10,
+        fontSize: 16,
+        color: 'black',
+      },
+      dialogContainer: {
+        backgroundColor: themeStyles.colors.background,
+        padding: 20,
+        borderRadius: 10,
+      },
+      dialogStyle: {
+        backgroundColor: themeStyles.colors.background,
+        padding: 20,
+        borderRadius: 10,
+        alignContent: "center",
+        justifyContent: "center",
+        alignSelf: "center",
+      },
+      titleContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      icon: {
+        marginRight: 8,
+      },
+      titleText: {
+        color: themeStyles.colors.textPrimary, // Ajuste para a cor do tema
+        fontWeight: "bold",
+        fontSize: 20,
+        textAlign: "center",
+        marginRight: 8,
+      },
+      dialogContainerSuccess: {
+        backgroundColor: "transparent",
+        padding: 20,
+        borderRadius: 10,
+        
+      },
     });
 
     return styles;

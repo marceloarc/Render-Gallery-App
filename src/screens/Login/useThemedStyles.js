@@ -69,6 +69,31 @@ export const useThemedStyles = () => {
       Image: {
         marginTop: 50,
       },
+      dialogContainerSuccess: {
+        backgroundColor: "transparent",
+        padding: 20,
+        borderRadius: 10,
+      },
+      dialogStyle: {
+        backgroundColor: themeStyles.colors.dialogLogin,
+        padding: 20,
+        borderRadius: 10,
+        alignContent: "center",
+        justifyContent: "center",
+        alignSelf: "center",
+        alignItems: "center",
+      },
+      titleText: {
+        color: themeStyles.colors.textPrimary, 
+        fontWeight: "bold",
+        fontSize: 20,
+        textAlign: "center",
+        marginRight: 8,
+      },
+      icon: {
+        marginRight: 8,
+      },
+      
     });
 
     return styles;

@@ -28,7 +28,7 @@ export default {
 
         azulPrimary: "#00406A",
         azulSecondary: "#253341",
-
+        dialogLogin: "#EDEDED",
         border: "#444",
         notification: "#FF5722",
     },

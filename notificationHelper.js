@@ -4,7 +4,7 @@ import Constants from 'expo-constants';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
+    shouldShowAlert: false,
     shouldPlaySound: false,
     shouldSetBadge: false,
   }),
@@ -12,15 +12,6 @@ Notifications.setNotificationHandler({
 
 export async function registerForPushNotificationsAsync() {
   let token;
-
-  if (Platform.OS === 'android') {
-    Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C',
-    });
-  }
 
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
   console.log('Existing status:', existingStatus); // Verificar status de permissões existente
@@ -56,15 +47,15 @@ export async function registerForPushNotificationsAsync() {
   return token;
 }
 
-export async function sendPushNotification(expoPushToken, body) {
+export async function sendPushNotification(expoPushToken, body, title) {
   const message = {
     to: expoPushToken,
     sound: 'default',
-    title: '',
-    body: '',
+    title: title,
+    body: body,
     data: { someData: 'goes here' },
   };
-
+console.log('Enviando notificação:', message);
   await fetch('https://exp.host/--/api/v2/push/send', {
     method: 'POST',
     headers: {
@@ -80,26 +71,29 @@ export async function sendPushNotification(expoPushToken, body) {
 
 export async function scheduleNotification(content, trigger) {
   console.log('Agendando notificação:', trigger.token);
-  try {
-    const testeenvio = await sendPushNotification(trigger.token, "Teste de envio de notificação");
-    const notificationId = await Notifications.scheduleNotificationAsync({
-      content: {
-        title: content.title || 'Nova notificação',
-        body: content.body || 'Você recebeu uma nova mensagem.',
-        sound: 'default',
-        color: '#00406A',
-        icon: './assets/System/logo.png',
-        data: { withSome: 'data' },
-        android: {
-          channelId: 'default',
-          sticky: true,
-          autoCancel: false,
-        },
-      },
-      trigger: null,
-    });
-    console.log('Notificação agendada com sucesso. ID:', notificationId);
-  } catch (error) {
-    console.error('Erro ao agendar notificação:', error);
-  }
+  // try {
+    const body = content.body || 'Você recebeu uma nova mensagem.';
+    const title = content.title || 'Nova notificação';
+    const token = trigger.token;
+    const testeenvio = await sendPushNotification(token, body, title);
+  //   const notificationId = await Notifications.scheduleNotificationAsync({
+  //     content: {
+  //       title: content.title || 'Nova notificação',
+  //       body: content.body || 'Você recebeu uma nova mensagem.',
+  //       sound: 'default',
+  //       color: '#00406A',
+  //       icon: './assets/System/logo.png',
+  //       data: { withSome: 'data' },
+  //       android: {
+  //         channelId: 'default',
+  //         sticky: true,
+  //         autoCancel: false,
+  //       },
+  //     },
+  //     trigger: null,
+  //   });
+  //   console.log('Notificação agendada com sucesso. ID:', notificationId);
+  // } catch (error) {
+  //   console.error('Erro ao agendar notificação:', error);
+  // }
 }
