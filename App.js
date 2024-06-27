@@ -1,12 +1,14 @@
+import React from 'react';
 import Routes from "./src/routes/routes";
 import { NavigationContainer } from '@react-navigation/native';
 import { CartProvider } from './context/CartContext.js';
 import { FavProvider } from './context/FavContext.js';
-import { ThemeContext, ThemeProvider } from './ThemeContext'; // Importe o ThemeProvider ajustado
+import { ThemeProvider } from './ThemeContext'; 
 import { AuthProvider } from './context/AuthContext.js';
-import { LogBox } from "react-native"
+import { LogBox } from "react-native";
+import { SignalRProvider } from './context/SignalRContext';
 
-LogBox.ignoreAllLogs(true)
+LogBox.ignoreAllLogs(true);
 
 export default function App() {
   return (
@@ -14,9 +16,11 @@ export default function App() {
       <ThemeProvider>
         <CartProvider>
           <FavProvider>
-            <NavigationContainer>
-              <Routes />
-            </NavigationContainer>
+            <SignalRProvider>
+              <NavigationContainer>
+                <Routes />
+              </NavigationContainer>
+            </SignalRProvider>
           </FavProvider>
         </CartProvider>
       </ThemeProvider>
