@@ -10,6 +10,10 @@ import { getUsersById } from '../../../services/UsersService';
 import { API_BASE_URL } from '../../../env.js';
 import { Posts } from '../../../components/Posts';
 import { useTheme } from '../../../ThemeContext';
+import { AuthContext } from '../../../context/AuthContext';
+import { useContext } from 'react';
+import axios from 'axios';
+import { ConsoleLogger } from '@microsoft/signalr/dist/esm/Utils';
 
 const urlApi = API_BASE_URL;
 
@@ -25,6 +29,74 @@ export default function Profile({route}) {
         month: '2-digit',
         year: 'numeric',
       });
+    const { user } = useContext(AuthContext);
+
+
+    const navigateToChat = async () => {
+        const hasChats = user.chats && user.chats.length > 0;
+
+        if (hasChats) {
+            let chatToNavigate = null;
+
+            user.chats.forEach(chat => {
+                if (chat.user_chat.id === userId) {
+                    chatToNavigate = chat;
+                }
+            });
+
+            if (chatToNavigate) {
+                navigation.navigate('Chat', {
+                    user_chat: chatToNavigate.user_chat,
+                    chat_id: chatToNavigate.chat_id,
+                    messages_chat: chatToNavigate.messages,
+                });
+            } else {
+                console.error('Chat não encontrado');
+                try {
+                    const response = await axios.post(`${urlApi}/sendMessageChat`, {
+                        from: user.id,
+                        to: userId,
+                        cid: 0,
+                        msg: ''
+                    });
+
+                    console.log('Chat criado:', response.data);
+                    const { cid, userTo } = response.data;
+
+                    navigation.navigate('Chat', {
+                        user_chat: userTo,
+                        chat_id: cid,
+                        messages_chat: [],
+                    });
+                } catch (error) {
+                    console.error('Erro ao criar novo chat:', error);
+                }
+            }
+        } else {
+            console.error('Chat não encontrado');
+            console.log('user', user.id);
+            console.log('userId', userId);
+            try {
+                const response = await axios.post(`${urlApi}/sendMessageChat`, {
+                    from: user.id,
+                    to: userId,
+                    cid: 0,
+                    msg: ''
+                });
+
+                console.log('Chat criado:', response.data);
+                const { cid, userTo } = response.data;
+
+                navigation.navigate('Chat', {
+                    user_chat: userTo,
+                    chat_id: cid,
+                    messages_chat: [],
+                });
+            } catch (error) {
+                console.error('Erro ao criar novo chat:', error);
+            }
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -33,6 +105,10 @@ export default function Profile({route}) {
                 {/* <TouchableOpacity onPress={() => navigation.navigate('Product', { Id: publicacaoId, Name: publicacaoName, Price: publicacaoPrice, Path: publicacaoPath, UserId: publicacaoUserId, CategoriaId: publicacaoCategoriaId, quantity:publicacaoQuantidade })}  style={styles.buttonIconBack}>
                     <Ionicons  name="chevron-back" size={24} color={themeStyles.colors.textPrimary} />
                 </TouchableOpacity> */}
+
+                <TouchableOpacity style={styles.buttonIconPoint}>
+                    <Ionicons name="chatbubble-ellipses" onPress={navigateToChat} size={28} color={themeStyles.colors.textPrimary} />
+                </TouchableOpacity>
 
                 <View style={styles.profileSection}>
                     <Image

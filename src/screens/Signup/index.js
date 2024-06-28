@@ -11,6 +11,7 @@ import { useToast } from "react-native-toast-notifications";
 import { Ionicons } from "@expo/vector-icons";
 import imageicon from '../../../assets/System/select-foto.png';
 import { CommonActions } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Signup() {
   const imageiconuri = Image.resolveAssetSource(imageicon).uri
@@ -24,6 +25,9 @@ export default function Signup() {
   const styles = useThemedStyles();
   const { themeStyles } = useTheme();
   const toast = useToast();
+  const [dialogVisibleError, setDialogVisibleError] = useState(false);
+  const [dialogVisibleSuccess, setDialogVisibleSuccess] = useState(false);
+  const [message, setMessage] = useState('');
   const handleLogin = () => {
     navigation.navigate('Login');
   };
@@ -79,61 +83,54 @@ export default function Signup() {
       console.log("Response from register:", response);
   
       if (response.success) {
-        toast.show(response.success, {
-          type: "success",
-          placement: "bottom",
-          duration: 2000,
-          offset: 30,
-          animationType: "fade",
-          textStyle: { color: 'white' },
-          backgroundColor: "#FF5722",
-          icon: <Ionicons name="heart-outline" size={24} color="white" />,
-        });
+        setMessage(response.message);
+        setDialogVisibleSuccess(true);
+
+        setTimeout(() => {
+          loginUser();
+        }, 3000);
   
-        const userData = await login(email, password);
-        console.log("Response from login:", userData);
-  
-        if (!userData.message) {
-          console.log("Usuário encontrado:", userData);
-          signIn(userData);
-  
-          navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: 'Home' }],
-            })
-          );
-        }
       } else if (response.error) {
-        toast.show(response.error, {
-          type: "warning",
-          placement: "bottom",
-          duration: 2000,
-          offset: 30,
-          animationType: "fade",
-          textStyle: { color: 'white' },
-          backgroundColor: "#FF5722",
-          icon: <Ionicons name="alert-outline" size={24} color="white" />,
-        });
+        setMessage(response.error); 
+        setDialogVisibleError(true); 
+        setTimeout(() => {
+          setDialogVisibleError(false);
+        }, 3000);
       }
     } catch (error) {
       console.error("Error during sign up:", error);
-      toast.show("Erro ao cadastrar usuário", {
-        type: "error",
-        placement: "bottom",
-        duration: 2000,
-        offset: 30,
-        animationType: "fade",
-        textStyle: { color: 'white' },
-        backgroundColor: "#FF5722",
-        icon: <Ionicons name="alert-circle-outline" size={24} color="white" />,
-      });
+      setMessage(error); 
+      setDialogVisibleError(true); 
+      setTimeout(() => {
+        setDialogVisibleError(false);
+      }, 3000);
     }
   };
   
 
+  const loginUser = async () => {
+    try {
+      const userData = await login(email, password);
+      console.log("Response from login:", userData);
+  
+      if (!userData.message) {
+        console.log("Usuário encontrado:", userData);
+        signIn(userData);
+  
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'Home' }],
+          })
+        );
+      }
+    } catch (error) {
+      console.error("Erro durante o login:", error);
+    }
+  };
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Registre-se</Text>
 
       <TouchableOpacity onPress={handlePress}>
@@ -178,6 +175,33 @@ export default function Signup() {
       <Text style={styles.textButton2}>
         Já tem uma conta? Entre agora.</Text>
       </TouchableOpacity>
-    </View>
+
+      {dialogVisibleError && (
+        <View style={[styles.dialogContainerSuccess, { position: 'absolute', bottom: 35, left: 10, width: '95%', zIndex: 999, borderRadius: 50 }]}>
+          <View style={[styles.dialogStyle, { marginTop: 20, alignSelf: 'center', width: '100%' }]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+              <Ionicons name="alert-circle-outline" size={22} color={themeStyles.colors.vermelho} style={styles.icon} />
+              <Text style={[styles.titleText, { fontWeight: 'bold', fontSize: 18, textAlign: 'center' }]}>Erro</Text>
+            </View>
+            <Text style={{ color: themeStyles.colors.textPrimary, marginTop: 10 }}>
+              {message}
+            </Text>
+          </View>
+        </View>
+      )}
+      {dialogVisibleSuccess && (
+          <View style={[styles.dialogContainerSuccess, { position: 'absolute', top: 35, left: 10, width: '95%', zIndex: 999, borderRadius: 50 }]}>
+          <View style={[styles.dialogStyle, { marginTop: 20, alignSelf: 'flex-start', width: '100%' }]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}>
+              <Ionicons name="checkmark-circle-outline" size={24} color='green' style={styles.icon} />
+              <Text style={[styles.titleText, { fontWeight: 'bold', fontSize: 20, textAlign: 'center' }]}>Sucesso</Text>
+            </View>
+            <Text style={{ color: themeStyles.colors.textPrimary, textAlign: 'center', marginTop: 10 }}>
+              Conta criada com sucesso!
+            </Text>
+          </View>
+        </View>
+      )}
+    </SafeAreaView>
   );
 };

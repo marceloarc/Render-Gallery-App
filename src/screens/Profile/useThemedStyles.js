@@ -68,11 +68,10 @@ export const useThemedStyles = () => {
         width: 40,
         height: 40,
         borderRadius: 100,
-        borderWidth: 1,
-        borderColor: themeStyles.colors.textPrimary,
         backgroundColor: themeStyles.colors.background,
         alignItems: 'center',
         justifyContent: 'center',
+        flexDirection: 'row',
         zIndex: 1,
         position: 'absolute',
         right: 20,  // Ajustado para 10 para que fique próximo à borda

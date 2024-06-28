@@ -133,7 +133,7 @@ function Routes({ connection, isConnected }) {
   };
 
   const navigateToChat = (item) => {
-    onCloseModalize(); // Fechar o Modalize antes de navegar para o chat
+    onCloseModalize(); 
     navigation.navigate('Chat', { user_chat: item.user_chat, chat_id: item.chat_id, messages_chat: item.messages, connection, isConnected });
   };
 

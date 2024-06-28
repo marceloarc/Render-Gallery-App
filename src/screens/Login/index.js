@@ -100,7 +100,7 @@ export default function Login() {
 
       {dialogVisibleError && (
         <View style={[styles.dialogContainerSuccess, { position: 'absolute', bottom: 35, left: 10, width: '95%', zIndex: 999, borderRadius: 50 }]}>
-          <View style={[styles.dialogStyle, { marginTop: 20, alignSelf: 'center', width: '70%' }]}>
+          <View style={[styles.dialogStyle, { marginTop: 20, alignSelf: 'center', width: '100%' }]}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <Ionicons name="alert-circle-outline" size={22} color={themeStyles.colors.vermelho} style={styles.icon} />
               <Text style={[styles.titleText, { fontWeight: 'bold', fontSize: 18, textAlign: 'center' }]}>Erro</Text>
