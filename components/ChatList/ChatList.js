@@ -40,12 +40,13 @@ const ChatList = ({ chats, onPressChatItem }) => {
                                             backgroundColor: "#385898",
                                             borderRadius: 50,
                                             position: "absolute",
+                                            
                                         }}
                                     ></View>
                                 )
                             )
                         ) : 'No messages'}
-                        {item.messages.length > 0 ? item.messages[item.messages.length - 1].msg_content : ''}
+                        {item.messages.length > 0 ? ' '+item.messages[item.messages.length - 1].msg_content : ''}
                     </Text>
                 </View>
             </TouchableOpacity>

@@ -44,6 +44,22 @@ export async function login(email, password) {
       }
     }
   }
+  export async function FinzalizarPedido(user_id){
+    try {
+      const response = await axios.get(`${urlApi}/api/mobile/finalizarPedido/${user_id}`,);
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.data) {
+          throw new Error(JSON.stringify(error.response.data));
+      } else if (error.request) {
+          throw new Error('Erro de rede: não foi possível conectar ao servidor');
+      } else {
+          throw new Error('Erro ao enviar solicitação');
+      }
+    }
+  }
+
   export async function register(data) {
     try {
         const response = await axios.post(`${urlApi}/api/mobile/register`, data, {

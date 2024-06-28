@@ -22,6 +22,7 @@ import { UpdateItemService } from "../../../services/ProductsService";
 import { useThemedStyles } from "./useThemedStyles";
 import { useTheme } from "../../../ThemeContext";
 import { Dialog } from "react-native-simple-dialogs";
+import { FinzalizarPedido} from "../../../services/UsersService";
 
 export default function Cart() {
   const { user } = useContext(AuthContext);
@@ -32,7 +33,7 @@ export default function Cart() {
   const styles = useThemedStyles(); 
   const { themeStyles } = useTheme();
   const [dialogVisible, setDialogVisible] = useState(false);
-
+  const [dialogVisibleSuccess, setDialogVisibleSuccess] = useState(false);
   const handleRemoveProduct = (Id) => {
     removeItemFromCart(Id);
   };
@@ -42,6 +43,19 @@ export default function Cart() {
       modalizeref.current?.open();
     }
   }
+  async function onCheckout(){
+    let response = await FinzalizarPedido(user.id);
+
+    if(response.sucesso){
+      setDialogVisibleSuccess(true);
+      setTimeout(() => {
+        setDialogVisibleSuccess(false);
+        navigation.goBack()
+      }, 3000);
+    }
+
+  }
+
 
   function Item({ item, index }) {
     const categoriaId = item.categoria;
@@ -193,7 +207,7 @@ export default function Cart() {
             <View style={{justifyContent: "center", alignItems: "center"}}>
             <PaymentMethod />
             <TouchableOpacity
-              onPress={(event) => onOpen(event)}
+              onPress={(event) => onCheckout()}
               style={styles.buttonIcon}
             >
               <Text style={styles.nameButton}>Pagar</Text>
@@ -210,6 +224,19 @@ export default function Cart() {
             </TouchableOpacity>
           </View>
         </View>
+        {dialogVisibleSuccess && (
+          <View style={[styles.dialogContainerSuccess, { position: 'absolute', top: 35, left: 40, width: '95%', zIndex: 999, borderRadius: 50 }]}>
+            <View style={[styles.dialogStyle, { marginTop: 20, alignSelf: 'flex-start' }]}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}>
+                <Ionicons name="checkmark-circle-outline" size={24} color='green' style={styles.icon} />
+                <Text style={[styles.titleText, { fontWeight: 'bold', fontSize: 20, textAlign: 'center' }]}>Pedido Finalizado</Text>
+              </View>
+              <Text style={{ color: themeStyles.colors.textPrimary, textAlign: 'center', marginTop: 10 }}>
+                Seu pedido foi finalizado com sucesso!
+              </Text>
+            </View>
+          </View>
+        )}
       </GestureHandlerRootView>
   );
 }
