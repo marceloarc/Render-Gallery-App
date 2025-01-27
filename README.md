@@ -1,7 +1,7 @@
 # Render Gallery
 
 Render Gallery é um projeto de e-commerce voltado para artistas, onde eles podem vender obras de arte digitais, texturas e outros tipos de imagens. O objetivo principal é fornecer uma plataforma que ofereça opções flexíveis de licenciamento, seja por meio de licenças únicas ou de uso.
-
+📷![Layout](assets/demo.png)
 ## Funcionalidades Principais
 
 - **Cadastro de Artistas e Usuários**
